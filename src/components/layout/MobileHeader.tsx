@@ -4,7 +4,8 @@ import type { ReactElement } from "react";
 import {
   useNavStore,
   selectStreakCount,
-  selectByteBalance
+  selectByteBalance,
+  selectBatteryCount
 } from "@/store/useNavStore";
 import { StatBadge, BuggyLogo } from "@/components/shared";
 
@@ -15,21 +16,28 @@ export interface MobileHeaderProps {
 export function MobileHeader({ className = "" }: MobileHeaderProps): ReactElement {
   const streakCount = useNavStore(selectStreakCount);
   const byteBalance = useNavStore(selectByteBalance);
+  const batteryCount = useNavStore(selectBatteryCount);
 
   return (
     <header
       role="banner"
-      className={`flex md:hidden sticky top-0 z-30 h-14 w-full items-center justify-between px-4 bg-[#101826] border-b-2 border-[#24324a] select-none ${className}`}
+      aria-label="Mobile Header"
+      className={`flex md:hidden relative sticky top-0 z-30 h-14 w-full items-center justify-between px-4 bg-[#101826] border-b-2 border-[#24324a] select-none ${className}`}
     >
       <div className="flex items-center">
-        <BuggyLogo className="h-9 w-auto object-contain" />
+        <StatBadge variant="battery" value={batteryCount} compact />
       </div>
 
-      <div className="flex items-center gap-2">
-        <StatBadge variant="streak" value={streakCount} />
-        <StatBadge variant="byte" value={byteBalance} />
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none">
+        <BuggyLogo className="h-7 w-auto object-contain pointer-events-auto" />
+      </div>
+
+      <div className="flex items-center gap-3">
+        <StatBadge variant="streak" value={streakCount} compact />
+        <StatBadge variant="byte" value={byteBalance} compact />
       </div>
     </header>
   );
 }
+
 
