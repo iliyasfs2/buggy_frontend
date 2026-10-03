@@ -30,18 +30,3 @@ export type {
   TrackPillProps,
   BuggyLogoProps
 } from "./shared";
-
-export {
-  SetupView,
-  SetupStage,
-  RoomLayer,
-  DeskLayer,
-  AvatarLayer,
-  CompanionLayer,
-  CoffeeSteam,
-  MonitorGlow,
-  SetupDrawer,
-  GearInventory,
-  SystemSpecs,
-  useSetupInteractions
-} from "./setup";

@@ -2,9 +2,14 @@
 
 import type { ReactElement } from "react";
 import { AppShell } from "./AppShell";
-import { SetupView } from "@/components/setup/SetupView";
 import { useNavStore, selectActiveTab } from "@/store/useNavStore";
 import { useMounted } from "@/hooks/useMounted";
+
+export const SetupView = (): ReactElement => (
+  <div className="flex items-center justify-center p-8 text-slate-400">
+    Setup Workspace (Reset)
+  </div>
+);
 
 export function HomeClient(): ReactElement {
   const mounted = useMounted();
