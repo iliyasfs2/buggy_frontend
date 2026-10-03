@@ -25,11 +25,11 @@ export function SetupStage(): ReactElement {
   } = useSetupInteractions();
 
   return (
-    <div className="relative w-full rounded-2xl bg-gradient-to-b from-[#131d2e] via-[#101826] to-[#090d16] border-2 border-slate-700/80 shadow-2xl overflow-hidden min-h-[380px] sm:min-h-[420px] md:min-h-[460px]">
+    <div className="relative w-full aspect-[16/9] min-h-[420px] sm:min-h-[460px] rounded-3xl border border-slate-700/60 bg-[#0f172a] shadow-2xl overflow-hidden select-none">
       <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
         <button
           onClick={triggerSnapshot}
-          className="flex items-center gap-1.5 bg-slate-800/90 hover:bg-slate-700/90 active:scale-95 border border-slate-600 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-200 backdrop-blur-md shadow-md transition-all cursor-pointer"
+          className="flex items-center gap-1.5 bg-slate-800/90 hover:bg-slate-700/90 active:scale-95 border border-slate-600/80 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-200 backdrop-blur-md shadow-md transition-all cursor-pointer"
           title="Export Setup Snapshot"
         >
           <Camera className="w-3.5 h-3.5 text-sky-400" />
@@ -66,7 +66,7 @@ export function SetupStage(): ReactElement {
         {floatingParticles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute bottom-28 right-16 sm:right-28 animate-float-particle font-mono text-base sm:text-lg font-bold select-none text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]"
+            className="absolute bottom-[28%] right-[18%] animate-float-particle font-mono text-base font-bold select-none text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]"
             style={{
               transform: `translate3d(${particle.x}px, ${particle.y}px, 0)`
             }}
