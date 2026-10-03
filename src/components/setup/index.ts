@@ -1,0 +1,12 @@
+export { SetupView } from "./SetupView";
+export { SetupStage } from "./stage/SetupStage";
+export { RoomLayer } from "./stage/layers/RoomLayer";
+export { DeskLayer } from "./stage/layers/DeskLayer";
+export { AvatarLayer } from "./stage/layers/AvatarLayer";
+export { CompanionLayer } from "./stage/layers/CompanionLayer";
+export { CoffeeSteam } from "./stage/effects/CoffeeSteam";
+export { MonitorGlow } from "./stage/effects/MonitorGlow";
+export { SetupDrawer } from "./drawer/SetupDrawer";
+export { GearInventory } from "./drawer/GearInventory";
+export { SystemSpecs } from "./drawer/SystemSpecs";
+export { useSetupInteractions } from "./hooks/useSetupInteractions";
