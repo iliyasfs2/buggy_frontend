@@ -23,7 +23,7 @@ export function DesktopSidebar({
     <aside
       role="navigation"
       aria-label="Desktop Navigation"
-      className={`hidden md:flex flex-col w-64 h-screen fixed inset-y-0 left-0 bg-[#101826] border-r-4 border-[#24324a] z-40 select-none p-4 justify-between ${className}`}
+      className={`hidden md:flex flex-col w-64 h-screen fixed inset-y-0 left-0 bg-[#101826] border-r-4 border-slate-700 z-40 select-none p-4 justify-between ${className}`}
     >
       <div className="flex flex-col gap-6">
         <div className="flex items-center px-4">
