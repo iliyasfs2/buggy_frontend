@@ -4,9 +4,19 @@ import type { ReactElement } from "react";
 import { AppShell } from "./AppShell";
 import { SetupView } from "@/components/setup/SetupView";
 import { useNavStore, selectActiveTab } from "@/store/useNavStore";
+import { useMounted } from "@/hooks/useMounted";
 
 export function HomeClient(): ReactElement {
+  const mounted = useMounted();
   const activeTab = useNavStore(selectActiveTab);
+
+  if (!mounted) {
+    return (
+      <AppShell>
+        <SetupView />
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>

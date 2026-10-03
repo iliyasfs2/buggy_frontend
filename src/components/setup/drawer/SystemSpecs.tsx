@@ -11,7 +11,7 @@ export function SystemSpecs(): ReactElement {
   const setupScore = useSetupStore((state) => state.setupScore);
   const incrementStats = useSetupStore((state) => state.incrementStats);
 
-  const formattedLines = new Intl.NumberFormat().format(compiledLines);
+  const formattedLines = new Intl.NumberFormat("en-US").format(compiledLines);
 
   return (
     <div className="flex flex-col gap-4">

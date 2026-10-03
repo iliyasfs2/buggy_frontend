@@ -25,7 +25,7 @@ export function StatBadge({
   if (isStreak) {
     label = `Streak: ${value} days`;
   } else if (isByte) {
-    label = `Balance: ${typeof value === "number" ? value.toLocaleString() : value} bytes`;
+    label = `Balance: ${typeof value === "number" ? value.toLocaleString("en-US") : value} bytes`;
   } else {
     label = `Battery: ${typeof value === "number" ? `${value}/5` : value}`;
   }
@@ -34,7 +34,7 @@ export function StatBadge({
   if (isStreak) {
     formattedValue = value.toString();
   } else if (isByte) {
-    formattedValue = typeof value === "number" ? value.toLocaleString() : value;
+    formattedValue = typeof value === "number" ? value.toLocaleString("en-US") : value;
   } else {
     formattedValue = typeof value === "number" ? `${value}/5` : value;
   }
@@ -75,5 +75,3 @@ export function StatBadge({
     </div>
   );
 }
-
-
