@@ -7,7 +7,7 @@ import {
   selectSetActiveTab,
 } from "@/store/useNavStore";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { UserProfileCard, BuggyLogo } from "@/components/shared";
+import { BuggyLogo } from "@/components/shared";
 
 export interface DesktopSidebarProps {
   className?: string;

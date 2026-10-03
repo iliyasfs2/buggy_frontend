@@ -1,11 +1,13 @@
 export {
   DesktopSidebar,
+  DesktopMetricBar,
   MobileHeader,
   MobileBottomNav,
   AppShell
 } from "./layout";
 export type {
   DesktopSidebarProps,
+  DesktopMetricBarProps,
   MobileHeaderProps,
   MobileBottomNavProps,
   AppShellProps
@@ -14,7 +16,6 @@ export type {
 export {
   StatBadge,
   TrackPill,
-  UserProfileCard,
   PathIcon,
   VaultIcon,
   SetupIcon,
@@ -26,7 +27,7 @@ export type {
   StatBadgeProps,
   StatBadgeVariant,
   TrackPillProps,
-  UserProfileCardProps,
   BuggyLogoProps
 } from "./shared";
+
 

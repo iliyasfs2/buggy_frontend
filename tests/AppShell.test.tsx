@@ -7,7 +7,6 @@ import { MobileHeader } from "@/components/layout/MobileHeader";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { StatBadge } from "@/components/shared/StatBadge";
 import { TrackPill } from "@/components/shared/TrackPill";
-import { UserProfileCard } from "@/components/shared/UserProfileCard";
 import { useNavStore } from "@/store/useNavStore";
 
 describe("useNavStore", () => {
@@ -128,19 +127,6 @@ describe("Shared Atoms", () => {
     expect(pill).toHaveTextContent("TypeScript Pro");
     fireEvent.click(pill);
     expect(clicked).toBe(true);
-  });
-
-  it("renders UserProfileCard details", () => {
-    render(
-      <UserProfileCard
-        avatarInitials="TC"
-        username="tech_lead"
-        rank="Principal Architect"
-      />
-    );
-    expect(screen.getByText("TC")).toBeInTheDocument();
-    expect(screen.getByText("tech_lead")).toBeInTheDocument();
-    expect(screen.getByText("Principal Architect")).toBeInTheDocument();
   });
 });
 
