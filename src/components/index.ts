@@ -3,7 +3,8 @@ export {
   DesktopMetricBar,
   MobileHeader,
   MobileBottomNav,
-  AppShell
+  AppShell,
+  HomeClient
 } from "./layout";
 export type {
   DesktopSidebarProps,

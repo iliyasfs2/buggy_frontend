@@ -20,13 +20,37 @@ export function DeskLayer({
   onScreenClick,
   onMugClick
 }: DeskLayerProps): ReactElement {
+  const getMonitorBorder = (): string => {
+    switch (monitor) {
+      case "cyber_hologram":
+        return "border-pink-500/80 shadow-[0_0_20px_rgba(236,72,153,0.3)]";
+      case "retro_crt":
+        return "border-emerald-600/90 shadow-[0_0_20px_rgba(5,150,105,0.3)]";
+      case "dual_curved":
+        return "border-indigo-500/80 shadow-[0_0_20px_rgba(99,102,241,0.3)]";
+      default:
+        return "border-slate-700/90";
+    }
+  };
+
+  const getSyntaxHighlightColor = (): string => {
+    switch (monitor) {
+      case "retro_crt":
+        return "text-emerald-400 font-mono";
+      case "cyber_hologram":
+        return "text-pink-300 font-mono";
+      default:
+        return "text-slate-300 font-mono";
+    }
+  };
+
   return (
     <div className="absolute inset-x-0 bottom-0 pointer-events-none select-none flex flex-col items-center">
       <div className="relative w-full max-w-2xl px-2 sm:px-6 flex flex-col items-center">
         <div className="relative z-10 flex flex-col items-center mb-[-2px]">
           <div
             onClick={onScreenClick}
-            className={`pointer-events-auto cursor-pointer relative w-60 sm:w-80 md:w-96 h-36 sm:h-44 md:h-48 bg-[#0b101b] border-4 border-slate-700/90 rounded-2xl shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-150 active:scale-[0.99] ${
+            className={`pointer-events-auto cursor-pointer relative w-60 sm:w-80 md:w-96 h-36 sm:h-44 md:h-48 bg-[#0b101b] border-4 rounded-2xl shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-150 active:scale-[0.99] ${getMonitorBorder()} ${
               isScreenFlickering ? "brightness-125 border-cyan-400 ring-4 ring-cyan-500/30" : ""
             }`}
           >
@@ -38,12 +62,14 @@ export function DeskLayer({
               </div>
               <div className="text-[10px] font-mono font-bold text-slate-300 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                <span>App.tsx</span>
+                <span>{monitor === "dual_curved" ? "App.tsx | Test.ts" : "App.tsx"}</span>
               </div>
-              <div className="text-[9px] font-mono text-slate-500 font-semibold">BUGGY_OS</div>
+              <div className="text-[9px] font-mono text-slate-500 font-semibold">
+                {monitor === "retro_crt" ? "CRT_60Hz" : "BUGGY_OS"}
+              </div>
             </div>
 
-            <div className="flex-1 p-2.5 sm:p-3 font-mono text-[9px] sm:text-[11px] text-slate-300 flex flex-col justify-around relative overflow-hidden bg-slate-950/90">
+            <div className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[11px] flex flex-col justify-around relative overflow-hidden bg-slate-950/90 ${getSyntaxHighlightColor()}`}>
               <div className="flex items-center gap-2">
                 <span className="text-slate-600 select-none text-[9px]">1</span>
                 <span><span className="text-pink-400 font-bold">import</span> &#123; <span className="text-cyan-300">useDeveloper</span> &#125; <span className="text-pink-400 font-bold">from</span> <span className="text-emerald-300">&quot;buggy&quot;</span>;</span>

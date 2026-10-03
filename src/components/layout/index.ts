@@ -8,5 +8,4 @@ export { MobileBottomNav } from "./MobileBottomNav";
 export type { MobileBottomNavProps } from "./MobileBottomNav";
 export { AppShell } from "./AppShell";
 export type { AppShellProps } from "./AppShell";
-
-
+export { HomeClient } from "./HomeClient";
