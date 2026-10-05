@@ -22,7 +22,7 @@ export function MobileHeader({ className = "" }: MobileHeaderProps): ReactElemen
     <header
       role="banner"
       aria-label="Mobile Header"
-      className={`flex md:hidden relative sticky top-0 z-30 h-14 w-full items-center justify-between px-4 bg-[#101826] border-b-2 border-[#24324a] select-none ${className}`}
+      className={`flex md:hidden sticky top-0 z-40 h-14 w-full items-center justify-between px-4 bg-[#0f172a]/95 backdrop-blur-md border-b border-slate-800 select-none ${className}`}
     >
       <div className="flex items-center">
         <StatBadge variant="battery" value={batteryCount} compact />
@@ -39,5 +39,3 @@ export function MobileHeader({ className = "" }: MobileHeaderProps): ReactElemen
     </header>
   );
 }
-
-

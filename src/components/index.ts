@@ -30,3 +30,5 @@ export type {
   TrackPillProps,
   BuggyLogoProps
 } from "./shared";
+
+export { SetupView } from "./setup";

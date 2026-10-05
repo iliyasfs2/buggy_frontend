@@ -19,7 +19,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
   return (
     <nav
       aria-label="Mobile Navigation"
-      className={`flex md:hidden fixed bottom-0 inset-x-0 z-30 h-16 bg-[#101826] border-t-2 border-[#24324a] items-stretch select-none px-2 ${className}`}
+      className={`flex md:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-[#0f172a]/95 backdrop-blur-md border-t border-slate-800 items-stretch select-none px-4 ${className}`}
     >
       {NAVIGATION_ITEMS.map((item) => {
         const isActive = activeTab === item.id;
@@ -60,4 +60,3 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
     </nav>
   );
 }
-
