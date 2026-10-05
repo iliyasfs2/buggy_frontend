@@ -1,79 +1,10 @@
 import type { Chapter } from "@/types/roadmap";
+import { JAVASCRIPT_CHAPTER_1 } from "@/data/mock/roadmap/javascript";
+
+export { JAVASCRIPT_CHAPTER_1 };
 
 export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
-  {
-    id: "js-chapter-1",
-    chapterNumber: 1,
-    language: "javascript",
-    title: "Foundations & Syntax",
-    description: "Master variables, primitive data types, expressions, and logical branches.",
-    themeColor: "#3b82f6",
-    nodes: [
-      {
-        id: "node-1",
-        order: 1,
-        title: "Variables & Scopes",
-        type: "lesson",
-        status: "completed",
-        xpReward: 15,
-        totalSteps: 3
-      },
-      {
-        id: "node-2",
-        order: 2,
-        title: "Primitive Data Types",
-        type: "lesson",
-        status: "completed",
-        xpReward: 15,
-        totalSteps: 4
-      },
-      {
-        id: "node-3",
-        order: 3,
-        title: "Syntax Checkpoint",
-        type: "quiz",
-        status: "completed",
-        xpReward: 20,
-        totalSteps: 5
-      },
-      {
-        id: "node-4",
-        order: 4,
-        title: "Conditionals & Logic",
-        type: "lesson",
-        status: "current",
-        xpReward: 20,
-        totalSteps: 4
-      },
-      {
-        id: "node-5",
-        order: 5,
-        title: "Switch & Ternaries",
-        type: "lesson",
-        status: "locked",
-        xpReward: 20,
-        totalSteps: 3
-      },
-      {
-        id: "node-6",
-        order: 6,
-        title: "Syntax Review",
-        type: "quiz",
-        status: "locked",
-        xpReward: 25,
-        totalSteps: 5
-      },
-      {
-        id: "node-7",
-        order: 7,
-        title: "The Syntax Sentinel",
-        type: "boss_challenge",
-        status: "locked",
-        xpReward: 50,
-        totalSteps: 6
-      }
-    ]
-  },
+  JAVASCRIPT_CHAPTER_1,
   {
     id: "js-chapter-2",
     chapterNumber: 2,
@@ -84,7 +15,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
     nodes: [
       {
         id: "node-8",
-        order: 8,
+        order: 5,
         title: "For & While Loops",
         type: "lesson",
         status: "locked",
@@ -93,7 +24,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-9",
-        order: 9,
+        order: 6,
         title: "Array Fundamentals",
         type: "lesson",
         status: "locked",
@@ -102,7 +33,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-10",
-        order: 10,
+        order: 7,
         title: "Array Slicing Quiz",
         type: "quiz",
         status: "locked",
@@ -111,7 +42,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-11",
-        order: 11,
+        order: 8,
         title: "Object Literals & Maps",
         type: "lesson",
         status: "locked",
@@ -120,7 +51,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-12",
-        order: 12,
+        order: 9,
         title: "The Infinite Loop Beast",
         type: "boss_challenge",
         status: "locked",
@@ -139,7 +70,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
     nodes: [
       {
         id: "node-13",
-        order: 13,
+        order: 10,
         title: "Arrow Functions & Context",
         type: "lesson",
         status: "locked",
@@ -148,7 +79,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-14",
-        order: 14,
+        order: 11,
         title: "Closures & Factories",
         type: "lesson",
         status: "locked",
@@ -157,7 +88,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-15",
-        order: 15,
+        order: 12,
         title: "Functional Pipelines Quiz",
         type: "quiz",
         status: "locked",
@@ -166,7 +97,7 @@ export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
       },
       {
         id: "node-16",
-        order: 16,
+        order: 13,
         title: "The Callback Chimera",
         type: "boss_challenge",
         status: "locked",
