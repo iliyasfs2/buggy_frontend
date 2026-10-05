@@ -13,7 +13,7 @@ export interface NavState {
 }
 
 export const useNavStore = create<NavState>((set) => ({
-  activeTab: "setup",
+  activeTab: "path",
   streakCount: 14,
   byteBalance: 1250,
   batteryCount: "5/5",
@@ -29,4 +29,3 @@ export const selectBatteryCount = (state: NavState): number | string => state.ba
 export const selectCurrentTrack = (state: NavState): string => state.currentTrack;
 export const selectSetActiveTab = (state: NavState): ((tab: TabId) => void) => state.setActiveTab;
 export const selectSetTrack = (state: NavState): ((track: string) => void) => state.setTrack;
-

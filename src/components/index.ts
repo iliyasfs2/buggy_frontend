@@ -32,3 +32,13 @@ export type {
 } from "./shared";
 
 export { SetupView } from "./setup";
+
+export {
+  PathView,
+  ChapterSection,
+  ChapterHeader,
+  PathNodeButton,
+  NodeActionModal,
+  PathGuidebookModal,
+  PathSidebar
+} from "./path";

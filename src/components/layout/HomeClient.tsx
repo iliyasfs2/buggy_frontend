@@ -3,6 +3,7 @@
 import type { ReactElement } from "react";
 import { AppShell } from "./AppShell";
 import { SetupView } from "@/components/setup/SetupView";
+import { PathView } from "@/components/path/PathView";
 import { useNavStore, selectActiveTab } from "@/store/useNavStore";
 import { useMounted } from "@/hooks/useMounted";
 
@@ -13,25 +14,15 @@ export function HomeClient(): ReactElement {
   if (!mounted) {
     return (
       <AppShell>
-        <SetupView />
+        <PathView />
       </AppShell>
     );
   }
 
   return (
     <AppShell>
+      {activeTab === "path" && <PathView />}
       {activeTab === "setup" && <SetupView />}
-      {activeTab === "path" && (
-        <div className="p-8 max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-3xl mb-4">
-            🗺️
-          </div>
-          <h2 className="text-xl font-bold text-slate-100">Learning Path</h2>
-          <p className="text-slate-400 text-sm mt-1 max-w-sm">
-            Curriculum roadmap with interactive bug-fixing milestones.
-          </p>
-        </div>
-      )}
       {activeTab === "debug" && (
         <div className="p-8 max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl mb-4">
