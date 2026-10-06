@@ -38,7 +38,16 @@ export {
   ChapterSection,
   ChapterHeader,
   PathNodeButton,
+  LessonNode,
+  LessonIcon,
   NodeActionModal,
   PathGuidebookModal,
   PathSidebar
+} from "./path";
+export type {
+  LessonNodeProps,
+  NodeState,
+  NodePalette,
+  LessonIconType,
+  LessonIconProps
 } from "./path";

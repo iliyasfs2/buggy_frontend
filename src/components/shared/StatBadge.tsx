@@ -3,7 +3,7 @@
 import type { ReactElement } from "react";
 import Image from "next/image";
 
-export type StatBadgeVariant = "streak" | "byte" | "battery";
+export type StatBadgeVariant = "streak" | "byte" | "battery" | "js";
 
 export interface StatBadgeProps {
   variant: StatBadgeVariant;
@@ -12,50 +12,60 @@ export interface StatBadgeProps {
   className?: string;
 }
 
+interface VariantConfig {
+  iconSrc: string;
+  iconAlt: string;
+  valueColor: string;
+  label: string;
+  formattedValue: string;
+}
+
+function resolveVariant(variant: StatBadgeVariant, value: number | string): VariantConfig {
+  const formattedNumber = typeof value === "number" ? value.toLocaleString("en-US") : value;
+
+  switch (variant) {
+    case "streak":
+      return {
+        iconSrc: "/icons/streak.png",
+        iconAlt: "Streak icon",
+        valueColor: "text-yellow-400",
+        label: `Streak: ${value} days`,
+        formattedValue: value.toString()
+      };
+    case "byte":
+      return {
+        iconSrc: "/icons/byte.png",
+        iconAlt: "Byte icon",
+        valueColor: "text-sky-400",
+        label: `Balance: ${formattedNumber} bytes`,
+        formattedValue: formattedNumber
+      };
+    case "js":
+      return {
+        iconSrc: "/icons/js-badge.png",
+        iconAlt: "JavaScript icon",
+        valueColor: "text-amber-400",
+        label: `JavaScript: ${value}`,
+        formattedValue: value.toString()
+      };
+    default:
+      return {
+        iconSrc: "/icons/battery.png",
+        iconAlt: "Battery icon",
+        valueColor: "text-emerald-400",
+        label: `Battery: ${typeof value === "number" ? `${value}/5` : value}`,
+        formattedValue: typeof value === "number" ? `${value}/5` : value
+      };
+  }
+}
+
 export function StatBadge({
   variant,
   value,
   compact = false,
   className = ""
 }: StatBadgeProps): ReactElement {
-  const isStreak = variant === "streak";
-  const isByte = variant === "byte";
-
-  let label = "";
-  if (isStreak) {
-    label = `Streak: ${value} days`;
-  } else if (isByte) {
-    label = `Balance: ${typeof value === "number" ? value.toLocaleString("en-US") : value} bytes`;
-  } else {
-    label = `Battery: ${typeof value === "number" ? `${value}/5` : value}`;
-  }
-
-  let formattedValue = "";
-  if (isStreak) {
-    formattedValue = value.toString();
-  } else if (isByte) {
-    formattedValue = typeof value === "number" ? value.toLocaleString("en-US") : value;
-  } else {
-    formattedValue = typeof value === "number" ? `${value}/5` : value;
-  }
-
-  const iconSrc = isStreak
-    ? "/icons/streak.png"
-    : isByte
-    ? "/icons/byte.png"
-    : "/icons/battery.png";
-
-  const iconAlt = isStreak
-    ? "Streak icon"
-    : isByte
-    ? "Byte icon"
-    : "Battery icon";
-
-  const valueColor = isStreak
-    ? "text-yellow-400"
-    : isByte
-    ? "text-sky-400"
-    : "text-emerald-400";
+  const { iconSrc, iconAlt, valueColor, label, formattedValue } = resolveVariant(variant, value);
 
   const textSize = compact ? "text-sm font-bold" : "text-base font-bold";
   const gapSize = compact ? "gap-1.5" : "gap-2";

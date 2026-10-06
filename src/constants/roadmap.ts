@@ -1,111 +1,11 @@
 import type { Chapter } from "@/types/roadmap";
-import { JAVASCRIPT_CHAPTER_1 } from "@/data/mock/roadmap/javascript";
+import { JAVASCRIPT_CHAPTER_1, JAVASCRIPT_CHAPTER_2 } from "@/data/mock/roadmap/javascript";
 
-export { JAVASCRIPT_CHAPTER_1 };
+export { JAVASCRIPT_CHAPTER_1, JAVASCRIPT_CHAPTER_2 };
 
 export const MOCK_JAVASCRIPT_CHAPTERS: Chapter[] = [
   JAVASCRIPT_CHAPTER_1,
-  {
-    id: "js-chapter-2",
-    chapterNumber: 2,
-    language: "javascript",
-    title: "Loops & Data Collections",
-    description: "Iterate across arrays, objects, and manipulate complex data structures.",
-    themeColor: "#10b981",
-    nodes: [
-      {
-        id: "node-8",
-        order: 5,
-        title: "For & While Loops",
-        type: "lesson",
-        status: "locked",
-        xpReward: 20,
-        totalSteps: 4
-      },
-      {
-        id: "node-9",
-        order: 6,
-        title: "Array Fundamentals",
-        type: "lesson",
-        status: "locked",
-        xpReward: 20,
-        totalSteps: 4
-      },
-      {
-        id: "node-10",
-        order: 7,
-        title: "Array Slicing Quiz",
-        type: "quiz",
-        status: "locked",
-        xpReward: 25,
-        totalSteps: 5
-      },
-      {
-        id: "node-11",
-        order: 8,
-        title: "Object Literals & Maps",
-        type: "lesson",
-        status: "locked",
-        xpReward: 25,
-        totalSteps: 4
-      },
-      {
-        id: "node-12",
-        order: 9,
-        title: "The Infinite Loop Beast",
-        type: "boss_challenge",
-        status: "locked",
-        xpReward: 60,
-        totalSteps: 6
-      }
-    ]
-  },
-  {
-    id: "js-chapter-3",
-    chapterNumber: 3,
-    language: "javascript",
-    title: "Functional Architecture",
-    description: "Dive deep into first-class functions, closures, callbacks, and array pipelines.",
-    themeColor: "#8b5cf6",
-    nodes: [
-      {
-        id: "node-13",
-        order: 10,
-        title: "Arrow Functions & Context",
-        type: "lesson",
-        status: "locked",
-        xpReward: 25,
-        totalSteps: 4
-      },
-      {
-        id: "node-14",
-        order: 11,
-        title: "Closures & Factories",
-        type: "lesson",
-        status: "locked",
-        xpReward: 30,
-        totalSteps: 5
-      },
-      {
-        id: "node-15",
-        order: 12,
-        title: "Functional Pipelines Quiz",
-        type: "quiz",
-        status: "locked",
-        xpReward: 30,
-        totalSteps: 5
-      },
-      {
-        id: "node-16",
-        order: 13,
-        title: "The Callback Chimera",
-        type: "boss_challenge",
-        status: "locked",
-        xpReward: 75,
-        totalSteps: 6
-      }
-    ]
-  }
+  JAVASCRIPT_CHAPTER_2
 ];
 
 export interface QuestItem {
