@@ -50,10 +50,9 @@ describe("DesktopSidebar", () => {
     });
   });
 
-  it("renders navigation buttons and brand title", () => {
+  it("renders navigation buttons and brand logo", () => {
     render(<DesktopSidebar />);
-    expect(screen.getByText("Buggy")).toBeInTheDocument();
-    expect(screen.getByText("JS & React")).toBeInTheDocument();
+    expect(screen.getByAltText("Buggy")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Path" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Debug" })).toBeInTheDocument();
   });

@@ -7,6 +7,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        slate: {
+          750: "#293548"
+        },
         buggy: {
           base: "#101826",
           surface: "#101826",

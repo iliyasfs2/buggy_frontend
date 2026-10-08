@@ -39,7 +39,7 @@ export function NodeActionPopover({
 
   return (
     <div
-      className="node-popover-breathing absolute top-full left-1/2 mt-3 z-30 w-[280px] max-w-[calc(100vw-32px)] rounded-2xl border-2 shadow-[0_12px_28px_rgba(0,0,0,0.35)] p-4 flex flex-col gap-3 select-none"
+      className="node-popover-breathing absolute top-full left-1/2 mt-3 z-50 w-[280px] max-w-[calc(100vw-32px)] rounded-2xl border-2 shadow-[0_12px_28px_rgba(0,0,0,0.35)] p-4 flex flex-col gap-3 select-none"
       style={{
         backgroundColor: primaryColor,
         borderColor: borderColor,

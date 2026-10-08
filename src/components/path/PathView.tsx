@@ -9,13 +9,45 @@ import { ChapterSection } from "./ChapterSection";
 import { PathGuidebookModal } from "./PathGuidebookModal";
 import { PathSidebar } from "./PathSidebar";
 import { getChapterTheme } from "./chapterThemes";
+import { LessonPlayer } from "@/components/lesson/LessonPlayer";
+import { LESSON_JS_1_1 } from "@/data/mock/lessons/js-1-1";
+import { LESSON_JS_1_2 } from "@/data/mock/lessons/js-1-2";
+import { LESSON_JS_1_3 } from "@/data/mock/lessons/js-1-3";
+import { LESSON_JS_1_4 } from "@/data/mock/lessons/js-1-4";
+import { LESSON_JS_1_5 } from "@/data/mock/lessons/js-1-5";
+
+const getLessonContent = (id: string) => {
+  if (id === "js-1-2") return LESSON_JS_1_2;
+  if (id === "js-1-3") return LESSON_JS_1_3;
+  if (id === "js-1-4") return LESSON_JS_1_4;
+  if (id === "js-1-5") return LESSON_JS_1_5;
+  return LESSON_JS_1_1;
+};
+import { useNavStore } from "@/store/useNavStore";
+import { useRoadmapStore } from "@/store/useRoadmapStore";
+import { fetchUserProgress, completeNode as apiCompleteNode } from "@/services/progressApi";
 
 export function PathView(): ReactElement {
+  const { chapters, completeNode, syncProgress } = useRoadmapStore();
+  const syncNav = useNavStore((state) => state.syncNav);
   const [selectedNode, setSelectedNode] = useState<PathNode | null>(null);
+
+  useEffect(() => {
+    fetchUserProgress()
+      .then((data) => {
+        syncProgress(data);
+        syncNav(data);
+      })
+      .catch(err => console.error("Failed to sync progress:", err));
+  }, [syncProgress, syncNav]);
   const [selectedGuidebookChapter, setSelectedGuidebookChapter] = useState<Chapter | null>(null);
+  const [activeLessonNode, setActiveLessonNode] = useState<PathNode | null>(null);
+  const [unlockingNodeId, setUnlockingNodeId] = useState<string | null>(null);
   const [activeChapterId, setActiveChapterId] = useState<string>(
     MOCK_JAVASCRIPT_CHAPTERS[0]?.id || ""
   );
+
+  
 
   const handleSelectNode = useCallback((node: PathNode) => {
     setSelectedNode((prev) => (prev?.id === node.id ? null : node));
@@ -27,6 +59,35 @@ export function PathView(): ReactElement {
 
   const handleStartNode = useCallback((node: PathNode) => {
     setSelectedNode(null);
+    setActiveLessonNode(node);
+  }, []);
+
+  const handleCompleteLesson = useCallback(async (totalXp: number) => {
+    const completedId = activeLessonNode?.id || "js-1-1";
+    let nextToUnlockId: string | null = null;
+
+    
+    nextToUnlockId = completeNode(completedId);
+    if (nextToUnlockId) {
+      setUnlockingNodeId(nextToUnlockId);
+      setTimeout(() => {
+        setUnlockingNodeId(null);
+      }, 1500);
+    }
+    
+    setActiveLessonNode(null);
+
+    try {
+      const newData = await apiCompleteNode(completedId, totalXp, nextToUnlockId);
+      syncProgress(newData);
+      syncNav(newData);
+    } catch (err) {
+      console.error("Failed to commit progress to server:", err);
+    }
+  }, [activeLessonNode, completeNode, syncProgress, syncNav]);
+
+  const handleExitLesson = useCallback(() => {
+    setActiveLessonNode(null);
   }, []);
 
   const handleOpenGuidebook = useCallback((chapter: Chapter) => {
@@ -62,8 +123,8 @@ export function PathView(): ReactElement {
   }, []);
 
   const activeChapter =
-    MOCK_JAVASCRIPT_CHAPTERS.find((c) => c.id === activeChapterId) ||
-    MOCK_JAVASCRIPT_CHAPTERS[0];
+    chapters.find((c) => c.id === activeChapterId) ||
+    chapters[0];
 
   const activeTheme = getChapterTheme(activeChapter?.chapterNumber || 1);
 
@@ -86,7 +147,7 @@ export function PathView(): ReactElement {
             >
               <div className="flex-1 min-w-0">
                 <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider block text-white/85">
-                  SECTION 1
+                  SECTION {activeChapter?.chapterNumber || 1}
                 </span>
                 <h2 className="text-base sm:text-lg md:text-xl font-black leading-tight text-white mt-0.5 truncate">
                   {activeChapter?.title}
@@ -117,12 +178,13 @@ export function PathView(): ReactElement {
             </div>
           </div>
 
-          {MOCK_JAVASCRIPT_CHAPTERS.map((chapter) => (
+          {chapters.map((chapter) => (
             <ChapterSection
               key={chapter.id}
               chapter={chapter}
               onSelectNode={handleSelectNode}
               selectedNodeId={selectedNode?.id}
+              unlockingNodeId={unlockingNodeId || undefined}
               onStartNode={handleStartNode}
               onClosePopover={handleCloseNodeModal}
             />
@@ -138,7 +200,14 @@ export function PathView(): ReactElement {
         chapter={selectedGuidebookChapter}
         onClose={handleCloseGuidebook}
       />
+
+      {activeLessonNode && (
+        <LessonPlayer
+          lesson={getLessonContent(activeLessonNode.id)}
+          onComplete={handleCompleteLesson}
+          onExit={handleExitLesson}
+        />
+      )}
     </div>
   );
 }
-

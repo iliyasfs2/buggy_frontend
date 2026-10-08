@@ -36,11 +36,9 @@ export { SetupView } from "./setup";
 export {
   PathView,
   ChapterSection,
-  ChapterHeader,
   PathNodeButton,
   LessonNode,
   LessonIcon,
-  NodeActionModal,
   PathGuidebookModal,
   PathSidebar
 } from "./path";

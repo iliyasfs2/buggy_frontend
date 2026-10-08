@@ -11,6 +11,7 @@ export interface PathNodeButtonProps {
   onSelectNode: (node: PathNode) => void;
   isSelected?: boolean;
   palette?: NodePalette;
+  isUnlocking?: boolean;
   onStartNode?: (node: PathNode) => void;
   onClose?: () => void;
 }
@@ -23,6 +24,7 @@ export function PathNodeButton({
   onSelectNode,
   isSelected = false,
   palette,
+  isUnlocking = false,
   onStartNode,
   onClose
 }: PathNodeButtonProps): ReactElement {
@@ -36,7 +38,7 @@ export function PathNodeButton({
   return (
     <div
       className={`relative flex flex-col items-center select-none my-[22px] sm:my-[24px] ${
-        isSelected ? "z-40" : "z-10"
+        isSelected ? "z-50" : "z-10"
       }`}
       style={{
         transform: `translate3d(${horizontalOffset}px, 0, 0)`
@@ -48,6 +50,7 @@ export function PathNodeButton({
         order={node.order}
         status={node.status}
         palette={palette}
+        isUnlocking={isUnlocking}
         isSelected={isSelected}
         onClick={handleNodeClick}
         ariaLabel={`${node.title} - ${node.type} (${node.status})`}
