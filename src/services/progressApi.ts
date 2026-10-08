@@ -6,8 +6,14 @@ export interface ProgressData {
   unlocked_nodes: string[];
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export const fetchUserProgress = async (): Promise<ProgressData> => {
-  const res = await fetch("/api/progress");
+  const res = await fetch(`${API_BASE_URL}/progress`, {
+    headers: {
+      "Accept": "application/json",
+    }
+  });
   if (!res.ok) throw new Error("Failed to fetch progress");
   return res.json();
 };
@@ -17,10 +23,11 @@ export const completeNode = async (
   earnedXp: number,
   nextNodeId: string | null
 ): Promise<ProgressData> => {
-  const res = await fetch("/api/progress/complete-node", {
+  const res = await fetch(`${API_BASE_URL}/progress/complete-node`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Accept": "application/json",
     },
     body: JSON.stringify({ nodeId, earnedXp, nextNodeId })
   });
