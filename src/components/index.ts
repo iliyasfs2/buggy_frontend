@@ -22,13 +22,18 @@ export {
   SetupIcon,
   StoreIcon,
   ProfileIcon,
-  BuggyLogo
+  BuggyLogo,
+  StreakPopover,
+  BatteryPopover,
+  BytePopover,
+  CoursePopover
 } from "./shared";
 export type {
   StatBadgeProps,
   StatBadgeVariant,
   TrackPillProps,
-  BuggyLogoProps
+  BuggyLogoProps,
+  StreakPopoverProps
 } from "./shared";
 
 export { SetupView } from "./setup";

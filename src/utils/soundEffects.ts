@@ -28,7 +28,6 @@ class SoundManager {
       const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Bright major arpeggio)
 
       notes.forEach((freq, i) => {
-        // Oscillator 1: Triangle for clarity
         const osc1 = ctx.createOscillator();
         const gain1 = ctx.createGain();
         osc1.type = "triangle";
@@ -43,8 +42,6 @@ class SoundManager {
 
         osc1.start(now + i * 0.08);
         osc1.stop(now + i * 0.08 + 0.35);
-
-        // Oscillator 2: Sine for body
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
         osc2.type = "sine";
@@ -69,8 +66,6 @@ class SoundManager {
 
     try {
       const now = ctx.currentTime;
-      
-      // Dual detuned sawtooths for an aggressive buzz
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -82,8 +77,6 @@ class SoundManager {
       osc2.type = "sawtooth";
       osc2.frequency.setValueAtTime(164, now); // Detuned
       osc2.frequency.exponentialRampToValueAtTime(102, now + 0.3);
-
-      // Filter for crunchiness
       const filter = ctx.createBiquadFilter();
       filter.type = "lowpass";
       filter.frequency.setValueAtTime(2000, now);
@@ -106,7 +99,6 @@ class SoundManager {
   }
 
   playSwoosh(): void {
-    // Unused since skip was removed, but keeping it around loud just in case
     const ctx = this.getContext();
     if (!ctx) return;
     try {
@@ -135,8 +127,6 @@ class SoundManager {
     if (!ctx) return;
     try {
       const now = ctx.currentTime;
-      
-      // Intense whoosh for fire ignite
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -147,8 +137,6 @@ class SoundManager {
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(0.4, now + 0.1);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-
-      // Thicker noise buffer
       const bufferSize = ctx.sampleRate * 0.5;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -210,12 +198,10 @@ class SoundManager {
     if (!ctx) return;
     try {
       const now = ctx.currentTime;
-      // Epic Fanfare: C4, G4, C5, E5, G5
       const notes = [261.63, 392.00, 523.25, 659.25, 783.99];
       const timing = [0, 0.15, 0.3, 0.45, 0.6];
 
       notes.forEach((freq, i) => {
-        // Square wave for bright synth brass feel
         const osc1 = ctx.createOscillator();
         const osc2 = ctx.createOscillator();
         const gain = ctx.createGain();

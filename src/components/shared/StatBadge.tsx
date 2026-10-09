@@ -10,6 +10,7 @@ export interface StatBadgeProps {
   value: number | string;
   compact?: boolean;
   className?: string;
+  onClick?: () => void;
 }
 
 interface VariantConfig {
@@ -63,7 +64,8 @@ export function StatBadge({
   variant,
   value,
   compact = false,
-  className = ""
+  className = "",
+  onClick
 }: StatBadgeProps): ReactElement {
   const { iconSrc, iconAlt, valueColor, label, formattedValue } = resolveVariant(variant, value);
 
@@ -74,7 +76,9 @@ export function StatBadge({
   return (
     <div
       aria-label={label}
-      className={`inline-flex items-center ${gapSize} whitespace-nowrap select-none bg-transparent ${className}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      className={`inline-flex items-center ${gapSize} whitespace-nowrap select-none bg-transparent ${onClick ? "cursor-pointer active:scale-95 transition-transform" : ""} ${className}`}
     >
       <Image
         src={iconSrc}

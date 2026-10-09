@@ -9,4 +9,11 @@ export { StoreIcon } from "./StoreIcon";
 export { ProfileIcon } from "./ProfileIcon";
 export { BuggyLogo } from "./BuggyLogo";
 export type { BuggyLogoProps } from "./BuggyLogo";
-
+export { StreakPopover } from "./StreakPopover";
+export type { StreakPopoverProps } from "./StreakPopover";
+export { BatteryPopover } from "./BatteryPopover";
+export type { BatteryPopoverProps } from "./BatteryPopover";
+export { BytePopover } from "./BytePopover";
+export type { BytePopoverProps } from "./BytePopover";
+export { CoursePopover } from "./CoursePopover";
+export type { CoursePopoverProps } from "./CoursePopover";
