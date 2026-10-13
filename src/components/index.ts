@@ -4,19 +4,18 @@ export {
   MobileHeader,
   MobileBottomNav,
   AppShell,
-  HomeClient
+  HomeClient,
 } from "./layout";
 export type {
   DesktopSidebarProps,
   DesktopMetricBarProps,
   MobileHeaderProps,
   MobileBottomNavProps,
-  AppShellProps
+  AppShellProps,
 } from "./layout";
 
 export {
   StatBadge,
-  TrackPill,
   PathIcon,
   VaultIcon,
   SetupIcon,
@@ -26,14 +25,13 @@ export {
   StreakPopover,
   BatteryPopover,
   BytePopover,
-  CoursePopover
+  CoursePopover,
 } from "./shared";
 export type {
   StatBadgeProps,
   StatBadgeVariant,
-  TrackPillProps,
   BuggyLogoProps,
-  StreakPopoverProps
+  StreakPopoverProps,
 } from "./shared";
 
 export { SetupView } from "./setup";
@@ -45,12 +43,32 @@ export {
   LessonNode,
   LessonIcon,
   PathGuidebookModal,
-  PathSidebar
+  PathSidebar,
 } from "./path";
 export type {
   LessonNodeProps,
   NodeState,
   NodePalette,
   LessonIconType,
-  LessonIconProps
+  LessonIconProps,
 } from "./path";
+
+export {
+  ProfileView,
+  AvatarRenderer,
+  AvatarCustomizer,
+  AvatarCustomizerModal,
+  StatisticsGrid,
+  AchievementsList,
+} from "./profile";
+export type { AvatarRendererProps } from "./profile";
+
+export { DailyQuestsCard } from "./quests";
+
+export { RouteGuard } from "./auth/RouteGuard";
+
+export {
+  LessonPlayer,
+  STEP_REGISTRY,
+  getStepRenderer,
+} from "./lesson";

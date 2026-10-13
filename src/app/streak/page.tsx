@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useNavStore, selectStreakCount, selectHasCompletedToday } from "@/store/useNavStore";
+import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 
 const DAYS_OF_WEEK = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -108,7 +109,9 @@ export default function StreakPage() {
           </span>
         </div>
 
-                <div className="mt-auto">
+        <DailyQuestsCard className="mb-6" />
+
+        <div className="mt-auto">
           <button
             onClick={() => router.back()}
             className="w-full py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-widest transition-all flex items-center justify-center bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 active:translate-y-1 border-b-4 border-orange-700 active:border-b-0 text-slate-950 shadow-[0_10px_20px_-10px_rgba(249,115,22,0.6)]"

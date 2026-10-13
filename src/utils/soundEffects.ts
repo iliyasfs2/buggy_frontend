@@ -25,7 +25,7 @@ class SoundManager {
 
     try {
       const now = ctx.currentTime;
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Bright major arpeggio)
+      const notes = [523.25, 659.25, 783.99, 1046.50];
 
       notes.forEach((freq, i) => {
         const osc1 = ctx.createOscillator();
@@ -75,7 +75,7 @@ class SoundManager {
       osc1.frequency.exponentialRampToValueAtTime(100, now + 0.3);
 
       osc2.type = "sawtooth";
-      osc2.frequency.setValueAtTime(164, now); // Detuned
+      osc2.frequency.setValueAtTime(164, now);
       osc2.frequency.exponentialRampToValueAtTime(102, now + 0.3);
       const filter = ctx.createBiquadFilter();
       filter.type = "lowpass";
@@ -141,7 +141,7 @@ class SoundManager {
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * 1.5; // Louder noise
+        data[i] = (Math.random() * 2 - 1) * 1.5;
       }
       
       const noiseSource = ctx.createBufferSource();
@@ -154,7 +154,7 @@ class SoundManager {
 
       const noiseGain = ctx.createGain();
       noiseGain.gain.setValueAtTime(0, now);
-      noiseGain.gain.linearRampToValueAtTime(0.8, now + 0.1); // Big volume
+      noiseGain.gain.linearRampToValueAtTime(0.8, now + 0.1);
       noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
 
       noiseSource.connect(noiseFilter);
@@ -166,6 +166,35 @@ class SoundManager {
       gain.connect(ctx.destination);
       osc.start(now);
       osc.stop(now + 0.5);
+    } catch {}
+  }
+
+  playSoftClick(): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1000, now);
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(240, now + 0.035);
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + 0.004);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.04);
     } catch {}
   }
 
@@ -210,7 +239,7 @@ class SoundManager {
         osc1.frequency.setValueAtTime(freq, now + timing[i]);
         
         osc2.type = "sawtooth";
-        osc2.frequency.setValueAtTime(freq * 1.01, now + timing[i]); // Slight detune
+        osc2.frequency.setValueAtTime(freq * 1.01, now + timing[i]);
 
         const isLast = i === notes.length - 1;
         const volume = isLast ? 0.4 : 0.25;

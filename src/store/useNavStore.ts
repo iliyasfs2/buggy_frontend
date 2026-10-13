@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { ProgressData } from "@/services/progressApi";
+import { claimQuestApi, type ProgressData } from "@/services/progressApi";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
 export type TabId = "path" | "debug" | "setup" | "store" | "profile";
 export interface NavState {
@@ -8,6 +8,8 @@ export interface NavState {
   streakCount: number;
   byteBalance: number;
   batteryCount: number;
+  totalXP: number;
+  completedNodesCount: number;
   jsCount: number;
   activeCourse: string;
   dailyQuests: import("@/services/progressApi").Quest[];
@@ -29,6 +31,8 @@ export const useNavStore = create<NavState>()(
       streakCount: 0,
       byteBalance: 0,
       batteryCount: 5,
+      totalXP: 0,
+      completedNodesCount: 0,
       jsCount: 0,
       activeCourse: "javascript",
       dailyQuests: [],
@@ -37,7 +41,8 @@ export const useNavStore = create<NavState>()(
       setTrack: (track: string) => set({ currentTrack: track }),
       addXp: (amount: number) =>
         set((state) => ({
-          byteBalance: state.byteBalance + amount
+          byteBalance: state.byteBalance + amount,
+          totalXP: state.totalXP + amount
         })),
       setBatteryCount: (count: number) => set({ batteryCount: count }),
       setByteBalance: (count: number) => set({ byteBalance: count }),
@@ -63,6 +68,8 @@ export const useNavStore = create<NavState>()(
             streakCount: data.streak,
             byteBalance: data.bytes ?? data.totalXP,
             batteryCount: data.battery,
+            totalXP: data.totalXP ?? 0,
+            completedNodesCount: data.completed_nodes?.length ?? 0,
             activeCourse: data.active_course ?? "javascript",
             dailyQuests: data.daily_quests_state || [],
             jsCount: completedChaptersCount * 5
@@ -78,6 +85,8 @@ export const selectActiveTab = (state: NavState): TabId => state.activeTab;
 export const selectStreakCount = (state: NavState): number => state.streakCount;
 export const selectByteBalance = (state: NavState): number => state.byteBalance;
 export const selectBatteryCount = (state: NavState): number => state.batteryCount;
+export const selectTotalXP = (state: NavState): number => state.totalXP;
+export const selectCompletedNodesCount = (state: NavState): number => state.completedNodesCount;
 export const selectJsCount = (state: NavState): number => state.jsCount;
 export const selectCurrentTrack = (state: NavState): string => state.currentTrack;
 export const selectSetActiveTab = (state: NavState): ((tab: TabId) => void) => state.setActiveTab;

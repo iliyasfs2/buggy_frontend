@@ -24,4 +24,3 @@ export function AppShell({ children = null, className = "" }: AppShellProps): Re
     </div>
   );
 }
-
