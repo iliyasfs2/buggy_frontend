@@ -198,11 +198,21 @@ export function DebugView() {
                 soundEffects.playSoftClick();
                 router.push("/lesson?mode=debug_mistakes");
               }}
-              className="w-full py-3 px-4 rounded-2xl bg-rose-500 hover:bg-rose-400 active:translate-y-1 border-b-4 border-rose-700 active:border-b-0 text-white font-black text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+              className={`w-full py-3 px-4 rounded-2xl active:translate-y-1 border-b-4 active:border-b-0 font-black text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md ${
+                mistakesCount > 0
+                  ? "bg-rose-500 hover:bg-rose-400 border-rose-700 text-white"
+                  : "bg-slate-800 hover:bg-slate-700 border-slate-950 text-slate-300"
+              }`}
             >
-              <span>Review Bugs</span>
-              <span className="text-xs bg-rose-600/60 px-2 py-0.5 rounded-full">
-                {mistakesCount > 0 ? `${mistakesCount} Pending` : "All Clear"}
+              <span>{mistakesCount > 0 ? "Review Bugs" : "No Bugs to Fix"}</span>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full ${
+                  mistakesCount > 0
+                    ? "bg-rose-600/60 text-white"
+                    : "bg-slate-900 text-emerald-400"
+                }`}
+              >
+                {mistakesCount > 0 ? `${mistakesCount} Pending` : "Bank Empty"}
               </span>
             </button>
           </div>

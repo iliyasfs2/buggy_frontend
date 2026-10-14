@@ -14,7 +14,7 @@ import { getStepRenderer } from "./StepRegistry";
 import { soundEffects } from "@/utils/soundEffects";
 import { useGameStore, selectBattery } from "@/store/useGameStore";
 import { useBatteryTimer } from "@/hooks/useBatteryTimer";
-import { resolveMistakeApi } from "@/services/debugApi";
+import { resolveMistakeApi, createMistakeApi } from "@/services/debugApi";
 import { StatBadge } from "@/components/shared";
 import {
   X,
@@ -168,10 +168,80 @@ export function LessonPlayer({
     setMistakesCount((prev) => prev + 1);
     if (!isDebugSession) {
       decreaseBattery();
+      if (currentStep) {
+        let userAns = "";
+        if (typeof userInput === "string") {
+          userAns = userInput;
+        } else if (
+          typeof userInput === "number" &&
+          "options" in currentStep &&
+          currentStep.options
+        ) {
+          userAns = currentStep.options[userInput] || String(userInput);
+        } else if (
+          Array.isArray(userInput) &&
+          "lines" in currentStep &&
+          currentStep.lines
+        ) {
+          userAns = userInput.map((i) => currentStep.lines[i]).join(" ");
+        } else if (userInput !== null && userInput !== undefined) {
+          userAns = String(userInput);
+        }
+
+        let correctAns = "";
+        if ("correctAnswer" in currentStep && currentStep.correctAnswer) {
+          correctAns = currentStep.correctAnswer;
+        } else if (
+          "correctIndex" in currentStep &&
+          typeof currentStep.correctIndex === "number" &&
+          "options" in currentStep &&
+          currentStep.options
+        ) {
+          correctAns = currentStep.options[currentStep.correctIndex] || "";
+        } else if (
+          "correctOrder" in currentStep &&
+          currentStep.correctOrder &&
+          "lines" in currentStep &&
+          currentStep.lines
+        ) {
+          correctAns = currentStep.correctOrder
+            .map((i) => currentStep.lines[i])
+            .join(" ");
+        }
+
+        const snippet =
+          ("codeSnippet" in currentStep && currentStep.codeSnippet) ||
+          ("codeTemplate" in currentStep && currentStep.codeTemplate) ||
+          ("lines" in currentStep && currentStep.lines
+            ? currentStep.lines.join("\n")
+            : "");
+
+        const qTitle =
+          currentStep.title ||
+          ("question" in currentStep && currentStep.question) ||
+          ("instruction" in currentStep && currentStep.instruction) ||
+          "Lesson Challenge";
+
+        createMistakeApi({
+          node_id: lesson.nodeId,
+          lesson_title: lesson.title,
+          question_title: qTitle,
+          code_snippet: snippet,
+          user_answer: userAns,
+          correct_answer: correctAns,
+          explanation:
+            currentStep.explanation || "Review the correct solution above.",
+        })
+          .then(() => {
+            const currentMistakes = useGameStore.getState().mistakesCount;
+            useGameStore.getState().setMistakesCount(currentMistakes + 1);
+          })
+          .catch(() => {});
+      }
     }
     setEvaluationState("incorrect");
     setTimeout(() => setIsShaking(false), 400);
-  }, [decreaseBattery, isDebugSession]);
+  }, [decreaseBattery, isDebugSession, currentStep, userInput, lesson]);
 
   const handleCorrect = useCallback(async () => {
     soundEffects.playCorrect();

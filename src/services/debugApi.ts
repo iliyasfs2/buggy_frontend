@@ -49,6 +49,28 @@ const getHeaders = (): Record<string, string> => {
   return headers;
 };
 
+export interface CreateMistakePayload {
+  node_id: string;
+  lesson_title: string;
+  question_title: string;
+  code_snippet: string;
+  user_answer: string;
+  correct_answer: string;
+  explanation: string;
+}
+
+export const createMistakeApi = async (
+  payload: CreateMistakePayload
+): Promise<MistakeItem> => {
+  const res = await fetch(`${API_BASE_URL}/api/debug/mistakes`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("Failed to create mistake");
+  return res.json();
+};
+
 export const fetchMistakesApi = async (): Promise<MistakesResponse> => {
   const res = await fetch(`${API_BASE_URL}/api/debug/mistakes`, {
     headers: getHeaders(),
