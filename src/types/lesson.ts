@@ -20,6 +20,7 @@ export interface BaseStep {
   title?: string;
   mascotMood?: MascotMood;
   mascotDialogue?: string;
+  mistakeId?: number;
 }
 
 export interface TheoryStep extends BaseStep {

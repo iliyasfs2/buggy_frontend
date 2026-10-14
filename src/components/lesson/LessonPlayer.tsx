@@ -12,23 +12,25 @@ import { useRouter } from "next/navigation";
 import type { LessonContent, LessonStep, LessonUserInput } from "@/types/lesson";
 import { getStepRenderer } from "./StepRegistry";
 import { soundEffects } from "@/utils/soundEffects";
-import { useNavStore, selectBatteryCount } from "@/store/useNavStore";
+import { useGameStore, selectBattery } from "@/store/useGameStore";
 import { useBatteryTimer } from "@/hooks/useBatteryTimer";
+import { resolveMistakeApi } from "@/services/debugApi";
 import { StatBadge } from "@/components/shared";
 import {
   X,
   CheckCircle2,
-  
   Zap,
   Flame,
-  
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 
 export interface LessonPlayerProps {
   lesson: LessonContent;
   onComplete: (totalXp: number) => void;
   onExit: () => void;
+  mode?: string;
+  onResolveMistake?: (mistakeId: number) => Promise<void> | void;
 }
 
 function AnimatedXpCounter({ target }: { target: number }): ReactElement {
@@ -65,7 +67,6 @@ function AnimatedXpCounter({ target }: { target: number }): ReactElement {
   return <span>+{count} XP</span>;
 }
 
-
 function AnimatedStreakCard({ initialStreak }: { initialStreak: number }) {
   const [ignited, setIgnited] = useState(false);
 
@@ -96,18 +97,22 @@ export function LessonPlayer({
   lesson,
   onComplete,
   onExit,
+  mode = "",
+  onResolveMistake,
 }: LessonPlayerProps): ReactElement {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 
+  const isDebugSession = Boolean(mode && mode.startsWith("debug"));
+
   const router = useRouter();
-  const batteryCount = useNavStore(selectBatteryCount);
-  const decreaseBattery = useNavStore((state) => state.decreaseBattery);
-  const refillTimer = useBatteryTimer(15);
+  const batteryCount = useGameStore(selectBattery);
+  const decreaseBattery = useGameStore((state) => state.decreaseBattery);
+  const refillTimer = useBatteryTimer(30);
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [userInput, setUserInput] = useState<LessonUserInput>(null);
@@ -118,7 +123,7 @@ export function LessonPlayer({
   const [isFinished, setIsFinished] = useState(false);
   const [mistakesCount, setMistakesCount] = useState(0);
 
-  const streakCount = useNavStore((state) => state.streakCount);
+  const streakCount = useGameStore((state) => state.streakCount);
 
   const steps = lesson.steps;
   const currentStep: LessonStep | undefined = steps[currentStepIndex];
@@ -165,17 +170,39 @@ export function LessonPlayer({
     soundEffects.playIncorrect();
     setIsShaking(true);
     setMistakesCount((prev) => prev + 1);
-    decreaseBattery();
+    if (!isDebugSession) {
+      decreaseBattery();
+    }
+    setEvaluationState("incorrect");
     setTimeout(() => setIsShaking(false), 400);
-  }, [decreaseBattery]);
+  }, [decreaseBattery, isDebugSession]);
 
+  const handleCorrect = useCallback(async () => {
+    soundEffects.playCorrect();
+    setEvaluationState("correct");
+
+    if (mode === "debug_mistakes" && currentStep?.mistakeId) {
+      if (onResolveMistake) {
+        await onResolveMistake(currentStep.mistakeId);
+      } else {
+        try {
+          const res = await resolveMistakeApi(currentStep.mistakeId);
+          useGameStore.getState().setMistakesCount(res.remaining_count);
+          useGameStore.getState().addXp(10);
+        } catch {}
+      }
+    } else if (mode === "debug_tracing") {
+      useGameStore
+        .getState()
+        .setByteBalance(useGameStore.getState().byteBalance + 5);
+    }
+  }, [mode, currentStep, onResolveMistake]);
 
   const handleCheck = useCallback(() => {
     if (!currentStep || !hasInput) return;
 
     if (currentStep.type === "theory") {
-      soundEffects.playCorrect();
-      setEvaluationState("correct");
+      handleCorrect();
       return;
     }
 
@@ -187,8 +214,7 @@ export function LessonPlayer({
           : typeof currentStep.correctIndex === "number" &&
             userInput === currentStep.correctIndex;
       if (isRight) {
-        soundEffects.playCorrect();
-        setEvaluationState("correct");
+        handleCorrect();
       } else {
         handleIncorrect();
       }
@@ -205,8 +231,7 @@ export function LessonPlayer({
             (ans) => ans.trim().toLowerCase() === clean.toLowerCase(),
           ));
       if (isRight) {
-        soundEffects.playCorrect();
-        setEvaluationState("correct");
+        handleCorrect();
       } else {
         handleIncorrect();
       }
@@ -222,8 +247,7 @@ export function LessonPlayer({
         userInput.length === currentStep.correctOrder.length &&
         userInput.every((val, idx) => val === currentStep.correctOrder[idx]);
       if (isRight) {
-        soundEffects.playCorrect();
-        setEvaluationState("correct");
+        handleCorrect();
       } else {
         handleIncorrect();
       }
@@ -239,14 +263,13 @@ export function LessonPlayer({
             ? userInput === currentStep.correctIndex
             : userInput === currentStep.buggyLineIndex;
       if (isRight) {
-        soundEffects.playCorrect();
-        setEvaluationState("correct");
+        handleCorrect();
       } else {
         handleIncorrect();
       }
       return;
     }
-  }, [currentStep, hasInput, userInput, handleIncorrect]);
+  }, [currentStep, hasInput, userInput, handleCorrect, handleIncorrect]);
 
   const handleNextStep = useCallback(() => {
     if (evaluationState === "incorrect") {
@@ -265,13 +288,12 @@ export function LessonPlayer({
     }
   }, [currentStepIndex, evaluationState, steps.length]);
 
-
   if (isFinished) {
     const isPerfectRun = mistakesCount === 0;
     const earnedXP = isPerfectRun ? 20 : 15;
-    const accuracyPercentage = Math.round(Math.max(0, ((steps.length - mistakesCount) / steps.length) * 100));
-
-
+    const accuracyPercentage = Math.round(
+      Math.max(0, ((steps.length - mistakesCount) / steps.length) * 100)
+    );
 
     return (
       <div className="fixed inset-0 z-[100] bg-[#101826] flex flex-col items-center justify-between p-6 sm:p-8 animate-in fade-in zoom-in-95 select-none overflow-y-auto">
@@ -288,7 +310,7 @@ export function LessonPlayer({
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-black text-slate-100 mt-1">
-            Lesson Completed!
+            {isDebugSession ? "Practice Session Completed!" : "Lesson Completed!"}
           </h2>
 
           {isPerfectRun && (
@@ -313,7 +335,7 @@ export function LessonPlayer({
               <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
                 ACCURACY
               </span>
-              <span className="text-emerald-400 text-2xl font-black font-mono animate-in zoom-in  duration-500">
+              <span className="text-emerald-400 text-2xl font-black font-mono animate-in zoom-in duration-500">
                 {accuracyPercentage}%
               </span>
             </div>
@@ -328,7 +350,7 @@ export function LessonPlayer({
             onClick={() => onComplete(earnedXP)}
             className="w-full py-4 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-1 border-b-4 border-sky-700 active:border-b-[0px] text-white font-black text-lg select-none transition-all cursor-pointer"
           >
-            CONTINUE TO ROADMAP
+            {isDebugSession ? "RETURN TO DEBUG" : "CONTINUE TO ROADMAP"}
           </button>
         </div>
       </div>
@@ -357,15 +379,30 @@ export function LessonPlayer({
             />
           </div>
 
-          <div className={`transition-all duration-300 ${isShaking ? "animate-shake scale-110 drop-shadow-[0_0_15px_rgba(225,29,72,0.8)] grayscale-[0.5] hue-rotate-[-30deg]" : ""}`}>
-            <StatBadge variant="battery" value={batteryCount} compact />
-          </div>
+          {isDebugSession ? (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-black shrink-0">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>DEBUG MODE</span>
+            </div>
+          ) : (
+            <div
+              className={`transition-all duration-300 ${
+                isShaking
+                  ? "animate-shake scale-110 drop-shadow-[0_0_15px_rgba(225,29,72,0.8)] grayscale-[0.5] hue-rotate-[-30deg]"
+                  : ""
+              }`}
+            >
+              <StatBadge variant="battery" value={batteryCount} compact />
+            </div>
+          )}
         </div>
       </header>
 
       <main className="flex-1 min-h-0 w-full flex flex-col justify-start overflow-hidden">
         <div className="w-full max-w-xl mx-auto px-4 pt-4 sm:pt-10 pb-4 flex flex-col h-full">
-          <div className={`w-full flex flex-col ${isShaking ? "animate-shake" : ""}`}>
+          <div
+            className={`w-full flex flex-col ${isShaking ? "animate-shake" : ""}`}
+          >
             {ActiveRenderer && currentStep && (
               <ActiveRenderer
                 key={currentStep.id}
@@ -381,21 +418,63 @@ export function LessonPlayer({
         </div>
       </main>
 
-      {evaluationState === "correct" && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-emerald-950/90 border-t-2 border-emerald-500/40 backdrop-blur-md px-6 py-5 flex items-center animate-in slide-in-from-bottom-full duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-          <div className="w-full max-w-xl mx-auto flex items-center justify-between">
+      {evaluationState === "incorrect" && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-rose-950/95 border-t-2 border-rose-500/40 backdrop-blur-md px-6 py-5 flex items-center animate-in slide-in-from-bottom-full duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+          <div className="w-full max-w-xl mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 shrink-0 shadow-lg shadow-emerald-500/20 animate-in zoom-in duration-500">
-                <CheckCircle2 className="w-7 h-7 stroke-[3]" />
+              <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-rose-500/20 animate-in zoom-in duration-500">
+                <X className="w-7 h-7 stroke-[3]" />
               </div>
-              <h4 className="text-xl sm:text-2xl font-black text-emerald-400">
-                Nicely done!
-              </h4>
+              <div className="flex flex-col">
+                <h4 className="text-xl sm:text-2xl font-black text-rose-400">
+                  {isDebugSession ? "Not quite right!" : "Incorrect"}
+                </h4>
+                {currentStep?.explanation && (
+                  <p className="text-xs sm:text-sm font-semibold text-rose-200/90 line-clamp-2 mt-0.5 max-w-md">
+                    {currentStep.explanation}
+                  </p>
+                )}
+              </div>
             </div>
             <button
               type="button"
               onClick={handleNextStep}
-              className="bg-emerald-500 hover:bg-emerald-400 border-b-4 border-emerald-700 text-slate-950 font-black rounded-2xl px-8 py-4 active:translate-y-1 active:border-b-[0px] transition-all cursor-pointer shadow-lg"
+              className="bg-rose-500 hover:bg-rose-400 border-b-4 border-rose-700 text-white font-black rounded-2xl px-8 py-4 active:translate-y-1 active:border-b-[0px] transition-all cursor-pointer shadow-lg shrink-0"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
+
+      {evaluationState === "correct" && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-emerald-950/90 border-t-2 border-emerald-500/40 backdrop-blur-md px-6 py-5 flex items-center animate-in slide-in-from-bottom-full duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+          <div className="w-full max-w-xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 shrink-0 shadow-lg shadow-emerald-500/20 animate-in zoom-in duration-500">
+                <CheckCircle2 className="w-7 h-7 stroke-[3]" />
+              </div>
+              <div className="flex flex-col">
+                <h4 className="text-xl sm:text-2xl font-black text-emerald-400">
+                  {mode === "debug_tracing"
+                    ? "Output Matched! +5 Bytes"
+                    : mode === "debug_refactor"
+                    ? "Clean & Modern Code!"
+                    : mode === "debug_mistakes"
+                    ? "Bug Resolved! +10 XP"
+                    : "Nicely done!"}
+                </h4>
+                {currentStep?.explanation && mode === "debug_refactor" && (
+                  <p className="text-xs sm:text-sm font-semibold text-emerald-200/90 line-clamp-2 mt-0.5 max-w-md">
+                    {currentStep.explanation}
+                  </p>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleNextStep}
+              className="bg-emerald-500 hover:bg-emerald-400 border-b-4 border-emerald-700 text-slate-950 font-black rounded-2xl px-8 py-4 active:translate-y-1 active:border-b-[0px] transition-all cursor-pointer shadow-lg shrink-0"
             >
               Continue
             </button>
@@ -405,7 +484,6 @@ export function LessonPlayer({
 
       <footer className="w-full shrink-0 bg-[#101826] border-t border-slate-800 py-4 relative z-40">
         <div className="w-full max-w-xl mx-auto px-4 flex items-center justify-end">
-
           <button
             type="button"
             disabled={!hasInput}
@@ -421,7 +499,7 @@ export function LessonPlayer({
         </div>
       </footer>
 
-      {batteryCount === 0 && (
+      {!isDebugSession && batteryCount === 0 && (
         <div className="fixed inset-0 z-[60] bg-[#101826]/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mb-5">
