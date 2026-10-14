@@ -8,10 +8,12 @@ import {
   useRef,
   type ReactElement,
 } from "react";
+import { useRouter } from "next/navigation";
 import type { LessonContent, LessonStep, LessonUserInput } from "@/types/lesson";
 import { getStepRenderer } from "./StepRegistry";
 import { soundEffects } from "@/utils/soundEffects";
-import { useNavStore } from "@/store/useNavStore";
+import { useNavStore, selectBatteryCount } from "@/store/useNavStore";
+import { useBatteryTimer } from "@/hooks/useBatteryTimer";
 import { StatBadge } from "@/components/shared";
 import {
   X,
@@ -102,6 +104,11 @@ export function LessonPlayer({
     };
   }, []);
 
+  const router = useRouter();
+  const batteryCount = useNavStore(selectBatteryCount);
+  const decreaseBattery = useNavStore((state) => state.decreaseBattery);
+  const refillTimer = useBatteryTimer(15);
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [userInput, setUserInput] = useState<LessonUserInput>(null);
   const [evaluationState, setEvaluationState] = useState<
@@ -109,7 +116,6 @@ export function LessonPlayer({
   >("idle");
   const [isShaking, setIsShaking] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [batteryCount, setBatteryCount] = useState(5);
   const [mistakesCount, setMistakesCount] = useState(0);
 
   const streakCount = useNavStore((state) => state.streakCount);
@@ -159,9 +165,9 @@ export function LessonPlayer({
     soundEffects.playIncorrect();
     setIsShaking(true);
     setMistakesCount((prev) => prev + 1);
-    setBatteryCount((prev) => Math.max(0, prev - 1));
+    decreaseBattery();
     setTimeout(() => setIsShaking(false), 400);
-  }, []);
+  }, [decreaseBattery]);
 
 
   const handleCheck = useCallback(() => {
@@ -418,19 +424,36 @@ export function LessonPlayer({
       {batteryCount === 0 && (
         <div className="fixed inset-0 z-[60] bg-[#101826]/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mb-6">
+            <div className="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mb-5">
               <Zap className="w-10 h-10 text-rose-500 fill-rose-500" />
             </div>
             <h2 className="text-2xl font-black text-slate-100 mb-2">Out of Energy!</h2>
-            <p className="text-slate-400 font-medium mb-8">
+            <p className="text-slate-400 font-medium mb-4 text-sm">
               You&apos;ve made too many mistakes and ran out of energy. Recharge to try again!
             </p>
-            <button
-              onClick={onExit}
-              className="w-full py-4 px-8 rounded-2xl bg-rose-500 hover:bg-rose-400 active:translate-y-1 border-b-4 border-rose-700 text-white font-black text-[15px] uppercase tracking-wider transition-all cursor-pointer"
-            >
-              Back to Path
-            </button>
+            <div className="flex items-center gap-2 text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-4 py-2 rounded-2xl mb-6 shadow-inner">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Refill in:</span>
+              <span className="text-base font-black font-mono tracking-widest">{refillTimer}</span>
+            </div>
+            <div className="flex flex-col gap-2.5 w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  onExit();
+                  router.push("/store");
+                }}
+                className="w-full py-3.5 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 active:translate-y-1 border-b-4 border-amber-700 text-slate-950 font-black text-[14px] uppercase tracking-wider transition-all cursor-pointer shadow-lg"
+              >
+                Instant Refill in Store
+              </button>
+              <button
+                type="button"
+                onClick={onExit}
+                className="w-full py-3.5 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-1 border-b-4 border-slate-950 text-slate-300 font-black text-[14px] uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Back to Path
+              </button>
+            </div>
           </div>
         </div>
       )}

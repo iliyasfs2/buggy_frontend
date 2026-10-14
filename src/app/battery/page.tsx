@@ -10,14 +10,12 @@ export default function BatteryPage() {
   const router = useRouter();
   const currentBattery = useNavStore(selectBatteryCount);
   const byteBalance = useNavStore(selectByteBalance);
-  const setBatteryCount = useNavStore((state) => state.setBatteryCount);
-  const setByteBalance = useNavStore((state) => state.setByteBalance);
+  const buyStoreItem = useNavStore((state) => state.buyStoreItem);
   const formattedTime = useBatteryTimer(15);
 
-  const handleRefillBytes = () => {
-    if (byteBalance >= 350 && currentBattery < 5) {
-      setByteBalance(byteBalance - 350);
-      setBatteryCount(5);
+  const handleRefillBytes = async () => {
+    if (byteBalance >= 100 && currentBattery < 5) {
+      await buyStoreItem("refill_battery");
     }
   };
 
@@ -67,11 +65,11 @@ export default function BatteryPage() {
                 <div className="flex flex-col gap-5 mt-auto">
           <button
             onClick={handleRefillBytes}
-            disabled={currentBattery === 5 || byteBalance < 350}
+            disabled={currentBattery === 5 || byteBalance < 100}
             className={`w-full py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-widest transition-all flex items-center justify-between ${
               currentBattery === 5
                 ? "bg-slate-800 text-slate-600 border-b-4 border-slate-900 cursor-not-allowed"
-                : byteBalance < 350
+                : byteBalance < 100
                   ? "bg-slate-800 text-slate-600 border-b-4 border-slate-900 cursor-not-allowed"
                   : "bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 active:translate-y-1 border-b-4 border-teal-700 active:border-b-0 text-slate-950 shadow-[0_10px_20px_-10px_rgba(16,185,129,0.5)]"
             }`}
@@ -80,8 +78,8 @@ export default function BatteryPage() {
               Refill Energy
             </div>
             {currentBattery < 5 && (
-              <span className={`text-xs px-3 py-1.5 rounded-lg border ${byteBalance >= 350 ? "bg-teal-800/20 border-teal-900 text-teal-950" : "bg-slate-900 border-slate-700 text-slate-500"}`}>
-                350 Bytes
+              <span className={`text-xs px-3 py-1.5 rounded-lg border ${byteBalance >= 100 ? "bg-teal-800/20 border-teal-900 text-teal-950" : "bg-slate-900 border-slate-700 text-slate-500"}`}>
+                100 Bytes
               </span>
             )}
           </button>

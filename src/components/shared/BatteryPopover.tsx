@@ -77,7 +77,7 @@ export function BatteryPopover({
                   <Zap className={`w-5 h-5 ${currentBattery === 5 ? "fill-slate-500" : "fill-white"}`} />
                   Refill Energy
                 </div>
-                {currentBattery < 5 && <span className="text-sky-200 text-xs">350 Bytes</span>}
+                {currentBattery < 5 && <span className="text-sky-200 text-xs">100 Bytes</span>}
               </button>
 
               <button

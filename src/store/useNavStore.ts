@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { claimQuestApi, buyStoreItemApi, type ProgressData, type Quest } from "@/services/progressApi";
+import {
+  claimQuestApi,
+  buyStoreItemApi,
+  decreaseBatteryApi,
+  rechargeBatteryApi,
+  type ProgressData,
+  type Quest,
+} from "@/services/progressApi";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
 
 export type TabId = "path" | "debug" | "setup" | "store" | "profile";
@@ -10,6 +17,7 @@ export interface NavState {
   streakCount: number;
   byteBalance: number;
   batteryCount: number;
+  batteryRefillAt: number | null;
   streakFreezeCount: number;
   totalXP: number;
   completedNodesCount: number;
@@ -22,7 +30,8 @@ export interface NavState {
   addXp: (amount: number) => void;
   setBatteryCount: (count: number) => void;
   setByteBalance: (count: number) => void;
-  rechargeBattery: () => void;
+  rechargeBattery: () => Promise<ProgressData>;
+  decreaseBattery: () => Promise<ProgressData>;
   switchCourse: (course: string) => void;
   syncNav: (data: ProgressData) => void;
   claimQuest: (questId: string) => Promise<void>;
@@ -36,6 +45,7 @@ export const useNavStore = create<NavState>()(
       streakCount: 0,
       byteBalance: 0,
       batteryCount: 5,
+      batteryRefillAt: null,
       streakFreezeCount: 0,
       totalXP: 0,
       completedNodesCount: 0,
@@ -55,17 +65,29 @@ export const useNavStore = create<NavState>()(
       switchCourse: (course: string) => set({ activeCourse: course }),
       rechargeBattery: async () => {
         try {
-          const res = await fetch(
-            process.env.NEXT_PUBLIC_API_URL
-              ? `${process.env.NEXT_PUBLIC_API_URL}/progress/recharge-battery`
-              : "http://localhost:8000/progress/recharge-battery",
-            { method: "POST" }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            set({ batteryCount: data.battery });
-          }
-        } catch {}
+          const data = await rechargeBatteryApi();
+          set((state) => ({
+            ...state,
+            batteryCount: data.battery,
+            batteryRefillAt: data.battery_recharge_at ?? null,
+          }));
+          return data;
+        } catch {
+          return {} as ProgressData;
+        }
+      },
+      decreaseBattery: async () => {
+        try {
+          const data = await decreaseBatteryApi();
+          set((state) => ({
+            ...state,
+            batteryCount: data.battery,
+            batteryRefillAt: data.battery_recharge_at ?? null,
+          }));
+          return data;
+        } catch {
+          return {} as ProgressData;
+        }
       },
       claimQuest: async (questId: string) => {
         const data = await claimQuestApi(questId);
@@ -80,6 +102,7 @@ export const useNavStore = create<NavState>()(
         set((state) => ({
           ...state,
           batteryCount: data.battery,
+          batteryRefillAt: data.battery_recharge_at ?? null,
           byteBalance: data.bytes,
           streakCount: data.streak,
           totalXP: data.totalXP,
@@ -100,6 +123,7 @@ export const useNavStore = create<NavState>()(
             streakCount: data.streak,
             byteBalance: data.bytes ?? data.totalXP,
             batteryCount: data.battery,
+            batteryRefillAt: data.battery_recharge_at ?? null,
             streakFreezeCount: data.streak_freeze ?? 0,
             totalXP: data.totalXP ?? 0,
             completedNodesCount: data.completed_nodes?.length ?? 0,
@@ -119,6 +143,8 @@ export const selectActiveTab = (state: NavState): TabId => state.activeTab;
 export const selectStreakCount = (state: NavState): number => state.streakCount;
 export const selectByteBalance = (state: NavState): number => state.byteBalance;
 export const selectBatteryCount = (state: NavState): number => state.batteryCount;
+export const selectBatteryRefillAt = (state: NavState): number | null =>
+  state.batteryRefillAt;
 export const selectStreakFreezeCount = (state: NavState): number => state.streakFreezeCount;
 export const selectTotalXP = (state: NavState): number => state.totalXP;
 export const selectCompletedNodesCount = (state: NavState): number =>

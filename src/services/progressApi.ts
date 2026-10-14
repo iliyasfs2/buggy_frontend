@@ -13,6 +13,7 @@ export interface ProgressData {
   totalXP: number;
   streak: number;
   battery: number;
+  battery_recharge_at?: number | null;
   bytes: number;
   streak_freeze?: number;
   active_course: string;
@@ -58,7 +59,7 @@ export const completeNode = async (
   return res.json();
 };
 
-export const decreaseBatteryApi = async (): Promise<{ battery: number }> => {
+export const decreaseBatteryApi = async (): Promise<ProgressData> => {
   const res = await fetch(`${API_BASE_URL}/progress/decrease-battery`, {
     method: "POST",
     headers: getHeaders(),
@@ -67,7 +68,7 @@ export const decreaseBatteryApi = async (): Promise<{ battery: number }> => {
   return res.json();
 };
 
-export const rechargeBatteryApi = async (): Promise<{ battery: number }> => {
+export const rechargeBatteryApi = async (): Promise<ProgressData> => {
   const res = await fetch(`${API_BASE_URL}/progress/recharge-battery`, {
     method: "POST",
     headers: getHeaders(),
