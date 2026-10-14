@@ -14,6 +14,7 @@ export interface ProgressData {
   streak: number;
   battery: number;
   bytes: number;
+  streak_freeze?: number;
   active_course: string;
   completed_nodes: string[];
   unlocked_nodes: string[];
@@ -103,4 +104,17 @@ export const claimQuestApi = async (questId: string): Promise<ProgressData> => {
   });
   if (!res.ok) throw new Error("Failed to claim quest");
   return res.json();
+};
+
+export const buyStoreItemApi = async (itemId: string): Promise<ProgressData> => {
+  const res = await fetch(`${API_BASE_URL}/api/store/buy`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ item_id: itemId }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to purchase store item");
+  }
+  return data;
 };

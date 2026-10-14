@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   useNavStore,
   selectActiveTab,
@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { BuggyLogo } from "@/components/shared";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
+import { soundEffects } from "@/utils/soundEffects";
 
 export interface DesktopSidebarProps {
   className?: string;
@@ -20,6 +21,7 @@ export function DesktopSidebar({
   className = "",
 }: DesktopSidebarProps): ReactElement {
   const router = useRouter();
+  const pathname = usePathname();
   const activeTab = useNavStore(selectActiveTab);
   const setActiveTab = useNavStore(selectSetActiveTab);
   const { user, logout } = useAuthStore();
@@ -42,7 +44,10 @@ export function DesktopSidebar({
 
         <nav className="flex flex-col gap-1.5" aria-label="Main menu">
           {NAVIGATION_ITEMS.map((item) => {
-            const isActive = activeTab === item.id;
+            const isActive =
+              (pathname === "/store" && item.id === "store") ||
+              (pathname.startsWith("/profile") && item.id === "profile") ||
+              ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
 
             return (
@@ -50,10 +55,16 @@ export function DesktopSidebar({
                 key={item.id}
                 type="button"
                 onClick={() => {
+                  soundEffects.playSoftClick();
                   if (item.id === "profile") {
                     router.push("/profile");
+                  } else if (item.id === "store") {
+                    router.push("/store");
                   } else {
                     setActiveTab(item.id);
+                    if (pathname !== "/roadmap" && pathname !== "/") {
+                      router.push("/roadmap");
+                    }
                   }
                 }}
                 className={`flex items-center justify-between px-4 py-3 rounded-2xl font-black text-sm tracking-wide transition-all cursor-pointer ${

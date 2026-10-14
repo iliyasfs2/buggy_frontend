@@ -5,6 +5,7 @@ import { AppShell } from "./AppShell";
 import { SetupView } from "@/components/setup/SetupView";
 import { PathView } from "@/components/path/PathView";
 import { ProfileView } from "@/components/profile/ProfileView";
+import { StoreView } from "@/components/store/StoreView";
 import { useNavStore, selectActiveTab } from "@/store/useNavStore";
 import { useMounted } from "@/hooks/useMounted";
 
@@ -35,17 +36,7 @@ export function HomeClient(): ReactElement {
           </p>
         </div>
       )}
-      {activeTab === "store" && (
-        <div className="p-8 max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-3xl mb-4">
-            🛒
-          </div>
-          <h2 className="text-xl font-bold text-slate-100">Buggy Byte Store</h2>
-          <p className="text-slate-400 text-sm mt-1 max-w-sm">
-            Redeem Bytes for premium workspace gear and perks.
-          </p>
-        </div>
-      )}
+      {activeTab === "store" && <StoreView />}
       {activeTab === "profile" && <ProfileView />}
     </AppShell>
   );

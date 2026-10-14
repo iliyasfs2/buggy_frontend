@@ -1,18 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { claimQuestApi, type ProgressData } from "@/services/progressApi";
+import { claimQuestApi, buyStoreItemApi, type ProgressData, type Quest } from "@/services/progressApi";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
+
 export type TabId = "path" | "debug" | "setup" | "store" | "profile";
+
 export interface NavState {
   activeTab: TabId;
   streakCount: number;
   byteBalance: number;
   batteryCount: number;
+  streakFreezeCount: number;
   totalXP: number;
   completedNodesCount: number;
   jsCount: number;
   activeCourse: string;
-  dailyQuests: import("@/services/progressApi").Quest[];
+  dailyQuests: Quest[];
   currentTrack: string;
   setActiveTab: (tab: TabId) => void;
   setTrack: (track: string) => void;
@@ -23,7 +26,9 @@ export interface NavState {
   switchCourse: (course: string) => void;
   syncNav: (data: ProgressData) => void;
   claimQuest: (questId: string) => Promise<void>;
+  buyStoreItem: (itemId: string) => Promise<ProgressData>;
 }
+
 export const useNavStore = create<NavState>()(
   persist(
     (set) => ({
@@ -31,6 +36,7 @@ export const useNavStore = create<NavState>()(
       streakCount: 0,
       byteBalance: 0,
       batteryCount: 5,
+      streakFreezeCount: 0,
       totalXP: 0,
       completedNodesCount: 0,
       jsCount: 0,
@@ -42,57 +48,89 @@ export const useNavStore = create<NavState>()(
       addXp: (amount: number) =>
         set((state) => ({
           byteBalance: state.byteBalance + amount,
-          totalXP: state.totalXP + amount
+          totalXP: state.totalXP + amount,
         })),
       setBatteryCount: (count: number) => set({ batteryCount: count }),
       setByteBalance: (count: number) => set({ byteBalance: count }),
       switchCourse: (course: string) => set({ activeCourse: course }),
       rechargeBattery: async () => {
         try {
-          const res = await fetch(process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/progress/recharge-battery` : "http://localhost:8000/progress/recharge-battery", { method: "POST" });
+          const res = await fetch(
+            process.env.NEXT_PUBLIC_API_URL
+              ? `${process.env.NEXT_PUBLIC_API_URL}/progress/recharge-battery`
+              : "http://localhost:8000/progress/recharge-battery",
+            { method: "POST" }
+          );
           if (res.ok) {
             const data = await res.json();
             set({ batteryCount: data.battery });
           }
-        } catch(e) {}
+        } catch {}
       },
-      claimQuest: async (questId: string) => {  const data = await claimQuestApi(questId); set((state) => ({ ...state, dailyQuests: data.daily_quests_state, byteBalance: data.bytes })); },
+      claimQuest: async (questId: string) => {
+        const data = await claimQuestApi(questId);
+        set((state) => ({
+          ...state,
+          dailyQuests: data.daily_quests_state,
+          byteBalance: data.bytes,
+        }));
+      },
+      buyStoreItem: async (itemId: string) => {
+        const data = await buyStoreItemApi(itemId);
+        set((state) => ({
+          ...state,
+          batteryCount: data.battery,
+          byteBalance: data.bytes,
+          streakCount: data.streak,
+          totalXP: data.totalXP,
+          streakFreezeCount: data.streak_freeze ?? state.streakFreezeCount,
+        }));
+        return data;
+      },
       syncNav: (data: ProgressData) =>
-        set((state) => {
+        set(() => {
           let completedChaptersCount = 0;
           MOCK_JAVASCRIPT_CHAPTERS.forEach((ch) => {
-            const allNodesCompleted = ch.nodes.every(node => data.completed_nodes.includes(node.id));
+            const allNodesCompleted = ch.nodes.every((node) =>
+              data.completed_nodes.includes(node.id)
+            );
             if (allNodesCompleted) completedChaptersCount++;
           });
           return {
             streakCount: data.streak,
             byteBalance: data.bytes ?? data.totalXP,
             batteryCount: data.battery,
+            streakFreezeCount: data.streak_freeze ?? 0,
             totalXP: data.totalXP ?? 0,
             completedNodesCount: data.completed_nodes?.length ?? 0,
             activeCourse: data.active_course ?? "javascript",
             dailyQuests: data.daily_quests_state || [],
-            jsCount: completedChaptersCount * 5
+            jsCount: completedChaptersCount * 5,
           };
-        })
+        }),
     }),
     {
       name: "buggy-nav-storage",
     }
   )
 );
+
 export const selectActiveTab = (state: NavState): TabId => state.activeTab;
 export const selectStreakCount = (state: NavState): number => state.streakCount;
 export const selectByteBalance = (state: NavState): number => state.byteBalance;
 export const selectBatteryCount = (state: NavState): number => state.batteryCount;
+export const selectStreakFreezeCount = (state: NavState): number => state.streakFreezeCount;
 export const selectTotalXP = (state: NavState): number => state.totalXP;
-export const selectCompletedNodesCount = (state: NavState): number => state.completedNodesCount;
+export const selectCompletedNodesCount = (state: NavState): number =>
+  state.completedNodesCount;
 export const selectJsCount = (state: NavState): number => state.jsCount;
 export const selectCurrentTrack = (state: NavState): string => state.currentTrack;
-export const selectSetActiveTab = (state: NavState): ((tab: TabId) => void) => state.setActiveTab;
-export const selectSetTrack = (state: NavState): ((track: string) => void) => state.setTrack;
+export const selectSetActiveTab = (state: NavState): ((tab: TabId) => void) =>
+  state.setActiveTab;
+export const selectSetTrack = (state: NavState): ((track: string) => void) =>
+  state.setTrack;
 export const selectActiveCourse = (state: NavState): string => state.activeCourse;
 export const selectHasCompletedToday = (state: NavState) => {
-  const q1 = state.dailyQuests?.find((q: import("@/services/progressApi").Quest) => q.id === "q1");
+  const q1 = state.dailyQuests?.find((q: Quest) => q.id === "q1");
   return q1 ? q1.current > 0 : false;
 };

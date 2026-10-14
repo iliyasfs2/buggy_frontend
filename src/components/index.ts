@@ -72,3 +72,5 @@ export {
   STEP_REGISTRY,
   getStepRenderer,
 } from "./lesson";
+
+export { StoreView } from "./store";
