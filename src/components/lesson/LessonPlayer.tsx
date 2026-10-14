@@ -15,6 +15,10 @@ import { soundEffects } from "@/utils/soundEffects";
 import { useGameStore, selectBattery } from "@/store/useGameStore";
 import { useBatteryTimer } from "@/hooks/useBatteryTimer";
 import { resolveMistakeApi, createMistakeApi } from "@/services/debugApi";
+import { completeNode } from "@/services/progressApi";
+import { useRoadmapStore } from "@/store/useRoadmapStore";
+import { useNavStore } from "@/store/useNavStore";
+import { motion, AnimatePresence } from "framer-motion";
 import { StatBadge } from "@/components/shared";
 import {
   X,
@@ -23,6 +27,7 @@ import {
   Flame,
   Sparkles,
   ShieldCheck,
+  Clock,
 } from "lucide-react";
 
 export interface LessonPlayerProps {
@@ -118,6 +123,13 @@ export function LessonPlayer({
   const [isShaking, setIsShaking] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakesCount, setMistakesCount] = useState(0);
+  const startTimeRef = useRef<number>(Date.now());
+  const [totalDurationSeconds, setTotalDurationSeconds] = useState<number>(0);
+  const [streakCelebration, setStreakCelebration] = useState<{
+    open: boolean;
+    streak: number;
+  } | null>(null);
+  const committedRef = useRef(false);
 
   const streakCount = useGameStore((state) => state.streakCount);
 
@@ -126,8 +138,14 @@ export function LessonPlayer({
 
   const progressPercent = useMemo(() => {
     if (steps.length === 0) return 0;
+    if (
+      isFinished ||
+      (currentStepIndex === steps.length - 1 && evaluationState === "correct")
+    ) {
+      return 100;
+    }
     return Math.round((currentStepIndex / steps.length) * 100);
-  }, [currentStepIndex, steps.length]);
+  }, [currentStepIndex, steps.length, isFinished, evaluationState]);
 
   const handleUserInput = (val: LessonUserInput) => {
     if (evaluationState === "correct") return;
@@ -350,23 +368,77 @@ export function LessonPlayer({
       setEvaluationState("idle");
     } else {
       soundEffects.playVictory();
+      setTotalDurationSeconds(
+        Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000))
+      );
       setIsFinished(true);
     }
   }, [currentStepIndex, evaluationState, steps.length]);
 
+  const isPerfectRun = mistakesCount === 0;
+  const baseRewardXp = lesson.totalXp || 20;
+  const earnedXP = isPerfectRun ? baseRewardXp + 5 : baseRewardXp;
+  const earnedBytes =
+    mode === "debug_stories"
+      ? 30
+      : mode === "debug_tracing"
+      ? 5
+      : mode === "debug_refactor"
+      ? 20
+      : isPerfectRun
+      ? 15
+      : 10;
+  const accuracyPercentage = Math.round(
+    Math.max(0, ((steps.length - mistakesCount) / steps.length) * 100)
+  );
+
+  useEffect(() => {
+    if (!isFinished || committedRef.current) return;
+    committedRef.current = true;
+
+    let nextNodeId: string | null = null;
+    if (!isDebugSession) {
+      nextNodeId = useRoadmapStore.getState().completeNode(lesson.nodeId);
+    }
+
+    completeNode({
+      nodeId: lesson.nodeId,
+      earnedXp: earnedXP,
+      earnedBytes,
+      nextNodeId,
+      flawless: isPerfectRun,
+      mode: mode || undefined,
+    })
+      .then((data) => {
+        useNavStore.getState().syncNav(data);
+        useRoadmapStore.getState().syncProgress(data);
+        if (data.streak_increased) {
+          soundEffects.playVictory();
+          setStreakCelebration({ open: true, streak: data.streak });
+        }
+      })
+      .catch(() => {});
+  }, [
+    isFinished,
+    isDebugSession,
+    lesson.nodeId,
+    earnedXP,
+    earnedBytes,
+    isPerfectRun,
+    mode,
+  ]);
+
   if (isFinished) {
-    const isPerfectRun = mistakesCount === 0;
-    const earnedXP = isPerfectRun ? 20 : 15;
-    const accuracyPercentage = Math.round(
-      Math.max(0, ((steps.length - mistakesCount) / steps.length) * 100)
-    );
+    const minutes = Math.floor(totalDurationSeconds / 60);
+    const seconds = totalDurationSeconds % 60;
+    const timeFormatted = `${minutes}:${String(seconds).padStart(2, "0")}`;
 
     return (
       <div className="fixed inset-0 z-[100] bg-[#101826] flex flex-col items-center justify-between p-6 sm:p-8 animate-in fade-in zoom-in-95 select-none overflow-y-auto">
-        <div className="flex-1 flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full gap-5 my-auto">
+        <div className="flex-1 flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full gap-4 my-auto">
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/25 via-emerald-500/25 to-sky-500/25 blur-3xl rounded-full scale-125 pointer-events-none" />
-            <div className="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
               <img
                 src="/images/buggy-victory.png"
                 alt="Victory Mascot"
@@ -379,29 +451,43 @@ export function LessonPlayer({
             {isDebugSession ? "Practice Session Completed!" : "Lesson Completed!"}
           </h2>
 
-          {isPerfectRun && (
-            <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500 text-amber-400 text-sm font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.5)] animate-in zoom-in spin-in-2 duration-500 font-mono">
-              <Sparkles className="w-4 h-4" />
-              PERFECT RUN (+5 BONUS XP)
-              <Sparkles className="w-4 h-4" />
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {isPerfectRun && (
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-500 text-amber-400 text-xs font-black uppercase tracking-wider shadow-sm font-mono">
+                <Sparkles className="w-3.5 h-3.5" />
+                PERFECT RUN (+5 BONUS XP)
+              </div>
+            )}
+            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 text-xs font-bold font-mono">
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <span>{timeFormatted}</span>
             </div>
-          )}
+          </div>
 
-          <div className="grid grid-cols-3 gap-3 w-full my-6">
-            <div className="bg-slate-900/60 border border-slate-700/60 border-b-4 border-slate-950 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg w-full">
-              <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full my-4">
+            <div className="bg-slate-900/80 border border-slate-800 border-b-4 border-slate-950 rounded-2xl p-3.5 flex flex-col items-center justify-center text-center shadow-lg">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">
                 TOTAL XP
               </span>
-              <span className="text-sky-400 text-2xl font-black font-mono">
+              <span className="text-sky-400 text-xl font-black font-mono">
                 <AnimatedXpCounter target={earnedXP} />
               </span>
             </div>
 
-            <div className="bg-slate-900/60 border border-slate-700/60 border-b-4 border-slate-950 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg w-full">
-              <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
+            <div className="bg-slate-900/80 border border-slate-800 border-b-4 border-slate-950 rounded-2xl p-3.5 flex flex-col items-center justify-center text-center shadow-lg">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">
+                BYTES
+              </span>
+              <span className="text-amber-400 text-xl font-black font-mono">
+                +{earnedBytes}
+              </span>
+            </div>
+
+            <div className="bg-slate-900/80 border border-slate-800 border-b-4 border-slate-950 rounded-2xl p-3.5 flex flex-col items-center justify-center text-center shadow-lg">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">
                 ACCURACY
               </span>
-              <span className="text-emerald-400 text-2xl font-black font-mono animate-in zoom-in duration-500">
+              <span className="text-emerald-400 text-xl font-black font-mono">
                 {accuracyPercentage}%
               </span>
             </div>
@@ -410,15 +496,57 @@ export function LessonPlayer({
           </div>
         </div>
 
-        <div className="w-full max-w-lg mt-6 shrink-0">
+        <div className="w-full max-w-lg mt-4 shrink-0">
           <button
             type="button"
             onClick={() => onComplete(earnedXP)}
-            className="w-full py-4 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-1 border-b-4 border-sky-700 active:border-b-[0px] text-white font-black text-lg select-none transition-all cursor-pointer"
+            className="w-full py-4 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-1 border-b-4 border-sky-700 active:border-b-[0px] text-white font-black text-lg select-none transition-all cursor-pointer shadow-lg"
           >
             {isDebugSession ? "RETURN TO DEBUG" : "CONTINUE TO ROADMAP"}
           </button>
         </div>
+
+        <AnimatePresence>
+          {streakCelebration?.open && (
+            <div className="fixed inset-0 z-[150] bg-[#0f172a]/85 backdrop-blur-md flex items-center justify-center p-4">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                className="w-full max-w-sm rounded-3xl bg-slate-900 border-2 border-orange-500/40 p-6 sm:p-8 text-center shadow-2xl flex flex-col items-center gap-5 relative overflow-hidden"
+              >
+                <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-orange-500/20 via-amber-500/10 to-transparent pointer-events-none" />
+
+                <div className="w-24 h-24 rounded-3xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center relative shadow-inner">
+                  <Flame className="w-14 h-14 text-orange-400 fill-orange-400 drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300">
+                    +1 🔥
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1.5 z-10">
+                  <h3 className="text-2xl font-black text-white tracking-tight">
+                    {streakCelebration.streak} Day Streak!
+                  </h3>
+                  <p className="text-xs font-bold text-slate-400 leading-relaxed max-w-xs">
+                    Today&apos;s streak is officially secured! Practice again tomorrow to keep your flame burning.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setStreakCelebration(null);
+                  }}
+                  className="w-full py-3.5 px-6 rounded-2xl bg-orange-500 hover:bg-orange-400 active:translate-y-1 border-b-4 border-orange-700 active:border-b-0 text-slate-950 font-black text-sm uppercase tracking-wider transition-all cursor-pointer shadow-lg z-10"
+                >
+                  Continue
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }

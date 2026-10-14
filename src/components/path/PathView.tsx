@@ -27,7 +27,7 @@ const getLessonContent = (id: string) => {
 };
 import { useNavStore } from "@/store/useNavStore";
 import { useRoadmapStore } from "@/store/useRoadmapStore";
-import { fetchUserProgress, completeNode as apiCompleteNode } from "@/services/progressApi";
+import { fetchUserProgress } from "@/services/progressApi";
 
 export function PathView(): ReactElement {
   const { chapters, completeNode, syncProgress } = useRoadmapStore();
@@ -66,32 +66,17 @@ export function PathView(): ReactElement {
     setActiveLessonNode(node);
   }, []);
 
-  const handleCompleteLesson = useCallback(async (totalXp: number) => {
+  const handleCompleteLesson = useCallback((totalXp: number) => {
     const completedId = activeLessonNode?.id || "js-1-1";
-    let nextToUnlockId: string | null = null;
-
-    nextToUnlockId = completeNode(completedId);
+    const nextToUnlockId = completeNode(completedId);
     if (nextToUnlockId) {
       setUnlockingNodeId(nextToUnlockId);
       setTimeout(() => {
         setUnlockingNodeId(null);
       }, 1500);
     }
-    
     setActiveLessonNode(null);
-
-    try {
-      const newData = await apiCompleteNode(completedId, totalXp, nextToUnlockId);
-      syncProgress(newData);
-      syncNav(newData);
-      if (newData.streak_increased) {
-        soundEffects.playVictory();
-        setStreakCelebration({ open: true, streak: newData.streak });
-      }
-    } catch (err) {
-      console.error("Failed to commit progress to server:", err);
-    }
-  }, [activeLessonNode, completeNode, syncProgress, syncNav]);
+  }, [activeLessonNode, completeNode]);
 
   const handleExitLesson = useCallback(() => {
     setActiveLessonNode(null);

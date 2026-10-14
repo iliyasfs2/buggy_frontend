@@ -51,15 +51,37 @@ export const fetchUserProgress = async (): Promise<ProgressData> => {
   return res.json();
 };
 
+export interface CompleteNodePayload {
+  nodeId: string;
+  earnedXp: number;
+  nextNodeId?: string | null;
+  flawless?: boolean;
+  earnedBytes?: number;
+  mode?: string;
+}
+
 export const completeNode = async (
-  nodeId: string,
-  earnedXp: number,
-  nextNodeId: string | null
+  nodeIdOrPayload: string | CompleteNodePayload,
+  earnedXp?: number,
+  nextNodeId?: string | null,
+  options?: { flawless?: boolean; earnedBytes?: number; mode?: string }
 ): Promise<ProgressData> => {
+  const body: CompleteNodePayload =
+    typeof nodeIdOrPayload === "string"
+      ? {
+          nodeId: nodeIdOrPayload,
+          earnedXp: earnedXp ?? 0,
+          nextNodeId: nextNodeId ?? null,
+          flawless: options?.flawless ?? false,
+          earnedBytes: options?.earnedBytes ?? 0,
+          mode: options?.mode,
+        }
+      : nodeIdOrPayload;
+
   const res = await fetch(`${API_BASE_URL}/progress/complete-node`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ nodeId, earnedXp, nextNodeId }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error("Failed to complete node");
   return res.json();

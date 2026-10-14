@@ -2,6 +2,7 @@
 
 import type { ReactElement, ReactNode } from "react";
 import { useState, useEffect } from "react";
+import { Check } from "lucide-react";
 import { LessonIcon, type LessonIconType } from "./LessonIcon";
 
 export type NodeState = "locked" | "current" | "completed";
@@ -107,20 +108,30 @@ export function LessonNode({
   const isLocked = nodeState === "locked" && !unlockAnimating;
   const isCurrent = nodeState === "current";
 
-  const renderedIcon = isLessonIconType(icon) ? (
-    <LessonIcon type={icon} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px]" />
-  ) : typeof icon === "string" ? (
-    <img src={icon} alt="" draggable={false} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px] object-contain select-none pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]" />
-  ) : icon ? (
-    icon
-  ) : (
-    <LessonIcon type={resolveIconType(order)} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px]" />
-  );
+  const renderedIcon =
+    nodeState === "completed" ? (
+      <Check className="w-[34px] h-[34px] stroke-[4] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-in zoom-in-75 duration-300" />
+    ) : isLessonIconType(icon) ? (
+      <LessonIcon type={icon} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px]" />
+    ) : typeof icon === "string" ? (
+      <img src={icon} alt="" draggable={false} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px] object-contain select-none pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]" />
+    ) : icon ? (
+      icon
+    ) : (
+      <LessonIcon type={resolveIconType(order)} className="w-[38px] h-[38px] max-md:w-[42px] max-md:h-[42px]" />
+    );
 
   const label = ariaLabel || `Lesson ${order || id || ""} - ${nodeState}`;
 
   const customPaletteStyle =
-    palette && nodeState !== "locked"
+    nodeState === "completed"
+      ? ({
+          "--face": "#10b981",
+          "--face-light": "#34d399",
+          "--highlight": "#6ee7b7",
+          "--shadow": "#059669"
+        } as React.CSSProperties)
+      : palette && nodeState !== "locked"
       ? ({
           "--face": palette.primary,
           "--face-light": palette.light,
@@ -298,6 +309,14 @@ export function LessonNode({
         .lesson-node:active:not(:disabled) .lesson-node__face {
           transform: translateY(7px);
           filter: brightness(0.98);
+        }
+
+        .lesson-node--completed {
+          --face: #10b981;
+          --face-light: #34d399;
+          --highlight: #6ee7b7;
+          --shadow: #059669;
+          cursor: pointer;
         }
 
         .lesson-node--locked {

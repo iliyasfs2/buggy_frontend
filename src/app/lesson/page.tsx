@@ -11,7 +11,6 @@ import {
   createMistakesLesson,
 } from "@/constants/debugLessons";
 import { fetchMistakesApi } from "@/services/debugApi";
-import { useGameStore } from "@/store/useGameStore";
 import { LESSON_JS_1_1 } from "@/data/mock/lessons/js-1-1";
 import { LESSON_JS_1_2 } from "@/data/mock/lessons/js-1-2";
 import { LESSON_JS_1_3 } from "@/data/mock/lessons/js-1-3";
@@ -79,16 +78,6 @@ function LessonContentController() {
 
   const handleComplete = () => {
     if (isDebugSession) {
-      if (mode === "debug_stories") {
-        useGameStore.getState().addXp(30);
-        useGameStore
-          .getState()
-          .setByteBalance(useGameStore.getState().byteBalance + 30);
-      } else if (mode === "debug_refactor") {
-        useGameStore.getState().addXp(20);
-      } else if (mode === "debug_tracing") {
-        useGameStore.getState().addXp(15);
-      }
       router.push("/debug");
     } else {
       router.push("/roadmap");
