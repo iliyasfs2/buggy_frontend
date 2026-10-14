@@ -19,6 +19,8 @@ export interface ProgressData {
   battery_recharge_at?: number | null;
   bytes: number;
   streak_freeze?: number;
+  streak_increased?: boolean;
+  last_active_date?: string | null;
   active_course: string;
   completed_nodes: string[];
   unlocked_nodes: string[];

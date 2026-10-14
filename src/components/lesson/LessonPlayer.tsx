@@ -68,25 +68,21 @@ function AnimatedXpCounter({ target }: { target: number }): ReactElement {
 }
 
 function AnimatedStreakCard({ initialStreak }: { initialStreak: number }) {
-  const [ignited, setIgnited] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIgnited(true);
-      soundEffects.playIgnite();
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="bg-slate-900/60 border border-slate-700/60 border-b-4 border-slate-950 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg w-full">
       <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
         STREAK
       </span>
-      <div className={`flex items-center gap-1.5 transition-all duration-500 ${ignited ? "" : "grayscale opacity-40"}`}>
-        <Flame className={`w-5 h-5 transition-all duration-500 ${ignited ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_14px_rgba(249,115,22,0.8)]" : "text-slate-400 fill-slate-400"}`} />
-        <span className={`text-2xl font-black font-mono transition-all duration-500 ${ignited ? "text-orange-400 animate-in zoom-in-125 duration-300" : "text-slate-400"}`}>
-          {ignited ? initialStreak + 1 : initialStreak}
+      <div className="flex items-center gap-1.5 transition-all duration-500">
+        <Flame
+          className={`w-5 h-5 transition-all duration-500 ${
+            initialStreak > 0
+              ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_14px_rgba(249,115,22,0.8)]"
+              : "text-slate-400 fill-slate-400 grayscale opacity-40"
+          }`}
+        />
+        <span className="text-2xl font-black font-mono text-orange-400">
+          {initialStreak}
         </span>
       </div>
     </div>

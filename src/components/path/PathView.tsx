@@ -4,7 +4,9 @@ import type { ReactElement } from "react";
 import { useState, useCallback, useEffect } from "react";
 import type { PathNode, Chapter } from "@/types/roadmap";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Flame } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { soundEffects } from "@/utils/soundEffects";
 import { ChapterSection } from "./ChapterSection";
 import { PathGuidebookModal } from "./PathGuidebookModal";
 import { PathSidebar } from "./PathSidebar";
@@ -46,8 +48,10 @@ export function PathView(): ReactElement {
   const [activeChapterId, setActiveChapterId] = useState<string>(
     MOCK_JAVASCRIPT_CHAPTERS[0]?.id || ""
   );
-
-  
+  const [streakCelebration, setStreakCelebration] = useState<{
+    open: boolean;
+    streak: number;
+  } | null>(null);
 
   const handleSelectNode = useCallback((node: PathNode) => {
     setSelectedNode((prev) => (prev?.id === node.id ? null : node));
@@ -66,7 +70,6 @@ export function PathView(): ReactElement {
     const completedId = activeLessonNode?.id || "js-1-1";
     let nextToUnlockId: string | null = null;
 
-    
     nextToUnlockId = completeNode(completedId);
     if (nextToUnlockId) {
       setUnlockingNodeId(nextToUnlockId);
@@ -81,6 +84,10 @@ export function PathView(): ReactElement {
       const newData = await apiCompleteNode(completedId, totalXp, nextToUnlockId);
       syncProgress(newData);
       syncNav(newData);
+      if (newData.streak_increased) {
+        soundEffects.playVictory();
+        setStreakCelebration({ open: true, streak: newData.streak });
+      }
     } catch (err) {
       console.error("Failed to commit progress to server:", err);
     }
@@ -208,6 +215,48 @@ export function PathView(): ReactElement {
           onExit={handleExitLesson}
         />
       )}
+
+      <AnimatePresence>
+        {streakCelebration?.open && (
+          <div className="fixed inset-0 z-[150] bg-[#0f172a]/85 backdrop-blur-md flex items-center justify-center p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="w-full max-w-sm rounded-3xl bg-slate-900 border-2 border-orange-500/40 p-6 sm:p-8 text-center shadow-2xl flex flex-col items-center gap-5 relative overflow-hidden"
+            >
+              <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-orange-500/20 via-amber-500/10 to-transparent pointer-events-none" />
+
+              <div className="w-24 h-24 rounded-3xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center relative shadow-inner">
+                <Flame className="w-14 h-14 text-orange-400 fill-orange-400 drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
+                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300">
+                  +1 🔥
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-1.5 z-10">
+                <h3 className="text-2xl font-black text-white tracking-tight">
+                  {streakCelebration.streak} Day Streak!
+                </h3>
+                <p className="text-xs font-bold text-slate-400 leading-relaxed max-w-xs">
+                  Today&apos;s streak is officially secured! Practice again tomorrow to keep your flame burning.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setStreakCelebration(null);
+                }}
+                className="w-full py-3.5 px-6 rounded-2xl bg-orange-500 hover:bg-orange-400 active:translate-y-1 border-b-4 border-orange-700 active:border-b-0 text-slate-950 font-black text-sm uppercase tracking-wider transition-all cursor-pointer shadow-lg z-10"
+              >
+                Continue
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
