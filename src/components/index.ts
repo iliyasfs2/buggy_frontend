@@ -74,3 +74,4 @@ export {
 } from "./lesson";
 
 export { StoreView } from "./store";
+export { DebugView } from "./debug";

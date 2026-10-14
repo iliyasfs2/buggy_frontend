@@ -19,6 +19,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
   const pathname = usePathname();
   const activeTab = useNavStore(selectActiveTab);
   const setActiveTab = useNavStore(selectSetActiveTab);
+  const pendingMistakesCount = useNavStore((state) => state.pendingMistakesCount);
 
   return (
     <nav
@@ -29,8 +30,10 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
         const isActive =
           (pathname === "/store" && item.id === "store") ||
           (pathname.startsWith("/profile") && item.id === "profile") ||
+          (pathname.startsWith("/debug") && item.id === "debug") ||
           ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
         const Icon = item.icon;
+        const badgeCount = item.id === "debug" ? pendingMistakesCount : item.badgeCount;
 
         return (
           <button
@@ -45,6 +48,8 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
                 router.push("/profile");
               } else if (item.id === "store") {
                 router.push("/store");
+              } else if (item.id === "debug") {
+                router.push("/debug");
               } else {
                 setActiveTab(item.id);
                 if (pathname !== "/roadmap" && pathname !== "/") {
@@ -58,15 +63,17 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
           >
             <div className="relative flex items-center justify-center">
               <Icon className="w-7 h-7 shrink-0" />
-              {item.badgeCount !== undefined && item.badgeCount > 0 && (
+              {badgeCount !== undefined && badgeCount > 0 && (
                 <span
                   className={`absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full ${
-                    isActive
+                    item.id === "debug"
+                      ? "bg-rose-500 text-white"
+                      : isActive
                       ? "bg-blue-950 text-blue-300 border border-blue-500/40"
                       : "bg-slate-800 text-slate-100 border border-slate-700/60"
                   }`}
                 >
-                  {item.badgeCount}
+                  {item.id === "debug" && badgeCount > 99 ? "99+" : badgeCount}
                 </span>
               )}
             </div>

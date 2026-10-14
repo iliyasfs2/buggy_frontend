@@ -21,6 +21,7 @@ export interface ProgressData {
   unlocked_nodes: string[];
   daily_quests_date?: string;
   daily_quests_state: Quest[];
+  mistakes_count?: number;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";

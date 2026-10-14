@@ -19,6 +19,7 @@ export interface NavState {
   batteryCount: number;
   batteryRefillAt: number | null;
   streakFreezeCount: number;
+  pendingMistakesCount: number;
   totalXP: number;
   completedNodesCount: number;
   jsCount: number;
@@ -30,6 +31,7 @@ export interface NavState {
   addXp: (amount: number) => void;
   setBatteryCount: (count: number) => void;
   setByteBalance: (count: number) => void;
+  setPendingMistakesCount: (count: number) => void;
   rechargeBattery: () => Promise<ProgressData>;
   decreaseBattery: () => Promise<ProgressData>;
   switchCourse: (course: string) => void;
@@ -47,6 +49,7 @@ export const useNavStore = create<NavState>()(
       batteryCount: 5,
       batteryRefillAt: null,
       streakFreezeCount: 0,
+      pendingMistakesCount: 3,
       totalXP: 0,
       completedNodesCount: 0,
       jsCount: 0,
@@ -62,6 +65,8 @@ export const useNavStore = create<NavState>()(
         })),
       setBatteryCount: (count: number) => set({ batteryCount: count }),
       setByteBalance: (count: number) => set({ byteBalance: count }),
+      setPendingMistakesCount: (count: number) =>
+        set({ pendingMistakesCount: count }),
       switchCourse: (course: string) => set({ activeCourse: course }),
       rechargeBattery: async () => {
         try {
@@ -125,6 +130,7 @@ export const useNavStore = create<NavState>()(
             batteryCount: data.battery,
             batteryRefillAt: data.battery_recharge_at ?? null,
             streakFreezeCount: data.streak_freeze ?? 0,
+            pendingMistakesCount: data.mistakes_count ?? 3,
             totalXP: data.totalXP ?? 0,
             completedNodesCount: data.completed_nodes?.length ?? 0,
             activeCourse: data.active_course ?? "javascript",
@@ -146,6 +152,8 @@ export const selectBatteryCount = (state: NavState): number => state.batteryCoun
 export const selectBatteryRefillAt = (state: NavState): number | null =>
   state.batteryRefillAt;
 export const selectStreakFreezeCount = (state: NavState): number => state.streakFreezeCount;
+export const selectPendingMistakesCount = (state: NavState): number =>
+  state.pendingMistakesCount;
 export const selectTotalXP = (state: NavState): number => state.totalXP;
 export const selectCompletedNodesCount = (state: NavState): number =>
   state.completedNodesCount;

@@ -24,6 +24,7 @@ export function DesktopSidebar({
   const pathname = usePathname();
   const activeTab = useNavStore(selectActiveTab);
   const setActiveTab = useNavStore(selectSetActiveTab);
+  const pendingMistakesCount = useNavStore((state) => state.pendingMistakesCount);
   const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
@@ -47,8 +48,10 @@ export function DesktopSidebar({
             const isActive =
               (pathname === "/store" && item.id === "store") ||
               (pathname.startsWith("/profile") && item.id === "profile") ||
+              (pathname.startsWith("/debug") && item.id === "debug") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
+            const badgeCount = item.id === "debug" ? pendingMistakesCount : item.badgeCount;
 
             return (
               <button
@@ -60,6 +63,8 @@ export function DesktopSidebar({
                     router.push("/profile");
                   } else if (item.id === "store") {
                     router.push("/store");
+                  } else if (item.id === "debug") {
+                    router.push("/debug");
                   } else {
                     setActiveTab(item.id);
                     if (pathname !== "/roadmap" && pathname !== "/") {
@@ -82,15 +87,17 @@ export function DesktopSidebar({
                   <span>{item.label}</span>
                 </div>
 
-                {item.badgeCount && item.badgeCount > 0 && (
+                {badgeCount !== undefined && badgeCount > 0 && (
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-black ${
-                      isActive
+                      item.id === "debug"
+                        ? "bg-rose-500 text-white shadow-sm"
+                        : isActive
                         ? "bg-blue-900/60 text-blue-300 border border-blue-500/40"
                         : "bg-slate-800 text-slate-100 border border-slate-700/60"
                     }`}
                   >
-                    {item.badgeCount}
+                    {item.id === "debug" && badgeCount > 99 ? "99+" : badgeCount}
                   </span>
                 )}
               </button>
