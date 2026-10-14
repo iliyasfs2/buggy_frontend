@@ -53,13 +53,13 @@ describe("DesktopSidebar", () => {
   it("renders navigation buttons and brand logo", () => {
     render(<DesktopSidebar />);
     expect(screen.getByAltText("Buggy")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Path" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Debug" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /path/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /debug/i })).toBeInTheDocument();
   });
 
   it("switches active tab when navigation item is clicked", () => {
     render(<DesktopSidebar />);
-    const debugButton = screen.getByRole("button", { name: "Debug" });
+    const debugButton = screen.getByRole("button", { name: /debug/i });
     fireEvent.click(debugButton);
     expect(useNavStore.getState().activeTab).toBe("debug");
   });
@@ -94,13 +94,13 @@ describe("MobileBottomNav", () => {
 
   it("renders all bottom navigation items", () => {
     render(<MobileBottomNav />);
-    expect(screen.getByRole("button", { name: "Setup" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Debug" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /setup/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /debug/i })).toBeInTheDocument();
   });
 
   it("triggers tab switch on item click", () => {
     render(<MobileBottomNav />);
-    const pathButton = screen.getByRole("button", { name: "Path" });
+    const pathButton = screen.getByRole("button", { name: /path/i });
     fireEvent.click(pathButton);
     expect(useNavStore.getState().activeTab).toBe("path");
   });

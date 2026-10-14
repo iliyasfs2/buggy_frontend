@@ -16,8 +16,7 @@ export const NAVIGATION_ITEMS: readonly NavItemConfig[] = [
   {
     id: "debug",
     label: "Debug",
-    icon: VaultIcon,
-    badgeCount: 3
+    icon: VaultIcon
   },
   {
     id: "setup",

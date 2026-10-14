@@ -1,54 +1,50 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import {
-  useNavStore,
-  selectBatteryCount,
-  selectBatteryRefillAt,
-} from "@/store/useNavStore";
+  useGameStore,
+  selectBattery,
+  selectSecondsUntilNextRefill,
+} from "@/store/useGameStore";
 
-export function useBatteryTimer(refillMinutes: number = 15) {
-  const currentBattery = useNavStore(selectBatteryCount);
-  const batteryRefillAt = useNavStore(selectBatteryRefillAt);
-  const rechargeBattery = useNavStore((state) => state.rechargeBattery);
-
-  const calculateTimeLeft = useCallback(() => {
-    if (currentBattery >= 5) {
-      return 0;
-    }
-    if (batteryRefillAt) {
-      const now = Date.now() / 1000;
-      return Math.max(0, Math.ceil(batteryRefillAt - now));
-    }
-    return refillMinutes * 60;
-  }, [currentBattery, batteryRefillAt, refillMinutes]);
-
-  const [timeLeft, setTimeLeft] = useState<number>(calculateTimeLeft);
+export function useBatteryTimer(refillMinutes: number = 30) {
+  const battery = useGameStore(selectBattery);
+  const secondsUntilNextRefill = useGameStore(selectSecondsUntilNextRefill);
+  const decrementRefillTimer = useGameStore(
+    (state) => state.decrementRefillTimer
+  );
+  const rechargeBattery = useGameStore((state) => state.rechargeBattery);
 
   useEffect(() => {
-    setTimeLeft(calculateTimeLeft());
-  }, [calculateTimeLeft]);
-
-  useEffect(() => {
-    if (currentBattery >= 5) {
+    if (battery >= 5) {
       return;
     }
 
     const interval = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
+      const currentSeconds = useGameStore.getState().secondsUntilNextRefill;
+      const currentBattery = useGameStore.getState().battery;
 
-      if (remaining <= 0 && currentBattery < 5) {
+      if (currentBattery >= 5) {
+        return;
+      }
+
+      decrementRefillTimer();
+
+      if (currentSeconds <= 1 && currentBattery < 5) {
         rechargeBattery();
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentBattery, calculateTimeLeft, rechargeBattery]);
+  }, [battery, decrementRefillTimer, rechargeBattery]);
 
-  if (currentBattery >= 5) {
+  if (battery >= 5) {
     return "FULL";
   }
 
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
-  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  const effectiveSeconds =
+    secondsUntilNextRefill > 0 ? secondsUntilNextRefill : refillMinutes * 60;
+  const minutes = Math.floor(effectiveSeconds / 60);
+  const seconds = effectiveSeconds % 60;
+  return `${minutes.toString().padStart(2, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
 }

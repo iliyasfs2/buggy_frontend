@@ -13,6 +13,9 @@ export interface ProgressData {
   totalXP: number;
   streak: number;
   battery: number;
+  max_battery?: number;
+  seconds_until_next_refill?: number;
+  unresolved_mistakes_count?: number;
   battery_recharge_at?: number | null;
   bytes: number;
   streak_freeze?: number;

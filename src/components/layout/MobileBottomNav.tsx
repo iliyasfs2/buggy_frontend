@@ -3,10 +3,11 @@
 import type { ReactElement } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
-  useNavStore,
+  useGameStore,
   selectActiveTab,
-  selectSetActiveTab
-} from "@/store/useNavStore";
+  selectSetActiveTab,
+  selectMistakesCount
+} from "@/store/useGameStore";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { soundEffects } from "@/utils/soundEffects";
 
@@ -17,9 +18,9 @@ export interface MobileBottomNavProps {
 export function MobileBottomNav({ className = "" }: MobileBottomNavProps): ReactElement {
   const router = useRouter();
   const pathname = usePathname();
-  const activeTab = useNavStore(selectActiveTab);
-  const setActiveTab = useNavStore(selectSetActiveTab);
-  const pendingMistakesCount = useNavStore((state) => state.pendingMistakesCount);
+  const activeTab = useGameStore(selectActiveTab);
+  const setActiveTab = useGameStore(selectSetActiveTab);
+  const mistakesCount = useGameStore(selectMistakesCount);
 
   return (
     <nav
@@ -33,7 +34,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
           (pathname.startsWith("/debug") && item.id === "debug") ||
           ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
         const Icon = item.icon;
-        const badgeCount = item.id === "debug" ? pendingMistakesCount : item.badgeCount;
+        const badgeCount = item.id === "debug" ? mistakesCount : item.badgeCount;
 
         return (
           <button
@@ -44,6 +45,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
             aria-current={isActive ? "page" : undefined}
             onClick={() => {
               soundEffects.playSoftClick();
+              setActiveTab(item.id);
               if (item.id === "profile") {
                 router.push("/profile");
               } else if (item.id === "store") {
@@ -51,7 +53,6 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
               } else if (item.id === "debug") {
                 router.push("/debug");
               } else {
-                setActiveTab(item.id);
                 if (pathname !== "/roadmap" && pathname !== "/") {
                   router.push("/roadmap");
                 }
@@ -73,7 +74,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
                       : "bg-slate-800 text-slate-100 border border-slate-700/60"
                   }`}
                 >
-                  {item.id === "debug" && badgeCount > 99 ? "99+" : badgeCount}
+                  {item.id === "debug" ? (badgeCount > 30 ? "30+" : badgeCount) : badgeCount}
                 </span>
               )}
             </div>

@@ -12,7 +12,10 @@ import {
   ChevronRight,
   Terminal,
 } from "lucide-react";
-import { useNavStore, selectPendingMistakesCount } from "@/store/useNavStore";
+import {
+  useGameStore,
+  selectMistakesCount,
+} from "@/store/useGameStore";
 import {
   fetchMistakesApi,
   resolveMistakeApi,
@@ -21,11 +24,11 @@ import {
 import { soundEffects } from "@/utils/soundEffects";
 
 export function DebugView() {
-  const pendingMistakesCount = useNavStore(selectPendingMistakesCount);
-  const setPendingMistakesCount = useNavStore(
-    (state) => state.setPendingMistakesCount
+  const mistakesCount = useGameStore(selectMistakesCount);
+  const setMistakesCount = useGameStore(
+    (state) => state.setMistakesCount
   );
-  const addXp = useNavStore((state) => state.addXp);
+  const addXp = useGameStore((state) => state.addXp);
 
   const [mistakes, setMistakes] = useState<MistakeItem[]>([]);
   const [activeModal, setActiveModal] = useState<
@@ -45,10 +48,10 @@ export function DebugView() {
     fetchMistakesApi()
       .then((data) => {
         setMistakes(data.mistakes);
-        setPendingMistakesCount(data.count);
+        setMistakesCount(data.count);
       })
       .catch(() => {});
-  }, [setPendingMistakesCount]);
+  }, [setMistakesCount]);
 
   const handleOpenMistakesModal = () => {
     soundEffects.playSoftClick();
@@ -65,7 +68,7 @@ export function DebugView() {
       const res = await resolveMistakeApi(mistake.id);
       soundEffects.playVictory();
       addXp(10);
-      setPendingMistakesCount(res.remaining_count);
+      setMistakesCount(res.remaining_count);
       setMistakes((prev) => prev.filter((m) => m.id !== mistake.id));
       setToastMessage("Bug cleared! +10 Bytes and +10 XP earned!");
       setTimeout(() => setToastMessage(null), 3000);
@@ -152,7 +155,7 @@ export function DebugView() {
           </div>
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-rose-950/40 border border-rose-800/40 text-xs font-black text-rose-300">
             <RotateCcw className="w-4 h-4 text-rose-400" />
-            <span>{pendingMistakesCount} Bugs in Bank</span>
+            <span>{mistakesCount} Bugs in Bank</span>
           </div>
         </div>
       </div>
@@ -275,13 +278,9 @@ export function DebugView() {
                 </div>
               </div>
 
-              {pendingMistakesCount > 0 ? (
+              {mistakesCount > 0 && (
                 <span className="bg-rose-500 rounded-full text-xs font-black px-2.5 py-0.5 text-white shadow-md animate-pulse">
-                  {pendingMistakesCount > 99 ? "99+" : pendingMistakesCount}
-                </span>
-              ) : (
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  All Clear
+                  {mistakesCount > 30 ? "30+" : mistakesCount}
                 </span>
               )}
             </div>
@@ -297,7 +296,7 @@ export function DebugView() {
             >
               <span>Review Bugs</span>
               <span className="text-xs bg-rose-600/60 px-2 py-0.5 rounded-full">
-                {pendingMistakesCount} Pending
+                {mistakesCount} Pending
               </span>
             </button>
           </div>

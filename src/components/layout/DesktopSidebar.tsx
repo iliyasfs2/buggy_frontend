@@ -3,10 +3,11 @@
 import type { ReactElement } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
-  useNavStore,
+  useGameStore,
   selectActiveTab,
   selectSetActiveTab,
-} from "@/store/useNavStore";
+  selectMistakesCount,
+} from "@/store/useGameStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { BuggyLogo } from "@/components/shared";
@@ -22,9 +23,9 @@ export function DesktopSidebar({
 }: DesktopSidebarProps): ReactElement {
   const router = useRouter();
   const pathname = usePathname();
-  const activeTab = useNavStore(selectActiveTab);
-  const setActiveTab = useNavStore(selectSetActiveTab);
-  const pendingMistakesCount = useNavStore((state) => state.pendingMistakesCount);
+  const activeTab = useGameStore(selectActiveTab);
+  const setActiveTab = useGameStore(selectSetActiveTab);
+  const mistakesCount = useGameStore(selectMistakesCount);
   const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
@@ -51,7 +52,7 @@ export function DesktopSidebar({
               (pathname.startsWith("/debug") && item.id === "debug") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
-            const badgeCount = item.id === "debug" ? pendingMistakesCount : item.badgeCount;
+            const badgeCount = item.id === "debug" ? mistakesCount : item.badgeCount;
 
             return (
               <button
@@ -59,6 +60,7 @@ export function DesktopSidebar({
                 type="button"
                 onClick={() => {
                   soundEffects.playSoftClick();
+                  setActiveTab(item.id);
                   if (item.id === "profile") {
                     router.push("/profile");
                   } else if (item.id === "store") {
@@ -66,7 +68,6 @@ export function DesktopSidebar({
                   } else if (item.id === "debug") {
                     router.push("/debug");
                   } else {
-                    setActiveTab(item.id);
                     if (pathname !== "/roadmap" && pathname !== "/") {
                       router.push("/roadmap");
                     }
@@ -97,7 +98,7 @@ export function DesktopSidebar({
                         : "bg-slate-800 text-slate-100 border border-slate-700/60"
                     }`}
                   >
-                    {item.id === "debug" && badgeCount > 99 ? "99+" : badgeCount}
+                    {item.id === "debug" ? (badgeCount > 30 ? "30+" : badgeCount) : badgeCount}
                   </span>
                 )}
               </button>

@@ -2,12 +2,12 @@
 
 import React, { useState, type ReactElement } from "react";
 import {
-  useNavStore,
+  useGameStore,
   selectStreakCount,
   selectByteBalance,
-  selectBatteryCount,
+  selectBattery,
   selectHasCompletedToday
-} from "@/store/useNavStore";
+} from "@/store/useGameStore";
 import { StatBadge, StreakPopover, BatteryPopover, BytePopover, CoursePopover } from "@/components/shared";
 
 export interface DesktopMetricBarProps {
@@ -20,20 +20,19 @@ export function DesktopMetricBar({ className = "" }: DesktopMetricBarProps): Rea
   const [isByteOpen, setIsByteOpen] = useState(false);
   const [isCourseOpen, setIsCourseOpen] = useState(false);
   
-  const streakCount = useNavStore(selectStreakCount);
-  const hasCompletedToday = useNavStore(selectHasCompletedToday);
-  const byteBalance = useNavStore(selectByteBalance);
-  const batteryCount = useNavStore(selectBatteryCount);
-  const activeCourse = useNavStore((state) => state.activeCourse);
-    const setBatteryCount = useNavStore((state) => state.setBatteryCount);
-  const setByteBalance = useNavStore((state) => state.setByteBalance);
-  const handleRefillBytes = () => {
-    if (byteBalance >= 350) {
-      setByteBalance(byteBalance - 350);
-      setBatteryCount(5);
+  const streakCount = useGameStore(selectStreakCount);
+  const hasCompletedToday = useGameStore(selectHasCompletedToday);
+  const byteBalance = useGameStore(selectByteBalance);
+  const batteryCount = useGameStore(selectBattery);
+  const activeCourse = useGameStore((state) => state.activeCourse);
+  const buyStoreItem = useGameStore((state) => state.buyStoreItem);
+
+  const handleRefillBytes = async () => {
+    try {
+      await buyStoreItem("refill_battery");
       setIsBatteryOpen(false);
-    } else {
-      alert("Not enough bytes!");
+    } catch {
+      alert("Not enough bytes or battery is already full!");
     }
   };
 
