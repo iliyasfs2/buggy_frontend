@@ -156,7 +156,7 @@ export function LessonPlayer({
     ) {
       return (
         Array.isArray(userInput) &&
-        userInput.length === currentStep.lines.length
+        userInput.length >= currentStep.correctOrder.length
       );
     }
     return false;

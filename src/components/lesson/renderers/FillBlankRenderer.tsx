@@ -27,7 +27,7 @@ export function FillBlankRenderer({
     return step.options && step.options.length > 0 ? shuffleArray(step.options) : [];
   }, [step.options]);
 
-  const parts = step.codeTemplate.split("____");
+  const parts = step.codeTemplate.split(/_{3,}/);
 
   return (
     <div className="w-full flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-200 ease-out h-full">

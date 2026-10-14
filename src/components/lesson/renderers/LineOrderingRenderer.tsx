@@ -137,7 +137,9 @@ export function LineOrderingRenderer({
                   className={`${CAPSULE_CLASSES} ${itemStyle} ${animationStyle} cursor-pointer`}
                 >
                   <span className="truncate">
-                    <span className="text-sky-500 mr-1.5 opacity-80">{rank + 1}.</span>
+                    {step.type !== "code_order" && (
+                      <span className="text-sky-500 mr-1.5 opacity-80">{rank + 1}.</span>
+                    )}
                     {step.lines[lineIdx]}
                   </span>
                 </Reorder.Item>
