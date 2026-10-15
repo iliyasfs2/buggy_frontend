@@ -10,6 +10,7 @@ import {
   selectStreakFreezeCount,
 } from "@/store/useNavStore";
 import { soundEffects } from "@/utils/soundEffects";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
 interface StoreItem {
   id: string;
@@ -95,8 +96,12 @@ export function StoreView() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-6 sm:py-10 flex flex-col gap-6 select-none relative">
-      <AnimatePresence>
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none relative">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-6 shrink-0">
+        <div className="hidden md:flex lg:hidden justify-end w-full">
+          <DesktopMetricBar inline />
+        </div>
+        <AnimatePresence>
         {successToast && (
           <motion.div
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -314,5 +319,10 @@ export function StoreView() {
         </div>
       </div>
     </div>
-  );
+
+    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <DesktopMetricBar inline />
+    </div>
+  </div>
+);
 }

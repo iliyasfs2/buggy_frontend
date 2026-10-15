@@ -7,6 +7,7 @@ import { AvatarCustomizerModal } from "./AvatarCustomizerModal";
 import { StatisticsGrid } from "./StatisticsGrid";
 import { AchievementsList } from "./AchievementsList";
 import { soundEffects } from "@/utils/soundEffects";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import type { AvatarConfig } from "@/services/authApi";
 
 export function ProfileView() {
@@ -32,8 +33,12 @@ export function ProfileView() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-6 sm:py-10 flex flex-col gap-8 select-none">
-      <div className="relative w-full rounded-3xl bg-slate-900/90 border-2 border-slate-800 p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center overflow-hidden">
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
+        <div className="hidden md:flex lg:hidden justify-end w-full">
+          <DesktopMetricBar inline />
+        </div>
+        <div className="relative w-full rounded-3xl bg-slate-900/90 border-2 border-slate-800 p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-blue-500/10 via-purple-500/5 to-transparent pointer-events-none" />
 
         <div className="relative mb-4 inline-flex items-center justify-center">
@@ -93,13 +98,18 @@ export function ProfileView() {
       <StatisticsGrid />
 
       <AchievementsList />
-
-      <AvatarCustomizerModal
-        isOpen={isEditModalOpen}
-        initialConfig={user?.avatar_config || user?.avatar}
-        onClose={() => setIsEditModalOpen(false)}
-        onSave={handleSaveAvatar}
-      />
     </div>
+
+    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <DesktopMetricBar inline />
+    </div>
+
+    <AvatarCustomizerModal
+      isOpen={isEditModalOpen}
+      initialConfig={user?.avatar_config || user?.avatar}
+      onClose={() => setIsEditModalOpen(false)}
+      onSave={handleSaveAvatar}
+    />
+  </div>
   );
 }

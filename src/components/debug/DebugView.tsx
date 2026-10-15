@@ -16,6 +16,7 @@ import {
 } from "@/store/useGameStore";
 import { fetchMistakesApi } from "@/services/debugApi";
 import { soundEffects } from "@/utils/soundEffects";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
 export function DebugView() {
   const router = useRouter();
@@ -33,8 +34,12 @@ export function DebugView() {
   }, [setMistakesCount]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 sm:py-10 flex flex-col gap-8 select-none relative">
-      <div className="relative w-full rounded-3xl bg-slate-900/90 border-2 border-slate-800 p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none relative">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
+        <div className="hidden md:flex lg:hidden justify-end w-full">
+          <DesktopMetricBar inline />
+        </div>
+        <div className="relative w-full rounded-3xl bg-slate-900/90 border-2 border-slate-800 p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-sky-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
 
         <div className="flex items-center gap-4 relative z-10">
@@ -259,5 +264,10 @@ export function DebugView() {
         </div>
       </section>
     </div>
-  );
+
+    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <DesktopMetricBar inline />
+    </div>
+  </div>
+);
 }

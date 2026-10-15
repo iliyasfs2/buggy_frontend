@@ -15,7 +15,7 @@ export interface DesktopMetricBarProps {
   inline?: boolean;
 }
 
-export function DesktopMetricBar({ className = "", inline = false }: DesktopMetricBarProps): ReactElement {
+export function DesktopMetricBar({ className = "", inline = true }: DesktopMetricBarProps): ReactElement {
   const [isStreakOpen, setIsStreakOpen] = useState(false);
   const [isBatteryOpen, setIsBatteryOpen] = useState(false);
   const [isByteOpen, setIsByteOpen] = useState(false);

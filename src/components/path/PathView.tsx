@@ -10,6 +10,7 @@ import { soundEffects } from "@/utils/soundEffects";
 import { ChapterSection } from "./ChapterSection";
 import { PathGuidebookModal } from "./PathGuidebookModal";
 import { PathSidebar } from "./PathSidebar";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { getChapterTheme } from "./chapterThemes";
 import { LessonPlayer } from "@/components/lesson/LessonPlayer";
 import { LESSON_JS_1_1 } from "@/data/mock/lessons/js-1-1";
@@ -122,11 +123,14 @@ export function PathView(): ReactElement {
 
   return (
     <div
-      className="w-full min-h-screen px-3.5 min-[400px]:px-4 sm:px-6 lg:px-8 pt-2 md:pt-8 lg:pt-10 pb-16 max-w-7xl mx-auto select-none"
+      className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 select-none"
       onClick={() => setSelectedNode(null)}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px] gap-8 xl:gap-12 items-start">
-        <main className="w-full flex flex-col items-center">
+      <div className="flex flex-col lg:flex-row items-start gap-8 xl:gap-14">
+        <main className="w-full max-w-xl xl:max-w-2xl flex flex-col items-center shrink-0">
+          <div className="hidden md:flex lg:hidden justify-end w-full mb-3">
+            <DesktopMetricBar inline />
+          </div>
           <div className="sticky top-14 md:top-6 z-30 w-full flex flex-col items-center pt-2.5 sm:pt-3 md:pt-6 mb-8">
             <div className="absolute top-0 inset-x-0 h-2.5 sm:h-3 md:h-6 bg-[#101826] pointer-events-none" />
             <div
@@ -183,8 +187,11 @@ export function PathView(): ReactElement {
           ))}
         </main>
 
-        <div className="hidden lg:block sticky top-24" onClick={(e) => e.stopPropagation()}>
-          <PathSidebar />
+        <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8" onClick={(e) => e.stopPropagation()}>
+          <DesktopMetricBar inline />
+          <div className="w-full max-w-[360px]">
+            <PathSidebar />
+          </div>
         </div>
       </div>
 

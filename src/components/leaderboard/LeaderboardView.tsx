@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Flame, Clock, Trophy, Sparkles } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import {
   fetchLeaderboardApi,
   type LeaderboardResponse,
@@ -349,8 +350,12 @@ export function LeaderboardView() {
   const gapToTop25 = Math.max(0, rank25Xp - currentUserInfo.season_xp + 10);
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8 pb-32 md:pb-16 select-none">
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-950 border-2 border-slate-800 shadow-2xl flex flex-col items-center text-center gap-5 overflow-hidden">
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
+        <div className="hidden md:flex lg:hidden justify-end w-full">
+          <DesktopMetricBar inline />
+        </div>
+        <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-950 border-2 border-slate-800 shadow-2xl flex flex-col items-center text-center gap-5 overflow-hidden">
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative w-32 h-24 flex items-center justify-center">
@@ -596,6 +601,11 @@ export function LeaderboardView() {
           ))}
         </div>
       </div>
+    </div>
+
+    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <DesktopMetricBar inline />
+    </div>
 
       {!isUserInTopList && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-3xl z-30">
