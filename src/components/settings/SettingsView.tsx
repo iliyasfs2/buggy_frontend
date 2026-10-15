@@ -187,7 +187,7 @@ export function SettingsView() {
   };
 
   return (
-    <div className="w-full min-h-screen px-4 sm:px-8 lg:px-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
       <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
         <div className="flex items-center justify-between w-full px-1">
           <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
