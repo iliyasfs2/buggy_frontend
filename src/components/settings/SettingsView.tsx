@@ -206,7 +206,7 @@ export function SettingsView() {
     <div className="w-full rounded-2xl bg-[#0e1626]/95 border-2 border-slate-800 p-3 sm:p-4 shadow-xl flex flex-col gap-2">
       <div className="flex flex-col gap-2">
         {SECTIONS.map((section) => {
-          const isSelected = currentSection === section.id;
+          const isDesktopSelected = currentSection === section.id;
           const Icon = section.icon;
 
           return (
@@ -217,29 +217,23 @@ export function SettingsView() {
                 soundEffects.playSoftClick();
                 setActiveSection(section.id);
               }}
-              className={`w-full px-4 py-3.5 rounded-2xl flex items-center justify-between text-left transition-all cursor-pointer select-none group ${
-                isSelected
-                  ? "bg-sky-500/10 border-2 border-sky-400 border-b-4 border-b-sky-600 text-sky-300 font-black shadow-md"
-                  : "bg-transparent border-2 border-transparent text-slate-400 font-bold hover:bg-slate-800/50 hover:text-white"
+              className={`w-full px-4 py-3.5 rounded-2xl flex items-center justify-between text-left transition-all cursor-pointer select-none touch-manipulation group active:scale-[0.99] active:translate-y-0.5 ${
+                isDesktopSelected
+                  ? "bg-slate-900/60 border-2 border-slate-800/80 text-slate-200 font-black active:bg-slate-800 lg:bg-sky-500/10 lg:border-2 lg:border-sky-400 lg:border-b-4 lg:border-b-sky-600 lg:text-sky-300 lg:shadow-md"
+                  : "bg-slate-900/60 border-2 border-slate-800/80 text-slate-200 font-bold active:bg-slate-800 lg:bg-transparent lg:border-2 lg:border-transparent lg:text-slate-400 lg:hover:bg-slate-800/50 lg:hover:text-white"
               }`}
             >
               <div className="flex items-center gap-3">
                 <Icon
                   className={`w-5 h-5 shrink-0 ${
-                    isSelected
-                      ? "text-sky-300 stroke-[2.5]"
-                      : "text-slate-400 group-hover:text-white"
+                    isDesktopSelected
+                      ? "text-slate-300 lg:text-sky-300 lg:stroke-[2.5]"
+                      : "text-slate-400 lg:group-hover:text-white"
                   }`}
                 />
                 <span className="text-sm tracking-wide">{section.label}</span>
               </div>
-              <ChevronRight
-                className={`w-4 h-4 shrink-0 transition-transform lg:hidden ${
-                  isSelected
-                    ? "text-sky-300 translate-x-0.5"
-                    : "text-slate-500 group-hover:text-slate-300"
-                }`}
-              />
+              <ChevronRight className="w-4 h-4 shrink-0 text-slate-500 transition-transform lg:hidden group-active:translate-x-0.5" />
             </button>
           );
         })}
@@ -250,7 +244,7 @@ export function SettingsView() {
       <button
         type="button"
         onClick={handleLogout}
-        className="w-full px-4 py-3.5 rounded-2xl flex items-center justify-center gap-2.5 transition-all cursor-pointer select-none bg-rose-500/10 border-2 border-rose-500/40 border-b-4 border-b-rose-700 active:border-b-2 active:translate-y-[2px] text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 font-black text-sm uppercase tracking-wider shadow-md"
+        className="w-full px-4 py-3.5 rounded-2xl flex items-center justify-center gap-2.5 transition-all cursor-pointer select-none touch-manipulation bg-rose-500/10 border-2 border-rose-500/40 border-b-4 border-b-rose-700 active:border-b-2 active:translate-y-[2px] active:bg-rose-500/25 text-rose-400 lg:hover:text-rose-300 lg:hover:bg-rose-500/20 font-black text-sm uppercase tracking-wider shadow-md"
       >
         <LogOut className="w-4 h-4 stroke-[2.5]" />
         <span>Sign Out</span>
