@@ -1,4 +1,4 @@
-import { getAuthToken } from "./authApi";
+import { getAuthToken, type AvatarConfig } from "./authApi";
 
 export interface Quest {
   id: string;
@@ -11,6 +11,7 @@ export interface Quest {
 
 export interface ProgressData {
   totalXP: number;
+  season_xp?: number;
   streak: number;
   battery: number;
   max_battery?: number;
@@ -27,6 +28,50 @@ export interface ProgressData {
   daily_quests_date?: string;
   daily_quests_state: Quest[];
   mistakes_count?: number;
+}
+
+export interface SeasonRewards {
+  first: number;
+  second: number;
+  third: number;
+}
+
+export interface SeasonData {
+  season_number: number;
+  title: string;
+  description: string;
+  end_time: string;
+  seconds_left: number;
+  rewards: SeasonRewards;
+}
+
+export interface LeaderboardUserEntry {
+  rank: number;
+  id: string;
+  username: string;
+  coder_title: string;
+  season_xp: number;
+  streak: number;
+  avatar_config?: AvatarConfig;
+  is_current_user: boolean;
+}
+
+export interface CurrentUserLeaderboardInfo {
+  id: string;
+  username: string;
+  rank: number;
+  season_xp: number;
+  total_xp: number;
+  streak: number;
+  coder_title: string;
+  avatar_config?: AvatarConfig;
+  is_top: boolean;
+}
+
+export interface LeaderboardResponse {
+  season: SeasonData;
+  current_user: CurrentUserLeaderboardInfo;
+  leaderboard: LeaderboardUserEntry[];
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -146,4 +191,21 @@ export const buyStoreItemApi = async (itemId: string): Promise<ProgressData> => 
     throw new Error(data.detail || "Failed to purchase store item");
   }
   return data;
+};
+
+export const fetchLeaderboardApi = async (): Promise<LeaderboardResponse> => {
+  const res = await fetch(`${API_BASE_URL}/api/leaderboard`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch leaderboard");
+  return res.json();
+};
+
+export const simulateSeasonEndApi = async (): Promise<{ success: boolean; season: SeasonData; user_progress: ProgressData }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev/simulate-season-end`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to simulate season end");
+  return res.json();
 };

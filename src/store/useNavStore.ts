@@ -25,6 +25,7 @@ export interface NavState {
   mistakesCount: number;
   pendingMistakesCount: number;
   totalXP: number;
+  season_xp: number;
   completedNodesCount: number;
   jsCount: number;
   activeCourse: string;
@@ -63,6 +64,7 @@ export const useNavStore = create<NavState>()(
       mistakesCount: 0,
       pendingMistakesCount: 0,
       totalXP: 0,
+      season_xp: 0,
       completedNodesCount: 0,
       jsCount: 0,
       activeCourse: "javascript",
@@ -74,6 +76,7 @@ export const useNavStore = create<NavState>()(
         set((state) => ({
           byteBalance: state.byteBalance + amount,
           totalXP: state.totalXP + amount,
+          season_xp: (state.season_xp ?? 0) + amount,
         })),
       setBattery: (count: number) =>
         set({
@@ -169,6 +172,7 @@ export const useNavStore = create<NavState>()(
           byteBalance: data.bytes,
           streakCount: data.streak,
           totalXP: data.totalXP,
+          season_xp: data.season_xp ?? state.season_xp,
           streakFreezeCount: data.streak_freeze ?? state.streakFreezeCount,
         }));
         return data;
@@ -197,6 +201,7 @@ export const useNavStore = create<NavState>()(
             mistakesCount: mistakes,
             pendingMistakesCount: mistakes,
             totalXP: data.totalXP ?? 0,
+            season_xp: data.season_xp ?? 0,
             completedNodesCount: data.completed_nodes?.length ?? 0,
             activeCourse: data.active_course ?? "javascript",
             dailyQuests: data.daily_quests_state || [],
@@ -229,6 +234,7 @@ export const selectMistakesCount = (state: NavState): number =>
 export const selectPendingMistakesCount = (state: NavState): number =>
   state.pendingMistakesCount;
 export const selectTotalXP = (state: NavState): number => state.totalXP;
+export const selectSeasonXP = (state: NavState): number => state.season_xp ?? 0;
 export const selectCompletedNodesCount = (state: NavState): number =>
   state.completedNodesCount;
 export const selectJsCount = (state: NavState): number => state.jsCount;
