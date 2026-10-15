@@ -473,14 +473,9 @@ export function SettingsView() {
               <VolumeX className="w-5 h-5" />
             )}
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-base font-black text-slate-100 truncate">
-              Sound Effects
-            </span>
-            <span className="text-sm font-semibold text-slate-400 leading-snug">
-              Play sounds for correct answers, mistakes, and victory cues
-            </span>
-          </div>
+          <span className="text-base font-black text-slate-100 truncate">
+            Sound Effects
+          </span>
         </div>
         <div className="shrink-0">
           <TactileSwitch
@@ -498,14 +493,9 @@ export function SettingsView() {
           <div className="w-11 h-11 rounded-2xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
             <Flame className="w-5 h-5 fill-orange-400" />
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-base font-black text-slate-100 truncate">
-              Daily Streak Reminder
-            </span>
-            <span className="text-sm font-semibold text-slate-400 leading-snug">
-              Evening notifications so you never lose your active streak
-            </span>
-          </div>
+          <span className="text-base font-black text-slate-100 truncate">
+            Daily Streak Reminder
+          </span>
         </div>
         <div className="shrink-0">
           <TactileSwitch
@@ -523,14 +513,9 @@ export function SettingsView() {
           <div className="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
             <Trophy className="w-5 h-5 text-amber-400" />
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-base font-black text-slate-100 truncate">
-              Leaderboard Alerts
-            </span>
-            <span className="text-sm font-semibold text-slate-400 leading-snug">
-              Notifications on rank promotions, overtakes, and season end resets
-            </span>
-          </div>
+          <span className="text-base font-black text-slate-100 truncate">
+            Leaderboard Alerts
+          </span>
         </div>
         <div className="shrink-0">
           <TactileSwitch
