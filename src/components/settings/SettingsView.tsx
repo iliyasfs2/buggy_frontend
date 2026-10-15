@@ -287,10 +287,10 @@ export function SettingsView() {
   const renderAccountCard = () => (
     <div className="bg-slate-900/90 border-2 border-slate-800 rounded-3xl p-5 sm:p-7 flex flex-col gap-6 shadow-xl">
       <form onSubmit={handleSaveAccount} className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label
             htmlFor="settings-email"
-            className="text-sm font-black uppercase tracking-wider text-slate-200"
+            className="text-base font-black uppercase tracking-wide text-slate-200"
           >
             Email Address
           </label>
@@ -308,17 +308,14 @@ export function SettingsView() {
             />
             <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
-          <span className="text-xs font-semibold text-slate-400 px-1">
-            Used for logging into your Buggy account.
-          </span>
         </div>
 
         <div className="h-px bg-slate-800/80 my-1" />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label
             htmlFor="settings-username"
-            className="text-sm font-black uppercase tracking-wider text-slate-200"
+            className="text-base font-black uppercase tracking-wide text-slate-200"
           >
             Username
           </label>
@@ -372,10 +369,10 @@ export function SettingsView() {
   const renderSecurityCard = () => (
     <div className="bg-slate-900/90 border-2 border-slate-800 rounded-3xl p-5 sm:p-7 flex flex-col gap-6 shadow-xl">
       <form onSubmit={handleChangePassword} className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label
             htmlFor="settings-current-password"
-            className="text-sm font-black uppercase tracking-wider text-slate-200"
+            className="text-base font-black uppercase tracking-wide text-slate-200"
           >
             Current Password
           </label>
@@ -405,10 +402,10 @@ export function SettingsView() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label
             htmlFor="settings-new-password"
-            className="text-sm font-black uppercase tracking-wider text-slate-200"
+            className="text-base font-black uppercase tracking-wide text-slate-200"
           >
             New Password
           </label>
