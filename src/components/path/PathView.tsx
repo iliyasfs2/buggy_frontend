@@ -174,10 +174,11 @@ export function PathView(): ReactElement {
             </div>
           </div>
 
-          {chapters.map((chapter) => (
+          {chapters.map((chapter, chapterIndex) => (
             <ChapterSection
               key={chapter.id}
               chapter={chapter}
+              chapterIndex={chapterIndex}
               onSelectNode={handleSelectNode}
               selectedNodeId={selectedNode?.id}
               unlockingNodeId={unlockingNodeId || undefined}

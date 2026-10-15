@@ -7,6 +7,7 @@ import { getChapterTheme } from "./chapterThemes";
 
 export interface ChapterSectionProps {
   chapter: Chapter;
+  chapterIndex?: number;
   onSelectNode: (node: PathNode) => void;
   selectedNodeId?: string;
   unlockingNodeId?: string;
@@ -16,6 +17,7 @@ export interface ChapterSectionProps {
 
 export function ChapterSection({
   chapter,
+  chapterIndex = (chapter.chapterNumber - 1),
   onSelectNode,
   selectedNodeId,
   unlockingNodeId,
@@ -66,6 +68,7 @@ export function ChapterSection({
             <PathNodeButton
               node={node}
               index={index}
+              chapterIndex={chapterIndex}
               palette={theme.nodePalette}
               isUnlocking={node.id === unlockingNodeId}
               onSelectNode={onSelectNode}

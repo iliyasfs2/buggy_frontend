@@ -8,6 +8,7 @@ import { NodeActionPopover } from "./NodeActionPopover";
 export interface PathNodeButtonProps {
   node: PathNode;
   index: number;
+  chapterIndex?: number;
   onSelectNode: (node: PathNode) => void;
   isSelected?: boolean;
   palette?: NodePalette;
@@ -16,11 +17,13 @@ export interface PathNodeButtonProps {
   onClose?: () => void;
 }
 
-const WINDING_OFFSETS = [0, -45, -70, -45, 0, 45, 70, 45];
+const LEFT_CHAPTER_OFFSETS = [-30, -65, -70, -40, 0];
+const RIGHT_CHAPTER_OFFSETS = [30, 65, 70, 40, 0];
 
 export function PathNodeButton({
   node,
   index,
+  chapterIndex = 0,
   onSelectNode,
   isSelected = false,
   palette,
@@ -28,7 +31,9 @@ export function PathNodeButton({
   onStartNode,
   onClose
 }: PathNodeButtonProps): ReactElement {
-  const horizontalOffset = WINDING_OFFSETS[index % WINDING_OFFSETS.length];
+  const isRightChapter = chapterIndex % 2 === 1;
+  const offsets = isRightChapter ? RIGHT_CHAPTER_OFFSETS : LEFT_CHAPTER_OFFSETS;
+  const horizontalOffset = offsets[index % offsets.length];
 
   const handleNodeClick = (e?: React.MouseEvent) => {
     e?.stopPropagation();
