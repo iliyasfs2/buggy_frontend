@@ -69,9 +69,9 @@ export function StatBadge({
 }: StatBadgeProps): ReactElement {
   const { iconSrc, iconAlt, valueColor, label, formattedValue } = resolveVariant(variant, value);
 
-  const textSize = compact ? "text-sm font-bold" : "text-base font-bold";
-  const gapSize = compact ? "gap-1.5" : "gap-2";
-  const iconSize = compact ? "w-5 h-5" : "w-6 h-6";
+  const textSize = compact ? "text-sm font-bold" : "text-base font-extrabold";
+  const gapSize = compact ? "gap-1.5" : "gap-2.5";
+  const iconSize = compact ? "w-5 h-5" : "w-6 h-6 sm:w-7 sm:h-7";
 
   return (
     <div
@@ -83,8 +83,8 @@ export function StatBadge({
       <Image
         src={iconSrc}
         alt={iconAlt}
-        width={24}
-        height={24}
+        width={28}
+        height={28}
         className={`${iconSize} object-contain shrink-0 bg-transparent`}
       />
       <span className={`${textSize} ${valueColor} leading-none`}>{formattedValue}</span>
