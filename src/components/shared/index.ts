@@ -17,3 +17,5 @@ export { CoursePopover } from "./CoursePopover";
 export type { CoursePopoverProps } from "./CoursePopover";
 export { LeaderboardIcon } from "./LeaderboardIcon";
 export { SettingsIcon } from "./SettingsIcon";
+export { MoreIcon } from "./MoreIcon";
+export type { MoreIconProps } from "./MoreIcon";
