@@ -204,19 +204,19 @@ export function SettingsView() {
 
           <div className="bg-slate-900/80 border-2 border-slate-800 rounded-3xl p-5 sm:p-6 flex flex-col gap-5 shadow-xl">
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-slate-400">
+              <label className="text-xs font-black uppercase tracking-wider text-slate-200">
                 Registered Email
               </label>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-400 cursor-not-allowed">
+              <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-800 text-slate-300 cursor-not-allowed">
                 <Lock className="w-4 h-4 text-slate-500 shrink-0" />
-                <span className="font-mono text-sm text-slate-400 truncate">
+                <span className="font-mono text-sm text-slate-300 font-bold truncate">
                   {user?.email || "user@buggy.dev"}
                 </span>
-                <span className="ml-auto text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                <span className="ml-auto text-[10px] font-black uppercase px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-400">
                   Read Only
                 </span>
               </div>
-              <span className="text-[11px] font-semibold text-slate-500 px-1">
+              <span className="text-xs font-semibold text-slate-400 px-1">
                 Your email is fixed and used for authentication.
               </span>
             </div>
@@ -227,7 +227,7 @@ export function SettingsView() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="settings-username"
-                  className="text-xs font-bold text-slate-300"
+                  className="text-xs font-black uppercase tracking-wider text-slate-200"
                 >
                   Username
                 </label>
@@ -240,7 +240,7 @@ export function SettingsView() {
                     setUsernameError(null);
                   }}
                   placeholder="Enter username"
-                  className="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm font-bold transition-all"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-sm font-bold transition-all"
                 />
               </div>
 
@@ -284,7 +284,7 @@ export function SettingsView() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="settings-current-password"
-                  className="text-xs font-bold text-slate-300"
+                  className="text-xs font-black uppercase tracking-wider text-slate-200"
                 >
                   Current Password
                 </label>
@@ -298,12 +298,12 @@ export function SettingsView() {
                       setPasswordError(null);
                     }}
                     placeholder="Enter current password"
-                    className="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm font-bold transition-all pr-12"
+                    className="w-full px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 text-sm font-bold transition-all pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setShowCurrentPass(!showCurrentPass)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 cursor-pointer"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1 cursor-pointer transition-colors"
                   >
                     {showCurrentPass ? (
                       <EyeOff className="w-4 h-4" />
@@ -317,7 +317,7 @@ export function SettingsView() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="settings-new-password"
-                  className="text-xs font-bold text-slate-300"
+                  className="text-xs font-black uppercase tracking-wider text-slate-200"
                 >
                   New Password
                 </label>
@@ -331,12 +331,12 @@ export function SettingsView() {
                       setPasswordError(null);
                     }}
                     placeholder="At least 6 characters"
-                    className="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm font-bold transition-all pr-12"
+                    className="w-full px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 text-sm font-bold transition-all pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setShowNewPass(!showNewPass)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 cursor-pointer"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1 cursor-pointer transition-colors"
                   >
                     {showNewPass ? (
                       <EyeOff className="w-4 h-4" />
