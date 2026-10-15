@@ -1,24 +1,33 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import { getAuthToken } from "@/services/authApi";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export function RouteGuard({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
   const initAuth = useAuthStore((state) => state.initAuth);
 
   useEffect(() => {
     const token = getAuthToken();
     if (!token) {
-      router.replace("/login");
-    } else {
-      initAuth();
-      setAuthorized(true);
+      window.location.replace("/login");
+      return;
     }
-  }, [router, initAuth]);
+
+    initAuth()
+      .then(() => {
+        const authed = useAuthStore.getState().isAuthenticated;
+        if (!authed) {
+          window.location.replace("/login");
+        } else {
+          setAuthorized(true);
+        }
+      })
+      .catch(() => {
+        window.location.replace("/login");
+      });
+  }, [initAuth]);
 
   if (!authorized) {
     return (
