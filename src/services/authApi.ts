@@ -135,3 +135,44 @@ export const updateAvatarApi = async (
   }
   return data;
 };
+
+export const updateUsernameApi = async (
+  username: string
+): Promise<{ success: boolean; user: UserProfile }> => {
+  const token = getAuthToken();
+  const res = await fetch(`${API_BASE_URL}/api/user/username`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ username }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to update username");
+  }
+  return data;
+};
+
+export const changePasswordApi = async (
+  current_password: string,
+  new_password: string
+): Promise<{ success: boolean; message: string }> => {
+  const token = getAuthToken();
+  const res = await fetch(`${API_BASE_URL}/api/user/password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ current_password, new_password }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to change password");
+  }
+  return data;
+};

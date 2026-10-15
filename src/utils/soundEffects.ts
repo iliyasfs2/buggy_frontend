@@ -1,7 +1,26 @@
 class SoundManager {
   private ctx: AudioContext | null = null;
+  private enabled: boolean = true;
+
+  setEnabled(val: boolean): void {
+    this.enabled = val;
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("buggy_sound_enabled", val ? "true" : "false");
+      } catch {}
+    }
+  }
+
+  isEnabled(): boolean {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("buggy_sound_enabled");
+      if (stored !== null) return stored === "true";
+    }
+    return this.enabled;
+  }
 
   private getContext(): AudioContext | null {
+    if (!this.isEnabled()) return null;
     if (typeof window === "undefined") return null;
     try {
       if (!this.ctx) {

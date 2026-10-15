@@ -27,6 +27,7 @@ interface AuthState {
   logout: () => void;
   initAuth: () => Promise<void>;
   updateAvatar: (avatar: AvatarConfig) => Promise<void>;
+  setUser: (user: UserProfile) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -35,6 +36,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: false,
   isInitialized: false,
+  setUser: (user: UserProfile) => set({ user }),
 
   login: async (payload: LoginPayload) => {
     set({ isLoading: true });

@@ -4,11 +4,9 @@ import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { Flame, Clock, Trophy, Sparkles } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useNavStore } from "@/store/useNavStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import {
   fetchLeaderboardApi,
-  simulateSeasonEndApi,
   type LeaderboardResponse,
   type LeaderboardUserEntry,
 } from "@/services/progressApi";
@@ -283,11 +281,8 @@ function formatCountdown(seconds: number): string {
 
 export function LeaderboardView() {
   const { user } = useAuthStore();
-  const syncNav = useNavStore((s) => s.syncNav);
-
   const [data, setData] = useState<LeaderboardResponse | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number>(12 * 86400 + 8 * 3600 + 14 * 60);
-  const [resetting, setResetting] = useState(false);
 
   const loadData = async () => {
     try {
@@ -313,21 +308,6 @@ export function LeaderboardView() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const handleSimulateReset = async () => {
-    if (resetting) return;
-    setResetting(true);
-    try {
-      const res = await simulateSeasonEndApi();
-      if (res.user_progress) {
-        syncNav(res.user_progress);
-      }
-      await loadData();
-    } catch {
-    } finally {
-      setResetting(false);
-    }
-  };
 
   const seasonTitle = data?.season?.title || "Season 1: Obsidian League";
   const seasonDescription =
@@ -660,17 +640,6 @@ export function LeaderboardView() {
           </div>
         </div>
       )}
-
-      <div className="flex items-center justify-center pt-2">
-        <button
-          type="button"
-          onClick={handleSimulateReset}
-          disabled={resetting}
-          className="text-xs font-bold text-slate-500 hover:text-slate-300 transition-colors px-3 py-1.5 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer disabled:opacity-50"
-        >
-          {resetting ? "Resetting Season..." : "Dev: Test Season Reset & Rewards"}
-        </button>
-      </div>
     </div>
   );
 }
