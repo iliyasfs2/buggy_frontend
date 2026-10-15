@@ -550,7 +550,7 @@ export function SettingsView() {
           activeSection !== null ? "hidden lg:flex" : "flex"
         }`}
       >
-        <div className="w-full flex justify-center">
+        <div className="hidden lg:flex w-full justify-center">
           <DesktopMetricBar inline />
         </div>
 
