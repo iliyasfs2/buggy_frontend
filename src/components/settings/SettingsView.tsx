@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   User,
@@ -188,23 +187,10 @@ export function SettingsView() {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8 pb-32 md:pb-16 select-none">
-      <div className="flex flex-col items-center text-center gap-3">
-        <div className="relative w-24 h-24 flex items-center justify-center">
-          <Image
-            src="/icons/settings.png"
-            alt="Settings Gear"
-            width={96}
-            height={96}
-            className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)]"
-            priority
-          />
-        </div>
-        <h1 className="text-3xl font-black text-slate-100 tracking-tight">
-          Settings & Account
+      <div className="flex items-center justify-end w-full px-1">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+          Settings
         </h1>
-        <p className="text-sm font-bold text-slate-400 max-w-sm">
-          Manage your account credentials, security, and game preferences.
-        </p>
       </div>
 
       <div className="flex flex-col gap-6">
