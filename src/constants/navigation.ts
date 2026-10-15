@@ -6,6 +6,7 @@ import {
   StoreIcon,
   ProfileIcon,
   LeaderboardIcon,
+  SettingsIcon,
 } from "@/components/shared";
 
 export const NAVIGATION_ITEMS: readonly NavItemConfig[] = [
@@ -38,9 +39,14 @@ export const NAVIGATION_ITEMS: readonly NavItemConfig[] = [
     id: "profile",
     label: "Profile",
     icon: ProfileIcon
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: SettingsIcon
   }
 ];
 
 export const MOBILE_NAVIGATION_ITEMS: readonly NavItemConfig[] = NAVIGATION_ITEMS.filter(
-  (item) => item.id !== "leaderboard"
+  (item) => item.id !== "leaderboard" && item.id !== "settings"
 );
