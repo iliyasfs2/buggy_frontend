@@ -127,7 +127,7 @@ export function PathView(): ReactElement {
     >
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px] gap-8 xl:gap-12 items-start">
         <main className="w-full flex flex-col items-center">
-          <div className="sticky top-14 md:top-20 z-30 w-full flex flex-col items-center pt-2.5 sm:pt-3 md:pt-6 mb-8">
+          <div className="sticky top-14 md:top-6 z-30 w-full flex flex-col items-center pt-2.5 sm:pt-3 md:pt-6 mb-8">
             <div className="absolute top-0 inset-x-0 h-2.5 sm:h-3 md:h-6 bg-[#101826] pointer-events-none" />
             <div
               className="relative w-full max-w-[560px] lg:max-w-[620px] rounded-2xl py-3 px-4 sm:py-3.5 sm:px-6 border-b-[5px] transition-colors duration-300 flex items-center justify-between gap-3 sm:gap-4 shadow-[0_12px_28px_rgba(0,0,0,0.35)] select-none"

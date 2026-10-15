@@ -20,6 +20,7 @@ import {
 import { useAuthStore } from "@/store/useAuthStore";
 import { updateUsernameApi, changePasswordApi } from "@/services/authApi";
 import { soundEffects } from "@/utils/soundEffects";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
 interface TactileSwitchProps {
   checked: boolean;
@@ -186,14 +187,18 @@ export function SettingsView() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8 pb-32 md:pb-16 select-none">
-      <div className="flex items-center justify-start w-full px-1">
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
-          Settings
-        </h1>
-      </div>
+    <div className="w-full min-h-screen px-4 sm:px-8 lg:px-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
+        <div className="flex items-center justify-between w-full px-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+            Settings
+          </h1>
+          <div className="hidden md:flex lg:hidden">
+            <DesktopMetricBar inline />
+          </div>
+        </div>
 
-      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2 px-1 text-slate-300">
             <User className="w-4 h-4 text-blue-400" />
@@ -477,5 +482,10 @@ export function SettingsView() {
         </section>
       </div>
     </div>
-  );
+
+    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <DesktopMetricBar inline />
+    </div>
+  </div>
+);
 }
