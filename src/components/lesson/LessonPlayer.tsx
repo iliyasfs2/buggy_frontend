@@ -15,7 +15,7 @@ import { soundEffects } from "@/utils/soundEffects";
 import { useGameStore, selectBattery } from "@/store/useGameStore";
 import { useBatteryTimer } from "@/hooks/useBatteryTimer";
 import { resolveMistakeApi, createMistakeApi } from "@/services/debugApi";
-import { completeNode } from "@/services/progressApi";
+import { completeNode, type ProgressData } from "@/services/progressApi";
 import { useRoadmapStore } from "@/store/useRoadmapStore";
 import { useNavStore } from "@/store/useNavStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -72,22 +72,35 @@ function AnimatedXpCounter({ target }: { target: number }): ReactElement {
   return <span>+{count} XP</span>;
 }
 
-function AnimatedStreakCard({ initialStreak }: { initialStreak: number }) {
+function AnimatedStreakCard({
+  streak,
+  increased = false,
+}: {
+  streak: number;
+  increased?: boolean;
+}) {
   return (
-    <div className="bg-slate-900/60 border border-slate-700/60 border-b-4 border-slate-950 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg w-full">
-      <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
-        STREAK
-      </span>
+    <div className="bg-slate-900/80 border border-slate-800 border-b-4 border-slate-950 rounded-2xl p-3.5 flex flex-col items-center justify-center text-center shadow-lg w-full">
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+          STREAK
+        </span>
+        {increased && (
+          <span className="text-[9px] font-black text-amber-400 bg-amber-500/20 px-1 rounded border border-amber-500/40">
+            +1 🔥
+          </span>
+        )}
+      </div>
       <div className="flex items-center gap-1.5 transition-all duration-500">
         <Flame
           className={`w-5 h-5 transition-all duration-500 ${
-            initialStreak > 0
+            streak > 0
               ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_14px_rgba(249,115,22,0.8)]"
               : "text-slate-400 fill-slate-400 grayscale opacity-40"
           }`}
         />
-        <span className="text-2xl font-black font-mono text-orange-400">
-          {initialStreak}
+        <span className="text-xl font-black font-mono text-orange-400">
+          {streak}
         </span>
       </div>
     </div>
@@ -129,6 +142,7 @@ export function LessonPlayer({
     open: boolean;
     streak: number;
   } | null>(null);
+  const [committedData, setCommittedData] = useState<ProgressData | null>(null);
   const committedRef = useRef(false);
 
   const streakCount = useGameStore((state) => state.streakCount);
@@ -410,6 +424,7 @@ export function LessonPlayer({
       mode: mode || undefined,
     })
       .then((data) => {
+        setCommittedData(data);
         useNavStore.getState().syncNav(data);
         useRoadmapStore.getState().syncProgress(data);
         if (data.streak_increased) {
@@ -492,7 +507,10 @@ export function LessonPlayer({
               </span>
             </div>
 
-            <AnimatedStreakCard initialStreak={streakCount} />
+            <AnimatedStreakCard
+              streak={committedData?.streak ?? streakCount}
+              increased={Boolean(committedData?.streak_increased)}
+            />
           </div>
         </div>
 
