@@ -187,7 +187,7 @@ export function SettingsView() {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8 pb-32 md:pb-16 select-none">
-      <div className="flex items-center justify-end w-full px-1">
+      <div className="flex items-center justify-start w-full px-1">
         <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
           Settings
         </h1>
