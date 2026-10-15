@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   User,
+  Mail,
   Lock,
   ShieldCheck,
   Volume2,
@@ -20,7 +21,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
-import { updateUsernameApi, changePasswordApi } from "@/services/authApi";
+import { updateUsernameApi, updateEmailApi, changePasswordApi } from "@/services/authApi";
 import { soundEffects } from "@/utils/soundEffects";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
@@ -79,9 +80,10 @@ export function SettingsView() {
   const [activeSection, setActiveSection] = useState<SettingsSection | null>(null);
 
   const [username, setUsername] = useState("");
-  const [usernameLoading, setUsernameLoading] = useState(false);
-  const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [usernameSuccess, setUsernameSuccess] = useState(false);
+  const [email, setEmail] = useState("");
+  const [accountLoading, setAccountLoading] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
+  const [accountSuccess, setAccountSuccess] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -98,6 +100,9 @@ export function SettingsView() {
   useEffect(() => {
     if (user?.username) {
       setUsername(user.username);
+    }
+    if (user?.email) {
+      setEmail(user.email);
     }
   }, [user]);
 
@@ -131,34 +136,54 @@ export function SettingsView() {
     }
   };
 
-  const handleUpdateUsername = async (e: React.FormEvent) => {
+  const handleSaveAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     soundEffects.playSoftClick();
-    setUsernameError(null);
-    setUsernameSuccess(false);
+    setAccountError(null);
+    setAccountSuccess(false);
 
-    const clean = username.trim();
-    if (clean.length < 3) {
-      setUsernameError("Username must be at least 3 characters");
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (cleanUsername.length < 3) {
+      setAccountError("Username must be at least 3 characters");
       return;
     }
-    if (clean === user?.username) {
-      setUsernameSuccess(true);
-      setTimeout(() => setUsernameSuccess(false), 3000);
+    if (cleanUsername.length > 30) {
+      setAccountError("Username must be at most 30 characters");
+      return;
+    }
+    if (!cleanEmail.includes("@") || !cleanEmail.includes(".")) {
+      setAccountError("Please enter a valid email address");
       return;
     }
 
-    setUsernameLoading(true);
+    const usernameChanged = cleanUsername !== (user?.username || "");
+    const emailChanged = cleanEmail !== (user?.email?.toLowerCase() || "");
+
+    if (!usernameChanged && !emailChanged) {
+      setAccountSuccess(true);
+      setTimeout(() => setAccountSuccess(false), 3000);
+      return;
+    }
+
+    setAccountLoading(true);
     try {
-      const res = await updateUsernameApi(clean);
-      setUser(res.user);
-      setUsernameSuccess(true);
-      setTimeout(() => setUsernameSuccess(false), 3000);
+      if (usernameChanged) {
+        const res = await updateUsernameApi(cleanUsername);
+        setUser(res.user);
+      }
+      if (emailChanged) {
+        const res = await updateEmailApi(cleanEmail);
+        setUser(res.user);
+      }
+      setAccountSuccess(true);
+      setTimeout(() => setAccountSuccess(false), 3000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to update username";
-      setUsernameError(msg);
+      const msg = err instanceof Error ? err.message : "Failed to update account details";
+      setAccountError(msg);
     } finally {
-      setUsernameLoading(false);
+      setAccountLoading(false);
     }
   };
 
@@ -199,8 +224,15 @@ export function SettingsView() {
   };
 
   const currentSection: SettingsSection = activeSection ?? "account";
+  const cleanUsername = username.trim();
+  const cleanEmail = email.trim().toLowerCase();
   const isUsernameModified =
-    username.trim().length >= 3 && username.trim() !== (user?.username || "");
+    cleanUsername.length >= 3 && cleanUsername !== (user?.username || "");
+  const isEmailModified =
+    cleanEmail.includes("@") &&
+    cleanEmail.includes(".") &&
+    cleanEmail !== (user?.email?.toLowerCase() || "");
+  const isAccountModified = isUsernameModified || isEmailModified;
 
   const renderMenuBox = () => (
     <div className="w-full rounded-2xl bg-[#0e1626]/95 border-2 border-slate-800 p-3 sm:p-4 shadow-xl flex flex-col gap-2">
@@ -254,27 +286,35 @@ export function SettingsView() {
 
   const renderAccountCard = () => (
     <div className="bg-slate-900/90 border-2 border-slate-800 rounded-3xl p-5 sm:p-7 flex flex-col gap-6 shadow-xl">
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-black uppercase tracking-wider text-slate-200">
-          Your Email
-        </label>
-        <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-800 text-slate-400 cursor-not-allowed">
-          <Lock className="w-4 h-4 text-slate-500 shrink-0" />
-          <span className="font-mono text-sm text-slate-300 font-black truncate">
-            {user?.email || "user@buggy.dev"}
-          </span>
-          <span className="ml-auto text-[10px] font-black uppercase px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-400">
-            Read Only
+      <form onSubmit={handleSaveAccount} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="settings-email"
+            className="text-sm font-black uppercase tracking-wider text-slate-200"
+          >
+            Email Address
+          </label>
+          <div className="relative">
+            <input
+              id="settings-email"
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setAccountError(null);
+              }}
+              placeholder="Enter your email"
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-sm font-black transition-all"
+            />
+            <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+          <span className="text-xs font-semibold text-slate-400 px-1">
+            Used for logging into your Buggy account.
           </span>
         </div>
-        <span className="text-xs font-semibold text-slate-400 px-1">
-          Your email is fixed and used for authentication.
-        </span>
-      </div>
 
-      <div className="h-px bg-slate-800/80" />
+        <div className="h-px bg-slate-800/80 my-1" />
 
-      <form onSubmit={handleUpdateUsername} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label
             htmlFor="settings-username"
@@ -282,44 +322,47 @@ export function SettingsView() {
           >
             Username
           </label>
-          <input
-            id="settings-username"
-            type="text"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setUsernameError(null);
-            }}
-            placeholder="Enter username"
-            className="w-full px-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-sm font-black transition-all"
-          />
+          <div className="relative">
+            <input
+              id="settings-username"
+              type="text"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setAccountError(null);
+              }}
+              placeholder="Enter username"
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#0b101b] border-2 border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-sm font-black transition-all"
+            />
+            <User className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
         </div>
 
-        {usernameError && (
+        {accountError && (
           <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold">
             <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{usernameError}</span>
+            <span>{accountError}</span>
           </div>
         )}
 
-        {usernameSuccess && (
+        {accountSuccess && (
           <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
             <Check className="w-4 h-4 shrink-0" />
-            <span>Username updated successfully!</span>
+            <span>Account updated successfully!</span>
           </div>
         )}
 
         <div className="flex justify-end pt-1">
           <button
             type="submit"
-            disabled={usernameLoading || !isUsernameModified}
+            disabled={accountLoading || !isAccountModified}
             className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-md select-none ${
-              !isUsernameModified || usernameLoading
+              !isAccountModified || accountLoading
                 ? "bg-slate-800 text-slate-500 border-b-4 border-slate-900 cursor-not-allowed opacity-60"
                 : "bg-emerald-600 hover:bg-emerald-500 active:translate-y-1 border-b-4 border-emerald-800 active:border-b-0 text-white cursor-pointer"
             }`}
           >
-            {usernameLoading ? "Saving..." : "Save Changes"}
+            {accountLoading ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>

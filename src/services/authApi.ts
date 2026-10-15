@@ -167,6 +167,26 @@ export const updateUsernameApi = async (
   return data;
 };
 
+export const updateEmailApi = async (
+  email: string
+): Promise<{ success: boolean; user: UserProfile }> => {
+  const token = getAuthToken();
+  const res = await fetch(`${API_BASE_URL}/api/user/email`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to update email");
+  }
+  return data;
+};
+
 export const changePasswordApi = async (
   current_password: string,
   new_password: string
