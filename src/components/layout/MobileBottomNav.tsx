@@ -8,7 +8,7 @@ import {
   selectSetActiveTab,
   selectMistakesCount
 } from "@/store/useGameStore";
-import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import { MOBILE_NAVIGATION_ITEMS } from "@/constants/navigation";
 import { soundEffects } from "@/utils/soundEffects";
 
 export interface MobileBottomNavProps {
@@ -27,7 +27,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
       aria-label="Mobile Navigation"
       className={`flex md:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-[#0f172a]/95 backdrop-blur-md border-t border-slate-800 items-stretch select-none px-4 ${className}`}
     >
-      {NAVIGATION_ITEMS.map((item) => {
+      {MOBILE_NAVIGATION_ITEMS.map((item) => {
         const isActive =
           (pathname === "/store" && item.id === "store") ||
           (pathname.startsWith("/profile") && item.id === "profile") ||

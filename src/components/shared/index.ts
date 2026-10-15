@@ -15,3 +15,4 @@ export { BytePopover } from "./BytePopover";
 export type { BytePopoverProps } from "./BytePopover";
 export { CoursePopover } from "./CoursePopover";
 export type { CoursePopoverProps } from "./CoursePopover";
+export { LeaderboardIcon } from "./LeaderboardIcon";

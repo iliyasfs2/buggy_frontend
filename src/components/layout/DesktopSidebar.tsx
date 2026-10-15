@@ -50,6 +50,7 @@ export function DesktopSidebar({
               (pathname === "/store" && item.id === "store") ||
               (pathname.startsWith("/profile") && item.id === "profile") ||
               (pathname.startsWith("/debug") && item.id === "debug") ||
+              (pathname.startsWith("/leaderboard") && item.id === "leaderboard") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
             const badgeCount = item.id === "debug" ? mistakesCount : item.badgeCount;
@@ -67,6 +68,8 @@ export function DesktopSidebar({
                     router.push("/store");
                   } else if (item.id === "debug") {
                     router.push("/debug");
+                  } else if (item.id === "leaderboard") {
+                    router.push("/leaderboard");
                   } else {
                     if (pathname !== "/roadmap" && pathname !== "/") {
                       router.push("/roadmap");

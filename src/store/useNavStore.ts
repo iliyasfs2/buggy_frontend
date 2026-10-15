@@ -10,7 +10,7 @@ import {
 } from "@/services/progressApi";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
 
-export type TabId = "path" | "debug" | "setup" | "store" | "profile";
+export type TabId = "path" | "debug" | "leaderboard" | "setup" | "store" | "profile";
 
 export interface NavState {
   activeTab: TabId;
