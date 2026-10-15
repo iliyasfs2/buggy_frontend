@@ -108,9 +108,11 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         isInitialized: true,
       });
-      const progress = await fetchUserProgress();
-      useNavStore.getState().syncNav(progress);
-      useRoadmapStore.getState().syncProgress(progress);
+      try {
+        const progress = await fetchUserProgress();
+        useNavStore.getState().syncNav(progress);
+        useRoadmapStore.getState().syncProgress(progress);
+      } catch {}
     } catch {
       removeAuthToken();
       set({ token: null, user: null, isAuthenticated: false, isInitialized: true });

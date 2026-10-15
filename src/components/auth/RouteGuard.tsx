@@ -5,8 +5,13 @@ import { getAuthToken } from "@/services/authApi";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export function RouteGuard({ children }: { children: ReactNode }) {
-  const [authorized, setAuthorized] = useState(false);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const initAuth = useAuthStore((state) => state.initAuth);
+
+  const [authorized, setAuthorized] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Boolean(getAuthToken() && useAuthStore.getState().isAuthenticated);
+  });
 
   useEffect(() => {
     const token = getAuthToken();
@@ -15,19 +20,41 @@ export function RouteGuard({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (isAuthenticated) {
+      setAuthorized(true);
+      return;
+    }
+
+    let isMounted = true;
+    const timeoutId = setTimeout(() => {
+      if (isMounted && !useAuthStore.getState().isAuthenticated) {
+        window.location.replace("/login");
+      }
+    }, 4000);
+
     initAuth()
       .then(() => {
-        const authed = useAuthStore.getState().isAuthenticated;
-        if (!authed) {
+        if (!isMounted) return;
+        if (!useAuthStore.getState().isAuthenticated) {
           window.location.replace("/login");
         } else {
           setAuthorized(true);
         }
       })
       .catch(() => {
-        window.location.replace("/login");
+        if (isMounted) {
+          window.location.replace("/login");
+        }
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
       });
-  }, [initAuth]);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [initAuth, isAuthenticated]);
 
   if (!authorized) {
     return (
@@ -44,3 +71,4 @@ export function RouteGuard({ children }: { children: ReactNode }) {
 
   return <>{children}</>;
 }
+

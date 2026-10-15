@@ -103,17 +103,28 @@ export const getMeApi = async (token?: string): Promise<UserProfile> => {
   const activeToken = token || getAuthToken();
   if (!activeToken) throw new Error("No token found");
 
-  const res = await fetch(`${API_BASE_URL}/auth/me`, {
-    headers: {
-      "Authorization": `Bearer ${activeToken}`,
-    },
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.detail || "Failed to fetch user");
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
+      headers: {
+        "Authorization": `Bearer ${activeToken}`,
+      },
+      signal: controller.signal,
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        removeAuthToken();
+      }
+      throw new Error(data.detail || "Failed to fetch user");
+    }
+    return data;
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return data;
 };
 
 export const updateAvatarApi = async (

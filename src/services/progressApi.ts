@@ -89,11 +89,19 @@ const getHeaders = (): Record<string, string> => {
 };
 
 export const fetchUserProgress = async (): Promise<ProgressData> => {
-  const res = await fetch(`${API_BASE_URL}/progress`, {
-    headers: getHeaders(),
-  });
-  if (!res.ok) throw new Error("Failed to fetch progress");
-  return res.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/progress`, {
+      headers: getHeaders(),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error("Failed to fetch progress");
+    return res.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
 };
 
 export interface CompleteNodePayload {
