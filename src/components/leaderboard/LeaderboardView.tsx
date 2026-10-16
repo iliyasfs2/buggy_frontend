@@ -317,23 +317,6 @@ export function LeaderboardView() {
     return FALLBACK_USERS;
   }, [data]);
 
-  const currentUserInfo = useMemo(() => {
-    if (data?.current_user) {
-      return data.current_user;
-    }
-    const fallbackUser = leaderboardList.find((u) => u.is_current_user);
-    return {
-      id: "current",
-      username: user?.username || "You",
-      rank: fallbackUser?.rank || 9,
-      season_xp: fallbackUser?.season_xp || 265,
-      total_xp: 265,
-      streak: fallbackUser?.streak || 3,
-      coder_title: fallbackUser?.coder_title || "Logic Maestro",
-      avatar_config: user?.avatar_config || user?.avatar,
-      is_top: true,
-    };
-  }, [data, leaderboardList, user]);
 
   return (
     <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-16 select-none">
