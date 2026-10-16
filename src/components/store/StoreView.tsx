@@ -160,83 +160,68 @@ export function StoreView() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="w-full rounded-2xl bg-slate-900/95 border-2 border-slate-800 border-b-4 border-b-slate-950 p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all">
-            <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:w-auto min-w-0">
-              <div className="w-20 h-20 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/25 flex items-center justify-center shrink-0 p-3.5 shadow-inner">
-                <Image
-                  src="/icons/battery.png"
-                  alt="Energy Refill"
-                  width={56}
-                  height={56}
-                  unoptimized
-                  className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]"
-                />
+          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-emerald-950/80 border-b-4 border-b-slate-950 shadow-xl bg-[#04142c] transition-all">
+            <Image
+              src="/images/energy-refill-banner.png"
+              alt="Full Energy Refill Banner"
+              width={1940}
+              height={458}
+              quality={100}
+              unoptimized
+              priority
+              className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#04142c]/90 via-[#04142c]/65 to-transparent sm:via-transparent pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-5 pl-5 sm:pl-6 pr-5 sm:pr-[32%] py-5 sm:py-6 min-h-[168px]">
+              <div className="w-full sm:w-auto shrink-0 flex items-center justify-start">
+                <button
+                  type="button"
+                  onClick={handleBuyBattery}
+                  disabled={isBatteryDisabled}
+                  className={`w-full sm:w-auto min-w-[144px] px-5 py-3.5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all select-none ${
+                    isBatteryFull
+                      ? "bg-[#091b34]/95 text-slate-400 border-2 border-slate-800/80 cursor-not-allowed"
+                      : !canAffordBattery
+                      ? "bg-[#091b34]/95 text-rose-400/90 border-2 border-rose-500/30 cursor-not-allowed"
+                      : "bg-emerald-500 hover:bg-emerald-400 active:translate-y-1 border-2 border-emerald-400 border-b-4 border-b-emerald-700 active:border-b-2 text-slate-950 cursor-pointer shadow-lg shadow-emerald-500/20"
+                  }`}
+                >
+                  {purchasingId === "refill_battery" ? (
+                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : isBatteryFull ? (
+                    <span>Energy is Full</span>
+                  ) : (
+                    <>
+                      <Image
+                        src="/icons/byte.png"
+                        alt="Bytes"
+                        width={18}
+                        height={18}
+                        unoptimized
+                        className={`w-4 h-4 object-contain shrink-0 ${!canAffordBattery ? "opacity-75" : ""}`}
+                      />
+                      <span className={!canAffordBattery ? "text-rose-400/90 font-black" : "text-slate-950 font-black"}>
+                        {BATTERY_REFILL_PRICE}
+                      </span>
+                    </>
+                  )}
+                </button>
               </div>
 
-              <div className="flex flex-col gap-1.5 min-w-0 flex-1">
-                <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
+              <div className="flex flex-col items-start gap-1.5 min-w-0 flex-1">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-950/75 border border-emerald-500/30 text-[11px] font-black uppercase tracking-wide text-emerald-400 backdrop-blur-sm">
+                  Current Energy: {batteryCount} / {MAX_BATTERY}
+                </span>
+
+                <h2 className="text-base sm:text-xl font-black text-white tracking-tight drop-shadow-sm">
                   Full Energy Refill
                 </h2>
 
-                <p className="text-xs sm:text-sm font-bold text-slate-400 leading-snug">
-                  Instantly refill all 5 battery bars so you can keep solving challenges without stopping.
+                <p className="text-xs sm:text-[13px] font-semibold text-slate-300 leading-snug max-w-md drop-shadow-sm">
+                  Instantly refill all 5 battery bars and keep solving challenges without stopping.
                 </p>
-
-                <div className="flex items-center gap-2.5 pt-1">
-                  <div className="flex items-center gap-1.5" aria-label={`Battery status: ${batteryCount} out of 5`}>
-                    {Array.from({ length: MAX_BATTERY }).map((_, idx) => {
-                      const isFilled = idx < batteryCount;
-                      return (
-                        <div
-                          key={idx}
-                          className={`w-6 h-2.5 rounded-sm transition-all ${
-                            isFilled
-                              ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.45)]"
-                              : "bg-slate-800 border border-slate-700"
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                  <span className="text-xs font-black text-emerald-400 font-mono">
-                    {batteryCount}/{MAX_BATTERY}
-                  </span>
-                </div>
               </div>
-            </div>
-
-            <div className="w-full sm:w-auto shrink-0 flex items-center justify-end">
-              <button
-                type="button"
-                onClick={handleBuyBattery}
-                disabled={isBatteryDisabled}
-                className={`w-full sm:w-auto min-w-[148px] px-5 py-3.5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all select-none ${
-                  isBatteryFull
-                    ? "bg-slate-800/80 text-slate-500 border-2 border-slate-700/60 cursor-not-allowed"
-                    : !canAffordBattery
-                    ? "bg-slate-800/90 text-rose-400 border-2 border-slate-700/80 cursor-not-allowed"
-                    : "bg-emerald-500 hover:bg-emerald-400 active:translate-y-1 border-2 border-emerald-400 border-b-4 border-b-emerald-700 active:border-b-2 text-slate-950 cursor-pointer shadow-lg shadow-emerald-500/10"
-                }`}
-              >
-                {purchasingId === "refill_battery" ? (
-                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                ) : isBatteryFull ? (
-                  <span>Energy is Full</span>
-                ) : (
-                  <>
-                    <Image
-                      src="/icons/byte.png"
-                      alt="Bytes"
-                      width={18}
-                      height={18}
-                      className="w-4 h-4 object-contain shrink-0"
-                    />
-                    <span className={!canAffordBattery ? "text-rose-400 font-black" : "text-slate-950 font-black"}>
-                      {BATTERY_REFILL_PRICE}
-                    </span>
-                  </>
-                )}
-              </button>
             </div>
           </div>
 
