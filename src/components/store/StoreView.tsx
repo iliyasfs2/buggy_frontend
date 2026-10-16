@@ -171,15 +171,14 @@ export function StoreView() {
               priority
               className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#04142c]/90 via-[#04142c]/65 to-transparent sm:via-transparent pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-5 pl-5 sm:pl-6 pr-5 sm:pr-[32%] py-5 sm:py-6 min-h-[168px]">
-              <div className="w-full sm:w-auto shrink-0 flex items-center justify-start">
+            <div className="relative z-10 flex items-center justify-between gap-4 pl-6 pr-[32%] sm:pr-[33%] py-6 min-h-[156px] sm:min-h-[172px]">
+              <div className="shrink-0 flex items-center">
                 <button
                   type="button"
                   onClick={handleBuyBattery}
                   disabled={isBatteryDisabled}
-                  className={`w-full sm:w-auto min-w-[144px] px-5 py-3.5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all select-none ${
+                  className={`min-w-[88px] px-4 py-3 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all select-none ${
                     isBatteryFull
                       ? "bg-[#091b34]/95 text-slate-400 border-2 border-slate-800/80 cursor-not-allowed"
                       : !canAffordBattery
@@ -190,9 +189,12 @@ export function StoreView() {
                   {purchasingId === "refill_battery" ? (
                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : isBatteryFull ? (
-                    <span>Energy is Full</span>
+                    <span>Full</span>
                   ) : (
                     <>
+                      <span className={!canAffordBattery ? "text-rose-400/90 font-black" : "text-slate-950 font-black"}>
+                        {BATTERY_REFILL_PRICE}
+                      </span>
                       <Image
                         src="/icons/byte.png"
                         alt="Bytes"
@@ -201,25 +203,18 @@ export function StoreView() {
                         unoptimized
                         className={`w-4 h-4 object-contain shrink-0 ${!canAffordBattery ? "opacity-75" : ""}`}
                       />
-                      <span className={!canAffordBattery ? "text-rose-400/90 font-black" : "text-slate-950 font-black"}>
-                        {BATTERY_REFILL_PRICE}
-                      </span>
                     </>
                   )}
                 </button>
               </div>
 
-              <div className="flex flex-col items-start gap-1.5 min-w-0 flex-1">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-950/75 border border-emerald-500/30 text-[11px] font-black uppercase tracking-wide text-emerald-400 backdrop-blur-sm">
-                  Current Energy: {batteryCount} / {MAX_BATTERY}
-                </span>
-
-                <h2 className="text-base sm:text-xl font-black text-white tracking-tight drop-shadow-sm">
+              <div className="flex flex-col items-start gap-1 min-w-0">
+                <h2 className="text-base sm:text-xl font-black text-white tracking-tight leading-tight drop-shadow-sm">
                   Full Energy Refill
                 </h2>
 
-                <p className="text-xs sm:text-[13px] font-semibold text-slate-300 leading-snug max-w-md drop-shadow-sm">
-                  Instantly refill all 5 battery bars and keep solving challenges without stopping.
+                <p className="text-xs sm:text-sm font-semibold text-slate-300 leading-snug drop-shadow-sm">
+                  Instantly refill 5 batteries
                 </p>
               </div>
             </div>
