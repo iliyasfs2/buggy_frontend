@@ -218,74 +218,75 @@ export function StoreView() {
             </div>
           </div>
 
-          <div className="w-full rounded-2xl bg-slate-900/95 border-2 border-slate-800 border-b-4 border-b-slate-950 p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all">
-            <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:w-auto min-w-0">
-              <div className="w-20 h-20 rounded-2xl bg-sky-500/10 border-2 border-sky-500/25 flex items-center justify-center shrink-0 p-2.5 shadow-inner relative">
-                <Image
-                  src="/icons/streak-freeze.png"
-                  alt="Streak Freeze"
-                  width={60}
-                  height={60}
-                  unoptimized
-                  className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]"
-                />
-              </div>
+          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-sky-950/80 border-b-4 border-b-slate-950 shadow-xl bg-[#04142c] transition-all">
+            <Image
+              src="/images/streak-freeze-banner.png"
+              alt="Streak Freeze Banner"
+              width={1958}
+              height={426}
+              quality={100}
+              unoptimized
+              priority
+              className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
+            />
 
-              <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+            <div className="relative z-10 flex flex-col items-start justify-between gap-5 pl-6 sm:pl-7 pr-[32%] sm:pr-[33%] py-5 sm:py-6 min-h-[172px] sm:min-h-[188px]">
+              <div className="flex flex-col items-start gap-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
+                  <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
                     Streak Freeze
                   </h2>
 
-                  {isFreezeEquipped ? (
-                    <span className="text-[11px] font-black uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-400/40 text-sky-300">
-                      Equipped ✓
-                    </span>
-                  ) : (
-                    <span className="text-[11px] font-black uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400">
-                      Stock: 0 / 1
-                    </span>
-                  )}
+                  <span
+                    className={`text-[11px] sm:text-xs font-black uppercase tracking-wide px-2.5 py-0.5 rounded-full backdrop-blur-sm border ${
+                      isFreezeEquipped
+                        ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
+                        : "bg-slate-950/75 border-slate-700/80 text-slate-300"
+                    }`}
+                  >
+                    Stock: {isFreezeEquipped ? 1 : 0}/1
+                  </span>
                 </div>
 
-                <p className="text-xs sm:text-sm font-bold text-slate-400 leading-snug">
-                  If you miss a day of practice for any reason, your streak won&apos;t burn and stays intact.
+                <p className="text-sm sm:text-base font-extrabold text-slate-200 leading-snug drop-shadow-sm">
+                  Prevent losing your streak
                 </p>
               </div>
-            </div>
 
-            <div className="w-full sm:w-auto shrink-0 flex items-center justify-end">
-              <button
-                type="button"
-                onClick={handleBuyStreakFreeze}
-                disabled={isFreezeDisabled}
-                className={`w-full sm:w-auto min-w-[148px] px-5 py-3.5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all select-none ${
-                  isFreezeEquipped
-                    ? "bg-sky-500/10 text-sky-300 border-2 border-sky-500/40 cursor-not-allowed"
-                    : !canAffordFreeze
-                    ? "bg-slate-800/90 text-rose-400 border-2 border-slate-700/80 cursor-not-allowed"
-                    : "bg-sky-400 hover:bg-sky-300 active:translate-y-1 border-2 border-sky-300 border-b-4 border-b-sky-600 active:border-b-2 text-slate-950 cursor-pointer shadow-lg shadow-sky-500/10"
-                }`}
-              >
-                {purchasingId === "streak_freeze" ? (
-                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                ) : isFreezeEquipped ? (
-                  <span>Active on Account</span>
-                ) : (
-                  <>
-                    <Image
-                      src="/icons/byte.png"
-                      alt="Bytes"
-                      width={18}
-                      height={18}
-                      className="w-4 h-4 object-contain shrink-0"
-                    />
-                    <span className={!canAffordFreeze ? "text-rose-400 font-black" : "text-slate-950 font-black"}>
-                      {STREAK_FREEZE_PRICE}
-                    </span>
-                  </>
-                )}
-              </button>
+              <div className="shrink-0 flex items-center pt-1">
+                <button
+                  type="button"
+                  onClick={handleBuyStreakFreeze}
+                  disabled={purchasingId !== null}
+                  className={`px-5 py-2.5 rounded-xl font-black text-sm sm:text-base tracking-wide flex items-center justify-center gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[4px] active:border-b-[2px] ${
+                    isFreezeEquipped
+                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[6px] border-b-slate-800 shadow-md"
+                      : !canAffordFreeze
+                      ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[6px] border-b-slate-800 shadow-md"
+                      : "bg-sky-400 hover:bg-sky-300 text-slate-950 border-2 border-sky-200 border-b-[6px] border-b-sky-600 shadow-lg shadow-sky-500/25"
+                  }`}
+                >
+                  {purchasingId === "streak_freeze" ? (
+                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : isFreezeEquipped ? (
+                    <span>Equipped</span>
+                  ) : (
+                    <>
+                      <Image
+                        src="/icons/byte.png"
+                        alt="Bytes"
+                        width={20}
+                        height={20}
+                        unoptimized
+                        className={`w-5 h-5 object-contain shrink-0 ${!canAffordFreeze ? "opacity-80" : ""}`}
+                      />
+                      <span className="font-black">
+                        {STREAK_FREEZE_PRICE}byte
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
