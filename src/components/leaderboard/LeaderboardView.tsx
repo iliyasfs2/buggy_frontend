@@ -389,7 +389,7 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full mb-6">
           <DesktopMetricBar inline />
         </div>
-        <div className="relative w-full select-none">
+        <div className="relative select-none -mx-2.5 w-[calc(100%+1.25rem)] sm:mx-0 sm:w-full">
           <Image
             src="/images/leaderboard-banner.png"
             alt="Leaderboard Season Banner"
@@ -409,7 +409,7 @@ export function LeaderboardView() {
 
               <div className="mt-1 sm:mt-2.5 inline-flex items-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/70 border border-cyan-400/30 backdrop-blur-md shadow-inner">
                 <span className="sm:hidden text-[10px] min-[360px]:text-xs font-black text-cyan-300 whitespace-nowrap">
-                  ⏱ {countdownDays}d {countdownHours}h until reset
+                  {countdownDays}d {countdownHours}h until reset
                 </span>
                 <span className="hidden sm:inline text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
                   {countdownDays} days and {countdownHours} hours until season reset
