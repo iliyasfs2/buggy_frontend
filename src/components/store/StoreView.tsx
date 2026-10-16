@@ -172,7 +172,17 @@ export function StoreView() {
               className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
             />
 
-            <div className="relative z-10 flex flex-row items-center justify-between gap-2.5 sm:gap-4 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+            <div className="relative z-10 flex flex-col items-start justify-between gap-2 sm:gap-3 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0">
+                <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
+                  Full Energy Refill
+                </h2>
+
+                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
+                  Instantly refill 5 batteries
+                </p>
+              </div>
+
               <div className="shrink-0 flex items-center">
                 <button
                   type="button"
@@ -205,16 +215,6 @@ export function StoreView() {
                   )}
                 </button>
               </div>
-
-              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0 flex-1">
-                <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
-                  Full Energy Refill
-                </h2>
-
-                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
-                  Instantly refill 5 batteries
-                </p>
-              </div>
             </div>
           </div>
 
@@ -230,7 +230,29 @@ export function StoreView() {
               className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
             />
 
-            <div className="relative z-10 flex flex-row items-center justify-between gap-2.5 sm:gap-4 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+            <div className="relative z-10 flex flex-col items-start justify-between gap-2 sm:gap-3 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
+                    Streak Freeze
+                  </h2>
+
+                  <span
+                    className={`text-[9px] sm:text-[11px] font-black uppercase tracking-wide px-1.5 sm:px-2 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
+                      isFreezeFull
+                        ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
+                        : "bg-slate-950/75 border-slate-700/80 text-slate-300"
+                    }`}
+                  >
+                    {Math.min(streakFreezeCount, MAX_STREAK_FREEZE)}/{MAX_STREAK_FREEZE}
+                  </span>
+                </div>
+
+                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
+                  Prevent losing your streak
+                </p>
+              </div>
+
               <div className="shrink-0 flex items-center">
                 <button
                   type="button"
@@ -262,28 +284,6 @@ export function StoreView() {
                     </>
                   )}
                 </button>
-              </div>
-
-              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                  <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
-                    Streak Freeze
-                  </h2>
-
-                  <span
-                    className={`text-[9px] sm:text-[11px] font-black uppercase tracking-wide px-1.5 sm:px-2 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
-                      isFreezeFull
-                        ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
-                        : "bg-slate-950/75 border-slate-700/80 text-slate-300"
-                    }`}
-                  >
-                    {Math.min(streakFreezeCount, MAX_STREAK_FREEZE)}/{MAX_STREAK_FREEZE}
-                  </span>
-                </div>
-
-                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
-                  Prevent losing your streak
-                </p>
               </div>
             </div>
           </div>
