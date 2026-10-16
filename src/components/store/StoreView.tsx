@@ -172,32 +172,22 @@ export function StoreView() {
               className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
             />
 
-            <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:gap-5 pl-5 sm:pl-7 pr-[32%] sm:pr-[33%] py-4 sm:py-6 min-h-[152px] sm:min-h-[176px] md:min-h-[188px]">
-              <div className="flex flex-col items-start gap-1 min-w-0">
-                <h2 className="text-base sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
-                  Full Energy Refill
-                </h2>
-
-                <p className="text-xs sm:text-sm md:text-base font-extrabold text-slate-200 leading-snug drop-shadow-sm">
-                  Instantly refill 5 batteries
-                </p>
-              </div>
-
-              <div className="shrink-0 flex items-center pt-1">
+            <div className="relative z-10 flex flex-row items-center justify-between gap-2.5 sm:gap-4 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+              <div className="shrink-0 flex items-center">
                 <button
                   type="button"
                   onClick={handleBuyBattery}
                   disabled={purchasingId !== null}
-                  className={`w-[116px] sm:w-[148px] h-9 sm:h-12 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
+                  className={`w-[92px] sm:w-[124px] md:w-[136px] px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl font-black text-xs md:text-sm tracking-wide flex items-center justify-center gap-1 sm:gap-1.5 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] md:active:translate-y-[4px] active:border-b-[2px] ${
                     isBatteryFull
-                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[5px] sm:border-b-[6px] border-b-slate-800 shadow-md"
+                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[4px] md:border-b-[6px] border-b-slate-800 shadow-md"
                       : !canAffordBattery
-                      ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[5px] sm:border-b-[6px] border-b-slate-800 shadow-md"
-                      : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-2 border-emerald-300 border-b-[5px] sm:border-b-[6px] border-b-emerald-700 shadow-lg shadow-emerald-500/25"
+                      ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[4px] md:border-b-[6px] border-b-slate-800 shadow-md"
+                      : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-2 border-emerald-300 border-b-[4px] md:border-b-[6px] border-b-emerald-700 shadow-lg shadow-emerald-500/25"
                   }`}
                 >
                   {purchasingId === "refill_battery" ? (
-                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    <span className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
                       <Image
@@ -206,7 +196,7 @@ export function StoreView() {
                         width={20}
                         height={20}
                         unoptimized
-                        className={`w-4 h-4 sm:w-5 sm:h-5 object-contain shrink-0 ${isBatteryFull ? "grayscale opacity-80" : !canAffordBattery ? "opacity-80" : ""}`}
+                        className={`w-3.5 h-3.5 md:w-4 md:h-4 object-contain shrink-0 ${isBatteryFull ? "grayscale opacity-80" : !canAffordBattery ? "opacity-80" : ""}`}
                       />
                       <span className="font-black">
                         {BATTERY_REFILL_PRICE}byte
@@ -214,6 +204,16 @@ export function StoreView() {
                     </>
                   )}
                 </button>
+              </div>
+
+              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0 flex-1">
+                <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
+                  Full Energy Refill
+                </h2>
+
+                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
+                  Instantly refill 5 batteries
+                </p>
               </div>
             </div>
           </div>
@@ -230,15 +230,48 @@ export function StoreView() {
               className="absolute inset-0 w-full h-full object-cover object-right select-none pointer-events-none"
             />
 
-            <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:gap-5 pl-5 sm:pl-7 pr-[32%] sm:pr-[33%] py-4 sm:py-6 min-h-[152px] sm:min-h-[176px] md:min-h-[188px]">
-              <div className="flex flex-col items-start gap-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-                  <h2 className="text-base sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+            <div className="relative z-10 flex flex-row items-center justify-between gap-2.5 sm:gap-4 p-3 sm:p-4 md:p-5 pr-[30%] sm:pr-[32%] min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+              <div className="shrink-0 flex items-center">
+                <button
+                  type="button"
+                  onClick={handleBuyStreakFreeze}
+                  disabled={purchasingId !== null}
+                  className={`w-[92px] sm:w-[124px] md:w-[136px] px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl font-black text-xs md:text-sm tracking-wide flex items-center justify-center gap-1 sm:gap-1.5 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] md:active:translate-y-[4px] active:border-b-[2px] ${
+                    isFreezeFull
+                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[4px] md:border-b-[6px] border-b-slate-800 shadow-md"
+                      : !canAffordFreeze
+                      ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[4px] md:border-b-[6px] border-b-slate-800 shadow-md"
+                      : "bg-sky-400 hover:bg-sky-300 text-slate-950 border-2 border-sky-200 border-b-[4px] md:border-b-[6px] border-b-sky-600 shadow-lg shadow-sky-500/25"
+                  }`}
+                >
+                  {purchasingId === "streak_freeze" ? (
+                    <span className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Image
+                        src="/icons/byte.png"
+                        alt="Bytes"
+                        width={20}
+                        height={20}
+                        unoptimized
+                        className={`w-3.5 h-3.5 md:w-4 md:h-4 object-contain shrink-0 ${isFreezeFull ? "grayscale opacity-80" : !canAffordFreeze ? "opacity-80" : ""}`}
+                      />
+                      <span className="font-black">
+                        {STREAK_FREEZE_PRICE}byte
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <h2 className="text-sm sm:text-base md:text-lg font-black text-white tracking-tight leading-tight drop-shadow-md">
                     Streak Freeze
                   </h2>
 
                   <span
-                    className={`text-[10px] sm:text-xs font-black uppercase tracking-wide px-2 sm:px-2.5 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
+                    className={`text-[9px] sm:text-[11px] font-black uppercase tracking-wide px-1.5 sm:px-2 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
                       isFreezeFull
                         ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
                         : "bg-slate-950/75 border-slate-700/80 text-slate-300"
@@ -248,42 +281,9 @@ export function StoreView() {
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm md:text-base font-extrabold text-slate-200 leading-snug drop-shadow-sm">
+                <p className="text-xs md:text-sm font-bold text-slate-200 leading-snug drop-shadow-sm">
                   Prevent losing your streak
                 </p>
-              </div>
-
-              <div className="shrink-0 flex items-center pt-1">
-                <button
-                  type="button"
-                  onClick={handleBuyStreakFreeze}
-                  disabled={purchasingId !== null}
-                  className={`w-[116px] sm:w-[148px] h-9 sm:h-12 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
-                    isFreezeFull
-                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[5px] sm:border-b-[6px] border-b-slate-800 shadow-md"
-                      : !canAffordFreeze
-                      ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[5px] sm:border-b-[6px] border-b-slate-800 shadow-md"
-                      : "bg-sky-400 hover:bg-sky-300 text-slate-950 border-2 border-sky-200 border-b-[5px] sm:border-b-[6px] border-b-sky-600 shadow-lg shadow-sky-500/25"
-                  }`}
-                >
-                  {purchasingId === "streak_freeze" ? (
-                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <Image
-                        src="/icons/byte.png"
-                        alt="Bytes"
-                        width={20}
-                        height={20}
-                        unoptimized
-                        className={`w-4 h-4 sm:w-5 sm:h-5 object-contain shrink-0 ${isFreezeFull ? "grayscale opacity-80" : !canAffordFreeze ? "opacity-80" : ""}`}
-                      />
-                      <span className="font-black">
-                        {STREAK_FREEZE_PRICE}byte
-                      </span>
-                    </>
-                  )}
-                </button>
               </div>
             </div>
           </div>
