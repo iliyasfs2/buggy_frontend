@@ -401,14 +401,14 @@ export function LeaderboardView() {
             className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
 
-          <div className="absolute top-[8%] bottom-[7%] left-[4%] right-[30%] flex flex-row items-center justify-end">
+          <div className="absolute top-[8%] bottom-[7%] left-[3%] right-[34%] sm:right-[30%] flex flex-row items-center justify-end">
             <div className="flex flex-col justify-center items-end text-right">
               <h1 className="text-sm min-[360px]:text-base min-[420px]:text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
                 Current Compile Season
               </h1>
 
               <div className="mt-1 sm:mt-2.5 inline-flex items-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/70 border border-cyan-400/30 backdrop-blur-md shadow-inner">
-                <span className="sm:hidden text-[10px] min-[360px]:text-xs font-black text-cyan-300 whitespace-nowrap">
+                <span className="sm:hidden text-xs min-[360px]:text-sm font-black text-cyan-300 whitespace-nowrap">
                   {countdownDays}d {countdownHours}h until reset
                 </span>
                 <span className="hidden sm:inline text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
