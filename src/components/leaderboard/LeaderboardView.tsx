@@ -335,11 +335,6 @@ export function LeaderboardView() {
     };
   }, [data, leaderboardList, user]);
 
-  const top1 = leaderboardList[0];
-  const top2 = leaderboardList[1];
-  const top3 = leaderboardList[2];
-  const remainingList = leaderboardList.slice(3);
-
   const isUserInTopList = currentUserInfo.is_top && currentUserInfo.rank <= 25;
   const rank25Xp = leaderboardList[24]?.season_xp || 40;
   const gapToTop25 = Math.max(0, rank25Xp - currentUserInfo.season_xp + 10);
@@ -362,15 +357,14 @@ export function LeaderboardView() {
             className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
 
-          <div className="absolute top-[9%] bottom-[7%] left-[4%] right-[32%] flex flex-row items-center justify-end">
+          <div className="absolute top-[8%] bottom-[7%] left-[4%] right-[30%] flex flex-row items-center justify-end">
             <div className="flex flex-col justify-center items-end text-right">
-              <h1 className="text-sm sm:text-lg md:text-xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+              <h1 className="text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
                 Current Compile Season
               </h1>
 
-              <div className="mt-1 inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg bg-slate-950/60 border border-cyan-400/25 backdrop-blur-sm">
-                <span className="text-[10px] sm:text-xs">⏳</span>
-                <span className="text-[10px] sm:text-xs md:text-sm font-black text-cyan-300 whitespace-nowrap">
+              <div className="mt-1.5 sm:mt-2.5 inline-flex items-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/70 border border-cyan-400/30 backdrop-blur-md shadow-inner">
+                <span className="text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
                   {countdownDays} days and {countdownHours} hours until season reset
                 </span>
               </div>
@@ -378,176 +372,109 @@ export function LeaderboardView() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-amber-400" />
-            Top 3 Champions
-          </h2>
-          <span className="text-xs font-bold text-slate-400">
-            Podium Rewards
-          </span>
-        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-sm font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-amber-400" />
+              League Rankings
+            </h2>
+            <span className="text-xs font-bold text-slate-400">
+              Top 25 Contenders
+            </span>
+          </div>
 
-        <div className="grid grid-cols-3 gap-2.5 sm:gap-4 items-end pt-4 pb-2">
-          {top2 && (
-            <div className="flex flex-col items-center">
-              <div className="relative mb-2 flex flex-col items-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950 border-2 border-slate-300 shadow-lg shadow-slate-400/20 overflow-hidden flex items-center justify-center">
-                  <AvatarRenderer config={top2.avatar_config} size={80} />
-                </div>
-                <span className="absolute -bottom-2 px-2 py-0.5 rounded-full bg-slate-400 text-slate-950 font-black text-[11px] shadow">
-                  #2
-                </span>
-              </div>
-              <div className="w-full flex flex-col items-center p-3 rounded-2xl bg-slate-900/80 border-2 border-slate-400/30 text-center gap-1 shadow-md">
-                <span className="text-xs sm:text-sm font-black text-slate-100 truncate w-full">
-                  {top2.username}
-                </span>
-                <span className="text-[10px] sm:text-xs font-bold text-slate-400 truncate w-full">
-                  {top2.coder_title}
-                </span>
-                <div className="flex items-center gap-1 text-[11px] font-mono text-orange-400 font-bold">
-                  <Flame className="w-3 h-3 fill-orange-400" />
-                  {top2.streak}d
-                </div>
-                <div className="mt-1 px-2 py-0.5 rounded-lg bg-slate-800 text-slate-200 font-mono font-black text-xs sm:text-sm">
-                  {top2.season_xp} <span className="text-[10px] text-slate-400 font-sans">XP</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {top1 && (
-            <div className="flex flex-col items-center">
-              <div className="relative mb-2 flex flex-col items-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-950 border-4 border-amber-400 shadow-xl shadow-amber-500/30 overflow-hidden flex items-center justify-center ring-4 ring-amber-500/20">
-                  <AvatarRenderer config={top1.avatar_config} size={96} />
-                </div>
-                <span className="absolute -bottom-2 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-md">
-                  #1
-                </span>
-              </div>
-              <div className="w-full flex flex-col items-center p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-500/50 text-center gap-1 shadow-lg shadow-amber-500/10">
-                <span className="text-xs sm:text-base font-black text-amber-200 truncate w-full">
-                  {top1.username}
-                </span>
-                <span className="text-[10px] sm:text-xs font-black text-amber-400 truncate w-full">
-                  {top1.coder_title}
-                </span>
-                <div className="flex items-center gap-1 text-xs font-mono text-orange-400 font-bold">
-                  <Flame className="w-3.5 h-3.5 fill-orange-400" />
-                  {top1.streak}d
-                </div>
-                <div className="mt-1 px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-black text-sm sm:text-base">
-                  {top1.season_xp} <span className="text-[10px] text-amber-400/80 font-sans">XP</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {top3 && (
-            <div className="flex flex-col items-center">
-              <div className="relative mb-2 flex flex-col items-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950 border-2 border-amber-700 shadow-lg shadow-amber-700/20 overflow-hidden flex items-center justify-center">
-                  <AvatarRenderer config={top3.avatar_config} size={80} />
-                </div>
-                <span className="absolute -bottom-2 px-2 py-0.5 rounded-full bg-amber-700 text-white font-black text-[11px] shadow">
-                  #3
-                </span>
-              </div>
-              <div className="w-full flex flex-col items-center p-3 rounded-2xl bg-slate-900/80 border-2 border-amber-700/35 text-center gap-1 shadow-md">
-                <span className="text-xs sm:text-sm font-black text-slate-200 truncate w-full">
-                  {top3.username}
-                </span>
-                <span className="text-[10px] sm:text-xs font-bold text-slate-400 truncate w-full">
-                  {top3.coder_title}
-                </span>
-                <div className="flex items-center gap-1 text-[11px] font-mono text-orange-400 font-bold">
-                  <Flame className="w-3 h-3 fill-orange-400" />
-                  {top3.streak}d
-                </div>
-                <div className="mt-1 px-2 py-0.5 rounded-lg bg-slate-800 text-slate-200 font-mono font-black text-xs sm:text-sm">
-                  {top3.season_xp} <span className="text-[10px] text-slate-400 font-sans">XP</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm font-black text-slate-200 uppercase tracking-wider">
-            League Rankings
-          </h2>
-          <span className="text-xs font-bold text-slate-400">
-            Top 25 Contenders
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          {remainingList.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
-                item.is_current_user
-                  ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
-                  : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
-              }`}
-            >
-              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                <div className="w-8 flex items-center justify-center shrink-0">
-                  <span className="font-mono font-bold text-slate-500 text-sm">
-                    {item.rank}
-                  </span>
-                </div>
-
-                <div className="w-10 h-10 rounded-full bg-slate-950 border border-slate-800 overflow-hidden shrink-0 flex items-center justify-center">
-                  {item.avatar_config ? (
-                    <AvatarRenderer config={item.avatar_config} size={40} />
-                  ) : (
-                    <span className="font-black text-slate-400 text-sm">
-                      {item.username.slice(0, 2).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`font-black text-sm truncate ${
-                        item.is_current_user ? "text-blue-300" : "text-slate-200"
-                      }`}
-                    >
-                      {item.username}
-                    </span>
-                    {item.is_current_user && (
-                      <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
-                        YOU
+          <div className="flex flex-col gap-2">
+            {leaderboardList.map((item) => (
+              <div
+                key={item.id}
+                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
+                  item.is_current_user
+                    ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
+                    : item.rank === 1
+                    ? "bg-amber-500/10 border-amber-500/40 shadow-sm hover:border-amber-500/60"
+                    : item.rank === 2
+                    ? "bg-slate-300/5 border-slate-400/30 hover:border-slate-400/50"
+                    : item.rank === 3
+                    ? "bg-amber-700/5 border-amber-700/30 hover:border-amber-700/50"
+                    : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
+                }`}
+              >
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-8 flex items-center justify-center shrink-0">
+                    {item.rank === 1 ? (
+                      <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow-md shadow-amber-500/30">
+                        1
+                      </span>
+                    ) : item.rank === 2 ? (
+                      <span className="w-6 h-6 rounded-full bg-slate-300 text-slate-950 font-black text-xs flex items-center justify-center shadow-md shadow-slate-400/30">
+                        2
+                      </span>
+                    ) : item.rank === 3 ? (
+                      <span className="w-6 h-6 rounded-full bg-amber-700 text-white font-black text-xs flex items-center justify-center shadow-md shadow-amber-800/30">
+                        3
+                      </span>
+                    ) : (
+                      <span className="font-mono font-bold text-slate-500 text-sm">
+                        {item.rank}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                    <span className="text-slate-400 truncate">{item.coder_title}</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1 text-orange-400/90 font-mono">
-                      <Flame className="w-3 h-3 fill-orange-400" />
-                      {item.streak}d
-                    </span>
+
+                  <div
+                    className={`w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center ${
+                      item.rank === 1
+                        ? "border-2 border-amber-400 shadow-sm shadow-amber-500/20"
+                        : item.rank === 2
+                        ? "border-2 border-slate-300"
+                        : item.rank === 3
+                        ? "border-2 border-amber-700"
+                        : "border border-slate-800"
+                    }`}
+                  >
+                    {item.avatar_config ? (
+                      <AvatarRenderer config={item.avatar_config} size={40} />
+                    ) : (
+                      <span className="font-black text-slate-400 text-sm">
+                        {item.username.slice(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`font-black text-sm truncate ${
+                          item.is_current_user ? "text-blue-300" : "text-slate-200"
+                        }`}
+                      >
+                        {item.username}
+                      </span>
+                      {item.is_current_user && (
+                        <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
+                          YOU
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                      <span className="text-slate-400 truncate">{item.coder_title}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1 text-orange-400/90 font-mono">
+                        <Flame className="w-3 h-3 fill-orange-400" />
+                        {item.streak}d
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="font-mono font-black text-sm sm:text-base text-slate-200">
-                  {item.season_xp} <span className="text-xs text-slate-500 font-sans">XP</span>
-                </span>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-mono font-black text-sm sm:text-base text-slate-200">
+                    {item.season_xp} <span className="text-xs text-slate-500 font-sans">XP</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
     </div>
 
     <div className="hidden lg:flex flex-1 justify-center sticky top-8">
