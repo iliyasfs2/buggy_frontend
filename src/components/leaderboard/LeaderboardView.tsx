@@ -402,19 +402,13 @@ export function LeaderboardView() {
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                   <div className="w-8 flex items-center justify-center shrink-0">
                     {item.rank === 1 ? (
-                      <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow-md shadow-amber-500/30">
-                        1
-                      </span>
+                      <span className="text-xl leading-none select-none drop-shadow">👑</span>
                     ) : item.rank === 2 ? (
-                      <span className="w-6 h-6 rounded-full bg-slate-300 text-slate-950 font-black text-xs flex items-center justify-center shadow-md shadow-slate-400/30">
-                        2
-                      </span>
+                      <span className="text-xl leading-none select-none drop-shadow">🥈</span>
                     ) : item.rank === 3 ? (
-                      <span className="w-6 h-6 rounded-full bg-amber-700 text-white font-black text-xs flex items-center justify-center shadow-md shadow-amber-800/30">
-                        3
-                      </span>
+                      <span className="text-xl leading-none select-none drop-shadow">🥉</span>
                     ) : (
-                      <span className="font-mono font-bold text-slate-500 text-sm">
+                      <span className="font-mono font-bold text-slate-300 text-sm">
                         {item.rank}
                       </span>
                     )}
@@ -441,7 +435,7 @@ export function LeaderboardView() {
                   </div>
 
                   <div className="flex flex-col min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span
                         className={`font-black text-sm truncate ${
                           item.is_current_user ? "text-blue-300" : "text-slate-200"
@@ -449,6 +443,21 @@ export function LeaderboardView() {
                       >
                         {item.username}
                       </span>
+                      {item.rank === 1 && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
+                          Senior
+                        </span>
+                      )}
+                      {item.rank === 2 && (
+                        <span className="px-2 py-0.5 rounded-md bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[10px] font-black uppercase tracking-wider">
+                          Mid-Level
+                        </span>
+                      )}
+                      {item.rank === 3 && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[10px] font-black uppercase tracking-wider">
+                          Junior
+                        </span>
+                      )}
                       {item.is_current_user && (
                         <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
                           YOU
@@ -467,8 +476,8 @@ export function LeaderboardView() {
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono font-black text-sm sm:text-base text-slate-200">
-                    {item.season_xp} <span className="text-xs text-slate-500 font-sans">XP</span>
+                  <span className="font-mono font-black text-sm sm:text-base text-amber-400">
+                    {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
                   </span>
                 </div>
               </div>
@@ -517,8 +526,8 @@ export function LeaderboardView() {
                 <Flame className="w-3.5 h-3.5 fill-orange-400" />
                 {currentUserInfo.streak}d
               </div>
-              <span className="font-mono font-black text-base text-blue-300">
-                {currentUserInfo.season_xp} <span className="text-xs text-blue-400/70 font-sans">XP</span>
+              <span className="font-mono font-black text-base text-amber-400">
+                {currentUserInfo.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
               </span>
             </div>
           </div>
