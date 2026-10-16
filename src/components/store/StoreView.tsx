@@ -8,6 +8,7 @@ import {
   useNavStore,
   selectByteBalance,
   selectBatteryCount,
+  selectStreakFreezeCount,
 } from "@/store/useNavStore";
 import { fetchUserProgress } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
@@ -16,10 +17,12 @@ import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 const BATTERY_REFILL_PRICE = 100;
 const STREAK_FREEZE_PRICE = 150;
 const MAX_BATTERY = 5;
+const MAX_STREAK_FREEZE = 2;
 
 export function StoreView() {
   const byteBalance = useNavStore(selectByteBalance);
   const batteryCount = useNavStore(selectBatteryCount);
+  const streakFreezeCount = useNavStore(selectStreakFreezeCount);
   const buyStoreItem = useNavStore((state) => state.buyStoreItem);
   const syncNav = useNavStore((state) => state.syncNav);
 
@@ -72,6 +75,13 @@ export function StoreView() {
   const handleBuyStreakFreeze = async () => {
     if (purchasingId) return;
 
+    if (streakFreezeCount >= MAX_STREAK_FREEZE) {
+      soundEffects.playIncorrect();
+      setErrorToast(`Monthly limit of ${MAX_STREAK_FREEZE} Streak Freezes reached!`);
+      setTimeout(() => setErrorToast(null), 3000);
+      return;
+    }
+
     if (byteBalance < STREAK_FREEZE_PRICE) {
       soundEffects.playIncorrect();
       setErrorToast(`Not enough Bytes! You need ${STREAK_FREEZE_PRICE} Bytes.`);
@@ -100,6 +110,7 @@ export function StoreView() {
 
   const isBatteryFull = batteryCount >= MAX_BATTERY;
   const canAffordBattery = byteBalance >= BATTERY_REFILL_PRICE;
+  const isFreezeFull = streakFreezeCount >= MAX_STREAK_FREEZE;
   const canAffordFreeze = byteBalance >= STREAK_FREEZE_PRICE;
 
   return (
@@ -221,9 +232,21 @@ export function StoreView() {
 
             <div className="relative z-10 flex flex-col items-start justify-between gap-2 sm:gap-4 pl-4 sm:pl-7 pr-[30%] sm:pr-[33%] py-3 sm:py-5 md:py-6 min-h-[108px] sm:min-h-[164px] md:min-h-[184px]">
               <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0">
-                <h2 className="text-sm sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
-                  Streak Freeze
-                </h2>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+                  <h2 className="text-sm sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+                    Streak Freeze
+                  </h2>
+
+                  <span
+                    className={`text-[9px] sm:text-xs font-black uppercase tracking-wide px-2 sm:px-2.5 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
+                      isFreezeFull
+                        ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
+                        : "bg-slate-950/75 border-slate-700/80 text-slate-300"
+                    }`}
+                  >
+                    {Math.min(streakFreezeCount, MAX_STREAK_FREEZE)}/{MAX_STREAK_FREEZE}
+                  </span>
+                </div>
 
                 <p className="text-[11px] sm:text-sm md:text-base font-extrabold text-slate-200 leading-snug drop-shadow-sm">
                   Prevent losing your streak
@@ -236,7 +259,9 @@ export function StoreView() {
                   onClick={handleBuyStreakFreeze}
                   disabled={purchasingId !== null}
                   className={`w-[116px] sm:w-[148px] h-9 sm:h-12 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
-                    !canAffordFreeze
+                    isFreezeFull
+                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[4px] sm:border-b-[6px] border-b-slate-800 shadow-md"
+                      : !canAffordFreeze
                       ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[4px] sm:border-b-[6px] border-b-slate-800 shadow-md"
                       : "bg-sky-400 hover:bg-sky-300 text-slate-950 border-2 border-sky-200 border-b-[4px] sm:border-b-[6px] border-b-sky-600 shadow-lg shadow-sky-500/25"
                   }`}
@@ -251,7 +276,7 @@ export function StoreView() {
                         width={20}
                         height={20}
                         unoptimized
-                        className={`w-3.5 h-3.5 sm:w-5 sm:h-5 object-contain shrink-0 ${!canAffordFreeze ? "opacity-80" : ""}`}
+                        className={`w-3.5 h-3.5 sm:w-5 sm:h-5 object-contain shrink-0 ${isFreezeFull ? "grayscale opacity-80" : !canAffordFreeze ? "opacity-80" : ""}`}
                       />
                       <span className="font-black">
                         {STREAK_FREEZE_PRICE}byte
