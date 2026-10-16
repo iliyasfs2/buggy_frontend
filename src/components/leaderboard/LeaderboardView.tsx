@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { Flame, Clock, Trophy, Sparkles } from "lucide-react";
+import { Flame, Trophy } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
@@ -270,20 +270,18 @@ const FALLBACK_USERS: LeaderboardUserEntry[] = [
   },
 ];
 
-function formatCountdown(seconds: number): string {
-  if (seconds <= 0) return "00d 00h 00m 00s";
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
+function getCountdownParts(seconds: number): { days: string; hours: string } {
+  const safe = Math.max(0, seconds);
+  const days = Math.floor(safe / 86400);
+  const hours = Math.floor((safe % 86400) / 3600);
   const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${pad(days)}d ${pad(hours)}h ${pad(minutes)}m ${pad(secs)}s`;
+  return { days: pad(days), hours: pad(hours) };
 }
 
 export function LeaderboardView() {
   const { user } = useAuthStore();
   const [data, setData] = useState<LeaderboardResponse | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState<number>(12 * 86400 + 8 * 3600 + 14 * 60);
+  const [secondsLeft, setSecondsLeft] = useState<number>(6 * 86400 + 12 * 3600);
 
   const loadData = async () => {
     try {
@@ -310,10 +308,7 @@ export function LeaderboardView() {
     return () => clearInterval(timer);
   }, []);
 
-  const seasonTitle = data?.season?.title || "Season 1: Obsidian League";
-  const seasonDescription =
-    data?.season?.description ||
-    "Special Byte rewards awarded to the Top 3 coders at season end!";
+  const countdown = getCountdownParts(secondsLeft);
 
   const leaderboardList = useMemo(() => {
     if (data?.leaderboard && data.leaderboard.length > 0) {
@@ -355,81 +350,30 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full">
           <DesktopMetricBar inline />
         </div>
-        <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-950 border-2 border-slate-800 shadow-2xl flex flex-col items-center text-center gap-5 overflow-hidden">
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative w-32 h-24 flex items-center justify-center">
+        <div className="relative w-full">
           <Image
-            src="/icons/leaderboard.png"
-            alt="Season Podium"
-            width={128}
-            height={96}
-            className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(245,158,11,0.35)]"
+            src="/images/leaderboard-banner.png"
+            alt="Current Build Season"
+            width={1990}
+            height={480}
+            quality={100}
+            unoptimized
             priority
+            className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] select-none pointer-events-none"
           />
-        </div>
-
-        <div className="flex flex-col gap-2 max-w-lg">
-          <div className="inline-flex items-center justify-center gap-1.5 mx-auto px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" />
-            Active League Season
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-slate-100 tracking-tight">
-            {seasonTitle}
-          </h1>
-          <p className="text-xs sm:text-sm font-semibold text-slate-400">
-            {seasonDescription}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2.5 sm:gap-4 w-full max-w-md pt-1">
-          <div className="flex flex-col items-center p-2.5 sm:p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 shadow-md">
-            <span className="text-[10px] sm:text-xs font-black text-amber-400 uppercase tracking-wider">
-              1st Place
-            </span>
-            <div className="flex items-center gap-1 mt-1">
-              <Image src="/icons/byte.png" alt="Byte" width={16} height={16} className="w-4 h-4 object-contain" />
-              <span className="font-mono font-black text-xs sm:text-sm text-slate-100">
-                +200
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center p-2.5 sm:p-3 rounded-2xl bg-slate-400/10 border border-slate-400/30 shadow-md">
-            <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider">
-              2nd Place
-            </span>
-            <div className="flex items-center gap-1 mt-1">
-              <Image src="/icons/byte.png" alt="Byte" width={16} height={16} className="w-4 h-4 object-contain" />
-              <span className="font-mono font-black text-xs sm:text-sm text-slate-100">
-                +100
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center p-2.5 sm:p-3 rounded-2xl bg-amber-700/15 border border-amber-700/35 shadow-md">
-            <span className="text-[10px] sm:text-xs font-black text-amber-500 uppercase tracking-wider">
-              3rd Place
-            </span>
-            <div className="flex items-center gap-1 mt-1">
-              <Image src="/icons/byte.png" alt="Byte" width={16} height={16} className="w-4 h-4 object-contain" />
-              <span className="font-mono font-black text-xs sm:text-sm text-slate-100">
-                +50
+          <div className="absolute top-[8.5%] bottom-[1.5%] left-0 w-[66%] flex flex-col justify-center items-start pl-4 sm:pl-8 md:pl-10 pr-2 gap-1.5 sm:gap-3">
+            <h1 className="text-sm sm:text-2xl md:text-[28px] font-black text-white tracking-tight leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              Current Build Season
+            </h1>
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl bg-[#040d21]/75 border border-blue-400/25 shadow-inner backdrop-blur-sm">
+              <span className="text-xs sm:text-base leading-none">⏳</span>
+              <span className="text-[9.5px] sm:text-xs md:text-sm font-extrabold text-amber-300 tracking-wide whitespace-nowrap">
+                {countdown.days} Days & {countdown.hours} Hours until season reset
               </span>
             </div>
           </div>
         </div>
-
-        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-inner mt-1">
-          <Clock className="w-4 h-4 text-amber-400 animate-pulse" />
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-            Season Ends In:
-          </span>
-          <span className="font-mono font-black text-sm sm:text-base text-amber-300">
-            {formatCountdown(secondsLeft)}
-          </span>
-        </div>
-      </div>
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between px-1">
