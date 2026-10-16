@@ -74,6 +74,22 @@ export interface LeaderboardResponse {
   leaderboard: LeaderboardUserEntry[];
 }
 
+export interface UserProfileData {
+  id: string;
+  username: string;
+  avatar_config?: AvatarConfig;
+  joined_at: string;
+  streak: number;
+  total_xp: number;
+  season_xp: number;
+  current_rank: number;
+  rank_title: string | null;
+  followers_count: number;
+  following_count: number;
+  is_following: boolean;
+  is_me: boolean;
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const getHeaders = (): Record<string, string> => {
@@ -215,5 +231,31 @@ export const simulateSeasonEndApi = async (): Promise<{ success: boolean; season
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to simulate season end");
+  return res.json();
+};
+
+export const fetchUserProfileApi = async (userId: string): Promise<UserProfileData> => {
+  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/profile`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch user profile");
+  return res.json();
+};
+
+export const followUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
+  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/follow`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to follow user");
+  return res.json();
+};
+
+export const unfollowUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
+  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/follow`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to unfollow user");
   return res.json();
 };
