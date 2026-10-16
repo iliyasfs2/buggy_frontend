@@ -160,7 +160,7 @@ export function StoreView() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-slate-700 border-b-4 border-b-slate-700 shadow-xl bg-[#04142c] transition-all">
+          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#0d234a] border-b-4 border-b-[#061229] shadow-xl bg-[#04142c] transition-all">
             <Image
               src="/images/energy-refill-banner.png"
               alt="Full Energy Refill Banner"
@@ -218,7 +218,7 @@ export function StoreView() {
             </div>
           </div>
 
-          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-slate-700 border-b-4 border-b-slate-700 shadow-xl bg-[#04142c] transition-all">
+          <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#0d234a] border-b-4 border-b-[#061229] shadow-xl bg-[#04142c] transition-all">
             <Image
               src="/images/streak-freeze-banner.png"
               alt="Streak Freeze Banner"
