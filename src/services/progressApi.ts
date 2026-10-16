@@ -235,7 +235,7 @@ export const simulateSeasonEndApi = async (): Promise<{ success: boolean; season
 };
 
 export const fetchUserProfileApi = async (userId: string): Promise<UserProfileData> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/profile`, {
+  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/profile`, {
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch user profile");
@@ -243,7 +243,7 @@ export const fetchUserProfileApi = async (userId: string): Promise<UserProfileDa
 };
 
 export const followUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/follow`, {
+  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/follow`, {
     method: "POST",
     headers: getHeaders(),
   });
@@ -252,10 +252,33 @@ export const followUserApi = async (userId: string): Promise<{ success: boolean;
 };
 
 export const unfollowUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${userId}/follow`, {
+  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/follow`, {
     method: "DELETE",
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to unfollow user");
+  return res.json();
+};
+
+export interface UserConnectionItem {
+  id: string;
+  username: string;
+  avatar_config?: AvatarConfig;
+  total_xp: number;
+  season_xp?: number;
+  rank?: number;
+  rank_title?: string | null;
+}
+
+export interface UserConnectionsResponse {
+  followers: UserConnectionItem[];
+  following: UserConnectionItem[];
+}
+
+export const fetchUserConnectionsApi = async (userId: string): Promise<UserConnectionsResponse> => {
+  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/connections`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch user connections");
   return res.json();
 };

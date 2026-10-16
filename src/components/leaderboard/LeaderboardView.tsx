@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
@@ -11,7 +12,6 @@ import {
   type LeaderboardResponse,
   type LeaderboardUserEntry,
 } from "@/services/progressApi";
-import { UserProfileModal } from "./UserProfileModal";
 
 const FALLBACK_USERS: LeaderboardUserEntry[] = [
   {
@@ -235,10 +235,10 @@ function getCountdownParts(seconds: number): { days: string; hours: string } {
 }
 
 export function LeaderboardView() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const [data, setData] = useState<LeaderboardResponse | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number>(6 * 86400 + 12 * 3600);
-  const [selectedUser, setSelectedUser] = useState<LeaderboardUserEntry | null>(null);
 
   const loadData = async () => {
     try {
@@ -304,7 +304,7 @@ export function LeaderboardView() {
     return (
       <div
         key={item.id}
-        onClick={() => setSelectedUser(item)}
+        onClick={() => router.push(`/profile/${encodeURIComponent(displayName)}`)}
         className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user
             ? "bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-indigo-950/80 border-blue-500 border-b-blue-700 shadow-xl shadow-blue-950/50 ring-1 ring-blue-400/50"
@@ -429,13 +429,6 @@ export function LeaderboardView() {
       <div className="hidden lg:flex flex-1 justify-center sticky top-8">
         <DesktopMetricBar inline />
       </div>
-
-      {selectedUser && (
-        <UserProfileModal
-          userEntry={selectedUser}
-          onClose={() => setSelectedUser(null)}
-        />
-      )}
     </div>
   );
 }
