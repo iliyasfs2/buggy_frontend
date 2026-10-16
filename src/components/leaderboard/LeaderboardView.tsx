@@ -389,11 +389,11 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full mb-6">
           <DesktopMetricBar inline />
         </div>
-        <div className="relative select-none -mx-2.5 w-[calc(100%+1.25rem)] sm:mx-0 sm:w-full">
+        <div className="relative w-full select-none">
           <Image
             src="/images/leaderboard-banner.png"
             alt="Leaderboard Season Banner"
-            width={2991}
+            width={2399}
             height={714}
             quality={100}
             unoptimized
@@ -401,7 +401,7 @@ export function LeaderboardView() {
             className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
 
-          <div className="absolute top-[8%] bottom-[7%] left-[3%] right-[34%] sm:right-[30%] flex flex-row items-center justify-end">
+          <div className="absolute top-[8%] bottom-[7%] left-[3%] right-[32%] flex flex-row items-center justify-end">
             <div className="flex flex-col justify-center items-end text-right">
               <h1 className="text-sm min-[360px]:text-base min-[420px]:text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
                 Current Compile Season
