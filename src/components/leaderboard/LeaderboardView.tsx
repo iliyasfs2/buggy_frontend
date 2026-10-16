@@ -227,12 +227,13 @@ const FALLBACK_USERS: LeaderboardUserEntry[] = [
   },
 ];
 
-function getCountdownParts(seconds: number): { days: string; hours: string } {
+function getCountdownParts(seconds: number): { days: string; hours: string; minutes: string } {
   const safe = Math.max(0, seconds);
   const days = Math.floor(safe / 86400);
   const hours = Math.floor((safe % 86400) / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
   const pad = (n: number) => n.toString().padStart(2, "0");
-  return { days: pad(days), hours: pad(hours) };
+  return { days: pad(days), hours: pad(hours), minutes: pad(minutes) };
 }
 
 export function LeaderboardView() {
@@ -266,7 +267,7 @@ export function LeaderboardView() {
     return () => clearInterval(timer);
   }, []);
 
-  const { days: countdownDays, hours: countdownHours } = getCountdownParts(secondsLeft);
+  const { days: countdownDays, hours: countdownHours, minutes: countdownMinutes } = getCountdownParts(secondsLeft);
 
   const top20List = useMemo(() => {
     const list = data?.leaderboard && data.leaderboard.length > 0 ? data.leaderboard : FALLBACK_USERS;
@@ -309,23 +310,23 @@ export function LeaderboardView() {
           soundEffects.playSoftClick();
           router.push(`/profile/${encodeURIComponent(displayName)}`);
         }}
-        className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
+        className={`flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user
             ? "bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-indigo-950/80 border-blue-500 border-b-blue-700 shadow-xl shadow-blue-950/50 ring-1 ring-blue-400/50"
             : "bg-[#101826] border-slate-700 border-b-slate-600 shadow-md shadow-black/40 hover:border-slate-600 hover:border-b-slate-500"
         }`}
       >
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-          <div className="w-8 flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+          <div className="w-7 sm:w-8 flex items-center justify-center shrink-0">
             {item.rank === 1 ? (
-              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">👑</span>
+              <span className="text-lg sm:text-2xl leading-none select-none drop-shadow">👑</span>
             ) : item.rank === 2 ? (
-              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥈</span>
+              <span className="text-lg sm:text-2xl leading-none select-none drop-shadow">🥈</span>
             ) : item.rank === 3 ? (
-              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥉</span>
+              <span className="text-lg sm:text-2xl leading-none select-none drop-shadow">🥉</span>
             ) : (
               <span
-                className={`font-mono font-black text-sm sm:text-base ${
+                className={`font-mono font-black text-xs sm:text-base ${
                   item.is_current_user ? "text-cyan-400" : "text-slate-200"
                 }`}
               >
@@ -335,47 +336,47 @@ export function LeaderboardView() {
           </div>
 
           <div
-            className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border-2 shadow-sm ${
+            className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border-2 shadow-sm ${
               item.is_current_user ? "border-blue-400/60" : "border-slate-800"
             }`}
           >
-            <AvatarRenderer config={avatarConfig} size={44} />
+            <AvatarRenderer config={avatarConfig} size={44} className="w-full h-full" />
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <span
-              className={`font-black text-base sm:text-lg tracking-normal truncate ${
+              className={`font-black text-sm sm:text-lg tracking-normal truncate max-w-[105px] min-[360px]:max-w-[135px] min-[420px]:max-w-[180px] sm:max-w-none ${
                 item.is_current_user ? "text-cyan-300" : "text-white"
               }`}
             >
               {displayName}
             </span>
             {item.rank === 1 && (
-              <span className="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider">
+              <span className="shrink-0 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
                 Senior
               </span>
             )}
             {item.rank === 2 && (
-              <span className="px-2 py-0.5 rounded-lg bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[11px] font-black uppercase tracking-wider">
+              <span className="shrink-0 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
                 Mid-Level
               </span>
             )}
             {item.rank === 3 && (
-              <span className="px-2 py-0.5 rounded-lg bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[11px] font-black uppercase tracking-wider">
+              <span className="shrink-0 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
                 Junior
               </span>
             )}
             {item.is_current_user && (
-              <span className="text-[11px] uppercase font-black px-2 py-0.5 rounded-lg bg-blue-500 text-slate-950 tracking-wide">
+              <span className="shrink-0 text-[9px] sm:text-[11px] uppercase font-black px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-blue-500 text-slate-950 tracking-wide">
                 YOU
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="font-mono font-black text-base sm:text-lg text-amber-400">
-            {item.season_xp.toLocaleString()} <span className="text-xs sm:text-sm text-amber-300 font-black font-sans">XP</span>
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-2">
+          <span className="font-mono font-black text-sm sm:text-lg text-amber-400 whitespace-nowrap">
+            {item.season_xp.toLocaleString()} <span className="text-[10px] sm:text-sm text-amber-300 font-black font-sans">XP</span>
           </span>
         </div>
       </div>
@@ -388,7 +389,7 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full mb-6">
           <DesktopMetricBar inline />
         </div>
-        <div className="relative w-full select-none">
+        <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#0d234a] border-b-4 border-b-slate-700 shadow-xl bg-[#04142c] transition-all select-none min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
           <Image
             src="/images/leaderboard-banner.png"
             alt="Leaderboard Season Banner"
@@ -397,20 +398,21 @@ export function LeaderboardView() {
             quality={100}
             unoptimized
             priority
-            className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none select-none"
           />
 
-          <div className="absolute top-[8%] bottom-[7%] left-[4%] right-[30%] flex flex-row items-center justify-end">
-            <div className="flex flex-col justify-center items-end text-right">
-              <h1 className="text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
-                Current Compile Season
-              </h1>
+          <div className="relative z-10 flex flex-col justify-center items-end text-right min-h-[96px] sm:min-h-[132px] md:min-h-[152px] p-3 sm:p-5 pr-[32%] sm:pr-[30%]">
+            <h1 className="text-sm min-[360px]:text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
+              Current Compile Season
+            </h1>
 
-              <div className="mt-1.5 sm:mt-2.5 inline-flex items-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/70 border border-cyan-400/30 backdrop-blur-md shadow-inner">
-                <span className="text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
-                  {countdownDays} days and {countdownHours} hours until season reset
-                </span>
-              </div>
+            <div className="mt-1.5 sm:mt-2.5 inline-flex items-center px-2 sm:px-3.5 py-0.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/80 border border-cyan-400/30 backdrop-blur-md shadow-inner">
+              <span className="sm:hidden text-[10px] min-[360px]:text-[11px] font-black text-cyan-300 whitespace-nowrap">
+                ⏱ {countdownDays}d {countdownHours}h until reset
+              </span>
+              <span className="hidden sm:inline text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
+                {countdownDays} days and {countdownHours} hours until season reset
+              </span>
             </div>
           </div>
         </div>
