@@ -223,51 +223,6 @@ const FALLBACK_USERS: LeaderboardUserEntry[] = [
     streak: 1,
     is_current_user: false,
   },
-  {
-    rank: 21,
-    id: "peer_20",
-    username: "Hannah Schmidt",
-    coder_title: "Binary Overlord",
-    season_xp: 80,
-    streak: 1,
-    is_current_user: false,
-  },
-  {
-    rank: 22,
-    id: "peer_21",
-    username: "Taro Tanaka",
-    coder_title: "Binary Overlord",
-    season_xp: 70,
-    streak: 1,
-    is_current_user: false,
-  },
-  {
-    rank: 23,
-    id: "peer_22",
-    username: "Leila Hassan",
-    coder_title: "Binary Overlord",
-    season_xp: 60,
-    streak: 1,
-    is_current_user: false,
-  },
-  {
-    rank: 24,
-    id: "peer_23",
-    username: "Mateo Rossi",
-    coder_title: "Binary Overlord",
-    season_xp: 50,
-    streak: 1,
-    is_current_user: false,
-  },
-  {
-    rank: 25,
-    id: "peer_24",
-    username: "Olga Novak",
-    coder_title: "Binary Overlord",
-    season_xp: 40,
-    streak: 0,
-    is_current_user: false,
-  },
 ];
 
 function getCountdownParts(seconds: number): { days: string; hours: string } {
@@ -310,13 +265,115 @@ export function LeaderboardView() {
 
   const { days: countdownDays, hours: countdownHours } = getCountdownParts(secondsLeft);
 
-  const leaderboardList = useMemo(() => {
-    if (data?.leaderboard && data.leaderboard.length > 0) {
-      return data.leaderboard;
-    }
-    return FALLBACK_USERS;
+  const top20List = useMemo(() => {
+    const list = data?.leaderboard && data.leaderboard.length > 0 ? data.leaderboard : FALLBACK_USERS;
+    return list.slice(0, 20);
   }, [data]);
 
+  const isUserInTop20 = useMemo(() => {
+    return top20List.some((item) => item.is_current_user);
+  }, [top20List]);
+
+  const outsideUserEntry: LeaderboardUserEntry | null = useMemo(() => {
+    if (isUserInTop20) {
+      return null;
+    }
+    if (data?.current_user) {
+      return {
+        rank: data.current_user.rank,
+        id: data.current_user.id,
+        username: data.current_user.username || user?.username || "You",
+        coder_title: data.current_user.coder_title,
+        season_xp: data.current_user.season_xp,
+        streak: data.current_user.streak,
+        avatar_config: data.current_user.avatar_config || user?.avatar_config || user?.avatar,
+        is_current_user: true,
+      };
+    }
+    return null;
+  }, [data, isUserInTop20, user]);
+
+  const renderRow = (item: LeaderboardUserEntry) => {
+    const avatarConfig = item.is_current_user
+      ? (user?.avatar_config || user?.avatar || item.avatar_config || DEFAULT_AVATAR_CONFIG)
+      : (item.avatar_config || DEFAULT_AVATAR_CONFIG);
+    const displayName = item.is_current_user ? (user?.username || item.username) : item.username;
+
+    return (
+      <div
+        key={item.id}
+        className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 ${
+          item.is_current_user
+            ? "bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-indigo-950/80 border-blue-500 border-b-blue-700 shadow-xl shadow-blue-950/50 ring-1 ring-blue-400/50"
+            : "bg-[#0b1324] border-slate-800 border-b-slate-950 shadow-md shadow-black/40 hover:border-slate-700 hover:border-b-slate-900"
+        }`}
+      >
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <div className="w-8 flex items-center justify-center shrink-0">
+            {item.rank === 1 ? (
+              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">👑</span>
+            ) : item.rank === 2 ? (
+              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥈</span>
+            ) : item.rank === 3 ? (
+              <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥉</span>
+            ) : (
+              <span
+                className={`font-mono font-black text-sm sm:text-base ${
+                  item.is_current_user ? "text-cyan-400" : "text-slate-200"
+                }`}
+              >
+                {item.rank}
+              </span>
+            )}
+          </div>
+
+          <div
+            className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border-2 shadow-sm ${
+              item.is_current_user ? "border-blue-400/60" : "border-slate-800"
+            }`}
+          >
+            <AvatarRenderer config={avatarConfig} size={44} />
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span
+              className={`font-black text-base sm:text-lg tracking-normal truncate ${
+                item.is_current_user ? "text-cyan-300" : "text-white"
+              }`}
+            >
+              {displayName}
+            </span>
+            {item.rank === 1 && (
+              <span className="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider">
+                Senior
+              </span>
+            )}
+            {item.rank === 2 && (
+              <span className="px-2 py-0.5 rounded-lg bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[11px] font-black uppercase tracking-wider">
+                Mid-Level
+              </span>
+            )}
+            {item.rank === 3 && (
+              <span className="px-2 py-0.5 rounded-lg bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[11px] font-black uppercase tracking-wider">
+                Junior
+              </span>
+            )}
+            {item.is_current_user && (
+              <span className="text-[11px] uppercase font-black px-2 py-0.5 rounded-lg bg-blue-500 text-slate-950 tracking-wide">
+                YOU
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="font-mono font-black text-base sm:text-lg text-amber-400">
+            {item.season_xp.toLocaleString()} <span className="text-xs sm:text-sm text-amber-300 font-black font-sans">XP</span>
+          </span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-16 select-none">
@@ -352,79 +409,17 @@ export function LeaderboardView() {
         </div>
 
         <div className="w-full flex flex-col gap-2.5 pt-4 pb-8">
-          {leaderboardList.map((item) => {
-            const avatarConfig = item.is_current_user
-              ? (user?.avatar_config || user?.avatar || item.avatar_config || DEFAULT_AVATAR_CONFIG)
-              : (item.avatar_config || DEFAULT_AVATAR_CONFIG);
-            const displayName = item.is_current_user ? (user?.username || item.username) : item.username;
-
-            return (
-              <div
-                key={item.id}
-                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 ${
-                  item.is_current_user
-                    ? "bg-blue-600/20 border-blue-500 border-b-blue-700 shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/40"
-                    : "bg-[#0b1324] border-slate-800 border-b-slate-950 shadow-md shadow-black/40 hover:border-slate-700 hover:border-b-slate-900"
-                }`}
-              >
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                  <div className="w-8 flex items-center justify-center shrink-0">
-                    {item.rank === 1 ? (
-                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">👑</span>
-                    ) : item.rank === 2 ? (
-                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥈</span>
-                    ) : item.rank === 3 ? (
-                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥉</span>
-                    ) : (
-                      <span className="font-mono font-black text-slate-200 text-sm sm:text-base">
-                        {item.rank}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border-2 border-slate-800 shadow-sm">
-                    <AvatarRenderer config={avatarConfig} size={44} />
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-wrap min-w-0">
-                    <span
-                      className={`font-black text-base sm:text-lg tracking-normal truncate ${
-                        item.is_current_user ? "text-blue-300" : "text-white"
-                      }`}
-                    >
-                      {displayName}
-                    </span>
-                    {item.rank === 1 && (
-                      <span className="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider">
-                        Senior
-                      </span>
-                    )}
-                    {item.rank === 2 && (
-                      <span className="px-2 py-0.5 rounded-lg bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[11px] font-black uppercase tracking-wider">
-                        Mid-Level
-                      </span>
-                    )}
-                    {item.rank === 3 && (
-                      <span className="px-2 py-0.5 rounded-lg bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[11px] font-black uppercase tracking-wider">
-                        Junior
-                      </span>
-                    )}
-                    {item.is_current_user && (
-                      <span className="text-[11px] uppercase font-black px-2 py-0.5 rounded-lg bg-blue-500 text-slate-950 tracking-wide">
-                        YOU
-                      </span>
-                    )}
-                  </div>
+          {top20List.map(renderRow)}
+          {outsideUserEntry && (
+            <>
+              {outsideUserEntry.rank > 21 && (
+                <div className="flex items-center justify-center py-1 text-slate-500 select-none">
+                  <span className="text-xl tracking-[0.4em] font-black leading-none opacity-60">•••</span>
                 </div>
-
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono font-black text-base sm:text-lg text-amber-400">
-                    {item.season_xp.toLocaleString()} <span className="text-xs sm:text-sm text-amber-300 font-black font-sans">XP</span>
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              )}
+              {renderRow(outsideUserEntry)}
+            </>
+          )}
         </div>
       </div>
 
