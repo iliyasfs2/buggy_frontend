@@ -6,6 +6,7 @@ import { Flame } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
+import { DEFAULT_AVATAR_CONFIG } from "@/services/authApi";
 import {
   fetchLeaderboardApi,
   type LeaderboardResponse,
@@ -368,105 +369,71 @@ export function LeaderboardView() {
           </div>
         </div>
 
-        <div className="w-full border-l-2 border-r-2 border-slate-800/80 flex flex-col gap-2 pt-3 pb-8 px-2 sm:px-3">
-          {leaderboardList.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
-                item.is_current_user
-                  ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
-                  : item.rank === 1
-                  ? "bg-amber-500/10 border-amber-500/40 shadow-sm hover:border-amber-500/60"
-                  : item.rank === 2
-                  ? "bg-slate-300/5 border-slate-400/30 hover:border-slate-400/50"
-                  : item.rank === 3
-                  ? "bg-amber-700/5 border-amber-700/30 hover:border-amber-700/50"
-                  : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
-              }`}
-            >
-              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                <div className="w-8 flex items-center justify-center shrink-0">
-                  {item.rank === 1 ? (
-                    <span className="text-xl leading-none select-none drop-shadow">👑</span>
-                  ) : item.rank === 2 ? (
-                    <span className="text-xl leading-none select-none drop-shadow">🥈</span>
-                  ) : item.rank === 3 ? (
-                    <span className="text-xl leading-none select-none drop-shadow">🥉</span>
-                  ) : (
-                    <span className="font-mono font-bold text-slate-300 text-sm">
-                      {item.rank}
-                    </span>
-                  )}
-                </div>
+        <div className="w-full flex flex-col gap-2.5 pt-4 pb-8">
+          {leaderboardList.map((item) => {
+            const avatarConfig = item.is_current_user
+              ? (user?.avatar_config || user?.avatar || item.avatar_config || DEFAULT_AVATAR_CONFIG)
+              : (item.avatar_config || DEFAULT_AVATAR_CONFIG);
+            const displayName = item.is_current_user ? (user?.username || item.username) : item.username;
 
-                <div
-                  className={`w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center ${
-                    item.rank === 1
-                      ? "border-2 border-amber-400 shadow-sm shadow-amber-500/20"
-                      : item.rank === 2
-                      ? "border-2 border-slate-300"
-                      : item.rank === 3
-                      ? "border-2 border-amber-700"
-                      : "border border-slate-800"
-                  }`}
-                >
-                  {item.avatar_config ? (
-                    <AvatarRenderer config={item.avatar_config} size={40} />
-                  ) : (
-                    <span className="font-black text-slate-400 text-sm">
-                      {item.username.slice(0, 2).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={`font-black text-sm truncate ${
-                        item.is_current_user ? "text-blue-300" : "text-slate-200"
-                      }`}
-                    >
-                      {item.username}
-                    </span>
-                    {item.rank === 1 && (
-                      <span className="px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
-                        Senior
-                      </span>
-                    )}
-                    {item.rank === 2 && (
-                      <span className="px-2 py-0.5 rounded-md bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[10px] font-black uppercase tracking-wider">
-                        Mid-Level
-                      </span>
-                    )}
-                    {item.rank === 3 && (
-                      <span className="px-2 py-0.5 rounded-md bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[10px] font-black uppercase tracking-wider">
-                        Junior
-                      </span>
-                    )}
-                    {item.is_current_user && (
-                      <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
-                        YOU
+            return (
+              <div
+                key={item.id}
+                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
+                  item.is_current_user
+                    ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
+                    : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
+                }`}
+              >
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-8 flex items-center justify-center shrink-0">
+                    {item.rank === 1 ? (
+                      <span className="text-xl leading-none select-none drop-shadow">👑</span>
+                    ) : item.rank === 2 ? (
+                      <span className="text-xl leading-none select-none drop-shadow">🥈</span>
+                    ) : item.rank === 3 ? (
+                      <span className="text-xl leading-none select-none drop-shadow">🥉</span>
+                    ) : (
+                      <span className="font-mono font-bold text-slate-300 text-sm">
+                        {item.rank}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                    <span className="text-slate-400 truncate">{item.coder_title}</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1 text-orange-400/90 font-mono">
-                      <Flame className="w-3 h-3 fill-orange-400" />
-                      {item.streak}d
-                    </span>
+
+                  <div className="w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border border-slate-800">
+                    <AvatarRenderer config={avatarConfig} size={40} />
+                  </div>
+
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`font-black text-sm sm:text-base tracking-normal truncate ${
+                          item.is_current_user ? "text-blue-400" : "text-slate-100"
+                        }`}
+                      >
+                        {displayName}
+                      </span>
+                      {item.is_current_user && (
+                        <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
+                          YOU
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-orange-400/90 mt-0.5">
+                      <Flame className="w-3.5 h-3.5 fill-orange-400" />
+                      <span>{item.streak}d streak</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="font-mono font-black text-sm sm:text-base text-amber-400">
-                  {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
-                </span>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-mono font-black text-sm sm:text-base text-amber-400">
+                    {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
