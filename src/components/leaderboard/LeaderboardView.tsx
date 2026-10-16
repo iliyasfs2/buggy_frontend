@@ -308,7 +308,7 @@ export function LeaderboardView() {
     return () => clearInterval(timer);
   }, []);
 
-  const countdown = getCountdownParts(secondsLeft);
+  const { days: countdownDays, hours: countdownHours } = getCountdownParts(secondsLeft);
 
   const leaderboardList = useMemo(() => {
     if (data?.leaderboard && data.leaderboard.length > 0) {
@@ -350,32 +350,35 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full">
           <DesktopMetricBar inline />
         </div>
-
-        <div className="relative w-full">
+        <div className="relative w-full select-none">
           <Image
             src="/images/leaderboard-banner.png"
-            alt="Current Build Season"
-            width={1990}
-            height={480}
+            alt="Leaderboard Season Banner"
+            width={2991}
+            height={714}
             quality={100}
             unoptimized
             priority
-            className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] select-none pointer-events-none"
+            className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
-          <div className="absolute top-[8.5%] bottom-[1.5%] left-0 w-[66%] flex flex-col justify-center items-start pl-4 sm:pl-8 md:pl-10 pr-2 gap-1.5 sm:gap-3">
-            <h1 className="text-sm sm:text-2xl md:text-[28px] font-black text-white tracking-tight leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              Current Build Season
-            </h1>
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl bg-[#040d21]/75 border border-blue-400/25 shadow-inner backdrop-blur-sm">
-              <span className="text-xs sm:text-base leading-none">⏳</span>
-              <span className="text-[9.5px] sm:text-xs md:text-sm font-extrabold text-amber-300 tracking-wide whitespace-nowrap">
-                {countdown.days} Days & {countdown.hours} Hours until season reset
-              </span>
+
+          <div className="absolute top-[9%] bottom-[7%] left-[4%] right-[32%] flex flex-row items-center justify-end">
+            <div className="flex flex-col justify-center items-end text-right">
+              <h1 className="text-sm sm:text-lg md:text-xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+                Current Compile Season
+              </h1>
+
+              <div className="mt-1 inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg bg-slate-950/60 border border-cyan-400/25 backdrop-blur-sm">
+                <span className="text-[10px] sm:text-xs">⏳</span>
+                <span className="text-[10px] sm:text-xs md:text-sm font-black text-cyan-300 whitespace-nowrap">
+                  {countdownDays} days and {countdownHours} hours until season reset
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
             <Trophy className="w-4 h-4 text-amber-400" />
