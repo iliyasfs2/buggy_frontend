@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { Flame } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
@@ -379,56 +378,65 @@ export function LeaderboardView() {
             return (
               <div
                 key={item.id}
-                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
+                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 ${
                   item.is_current_user
-                    ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
-                    : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
+                    ? "bg-blue-600/20 border-blue-500 border-b-blue-700 shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/40"
+                    : "bg-[#0b1324] border-slate-800 border-b-slate-950 shadow-md shadow-black/40 hover:border-slate-700 hover:border-b-slate-900"
                 }`}
               >
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                   <div className="w-8 flex items-center justify-center shrink-0">
                     {item.rank === 1 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">👑</span>
+                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">👑</span>
                     ) : item.rank === 2 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">🥈</span>
+                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥈</span>
                     ) : item.rank === 3 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">🥉</span>
+                      <span className="text-xl sm:text-2xl leading-none select-none drop-shadow">🥉</span>
                     ) : (
-                      <span className="font-mono font-bold text-slate-300 text-sm">
+                      <span className="font-mono font-black text-slate-200 text-sm sm:text-base">
                         {item.rank}
                       </span>
                     )}
                   </div>
 
-                  <div className="w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border border-slate-800">
-                    <AvatarRenderer config={avatarConfig} size={40} />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center border-2 border-slate-800 shadow-sm">
+                    <AvatarRenderer config={avatarConfig} size={44} />
                   </div>
 
-                  <div className="flex flex-col min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`font-black text-sm sm:text-base tracking-normal truncate ${
-                          item.is_current_user ? "text-blue-400" : "text-slate-100"
-                        }`}
-                      >
-                        {displayName}
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <span
+                      className={`font-black text-base sm:text-lg tracking-normal truncate ${
+                        item.is_current_user ? "text-blue-300" : "text-white"
+                      }`}
+                    >
+                      {displayName}
+                    </span>
+                    {item.rank === 1 && (
+                      <span className="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider">
+                        Senior
                       </span>
-                      {item.is_current_user && (
-                        <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
-                          YOU
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-orange-400/90 mt-0.5">
-                      <Flame className="w-3.5 h-3.5 fill-orange-400" />
-                      <span>{item.streak}d streak</span>
-                    </div>
+                    )}
+                    {item.rank === 2 && (
+                      <span className="px-2 py-0.5 rounded-lg bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[11px] font-black uppercase tracking-wider">
+                        Mid-Level
+                      </span>
+                    )}
+                    {item.rank === 3 && (
+                      <span className="px-2 py-0.5 rounded-lg bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[11px] font-black uppercase tracking-wider">
+                        Junior
+                      </span>
+                    )}
+                    {item.is_current_user && (
+                      <span className="text-[11px] uppercase font-black px-2 py-0.5 rounded-lg bg-blue-500 text-slate-950 tracking-wide">
+                        YOU
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono font-black text-sm sm:text-base text-amber-400">
-                    {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
+                  <span className="font-mono font-black text-base sm:text-lg text-amber-400">
+                    {item.season_xp.toLocaleString()} <span className="text-xs sm:text-sm text-amber-300 font-black font-sans">XP</span>
                   </span>
                 </div>
               </div>
