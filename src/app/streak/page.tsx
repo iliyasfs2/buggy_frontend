@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useNavStore, selectStreakCount, selectHasCompletedToday } from "@/store/useNavStore";
+import { useNavStore, selectStreakCount, selectStreakFreezeCount, selectHasCompletedToday } from "@/store/useNavStore";
 import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 
 const DAYS_OF_WEEK = ["S", "M", "T", "W", "T", "F", "S"];
@@ -11,10 +11,9 @@ const DAYS_OF_WEEK = ["S", "M", "T", "W", "T", "F", "S"];
 export default function StreakPage() {
   const router = useRouter();
   const currentStreak = useNavStore(selectStreakCount);
-  
+  const freezeCount = useNavStore(selectStreakFreezeCount);
   const hasCompletedToday = useNavStore(selectHasCompletedToday);
   const activeDaysOfWeek = [1, 3, 4];
-  const freezeCount = 1;
   const currentDayIndex = new Date().getDay();
 
   return (
@@ -94,10 +93,12 @@ export default function StreakPage() {
 
                 <div className="bg-[#1a1824]/80 border border-slate-800 rounded-3xl p-5 mb-8 flex items-center justify-between shadow-xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.15)]">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6 text-sky-400">
-                <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07"/>
-              </svg>
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center border border-sky-500/30 p-2 shadow-[0_0_15px_rgba(14,165,233,0.15)]">
+              <img
+                src="/icons/streak-freeze.png"
+                alt="Streak Freeze"
+                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]"
+              />
             </div>
             <div>
               <h4 className="text-slate-100 font-black text-lg tracking-tight">Streak Freeze</h4>

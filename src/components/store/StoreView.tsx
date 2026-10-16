@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Shirt, Sparkles, Check, Flame } from "lucide-react";
+import { Lock, Shirt, Check } from "lucide-react";
 import {
   useNavStore,
   selectByteBalance,
@@ -254,11 +254,14 @@ export function StoreView() {
 
           <div className="w-full rounded-2xl bg-slate-900/95 border-2 border-slate-800 border-b-4 border-b-slate-950 p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all">
             <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:w-auto min-w-0">
-              <div className="w-20 h-20 rounded-2xl bg-sky-500/10 border-2 border-sky-500/25 flex items-center justify-center shrink-0 p-3.5 shadow-inner relative">
-                <div className="relative flex items-center justify-center">
-                  <Flame className="w-11 h-11 text-sky-400 fill-sky-400/80 drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]" />
-                  <Sparkles className="w-4 h-4 text-cyan-200 absolute -top-1 -right-1.5" />
-                </div>
+              <div className="w-20 h-20 rounded-2xl bg-sky-500/10 border-2 border-sky-500/25 flex items-center justify-center shrink-0 p-2.5 shadow-inner relative">
+                <Image
+                  src="/icons/streak-freeze.png"
+                  alt="Streak Freeze"
+                  width={60}
+                  height={60}
+                  className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]"
+                />
               </div>
 
               <div className="flex flex-col gap-1.5 min-w-0 flex-1">
