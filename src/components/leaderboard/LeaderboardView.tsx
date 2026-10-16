@@ -312,7 +312,7 @@ export function LeaderboardView() {
         className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user
             ? "bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-indigo-950/80 border-blue-500 border-b-blue-700 shadow-xl shadow-blue-950/50 ring-1 ring-blue-400/50"
-            : "bg-[#0b1324] border-slate-800 border-b-slate-700 shadow-md shadow-black/40 hover:border-slate-700 hover:border-b-slate-600"
+            : "bg-[#101826] border-slate-700 border-b-slate-600 shadow-md shadow-black/40 hover:border-slate-600 hover:border-b-slate-500"
         }`}
       >
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
