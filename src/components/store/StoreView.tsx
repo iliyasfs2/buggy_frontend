@@ -8,20 +8,18 @@ import {
   useNavStore,
   selectByteBalance,
   selectBatteryCount,
-  selectStreakFreezeCount,
 } from "@/store/useNavStore";
 import { fetchUserProgress } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
 const BATTERY_REFILL_PRICE = 100;
-const STREAK_FREEZE_PRICE = 200;
+const STREAK_FREEZE_PRICE = 150;
 const MAX_BATTERY = 5;
 
 export function StoreView() {
   const byteBalance = useNavStore(selectByteBalance);
   const batteryCount = useNavStore(selectBatteryCount);
-  const streakFreezeCount = useNavStore(selectStreakFreezeCount);
   const buyStoreItem = useNavStore((state) => state.buyStoreItem);
   const syncNav = useNavStore((state) => state.syncNav);
 
@@ -74,11 +72,6 @@ export function StoreView() {
   const handleBuyStreakFreeze = async () => {
     if (purchasingId) return;
 
-    if (streakFreezeCount >= 1) {
-      soundEffects.playIncorrect();
-      return;
-    }
-
     if (byteBalance < STREAK_FREEZE_PRICE) {
       soundEffects.playIncorrect();
       setErrorToast(`Not enough Bytes! You need ${STREAK_FREEZE_PRICE} Bytes.`);
@@ -93,7 +86,7 @@ export function StoreView() {
     try {
       await buyStoreItem("streak_freeze");
       soundEffects.playVictory();
-      setSuccessToast("Streak Freeze equipped on your account!");
+      setSuccessToast("Streak Freeze added to your account!");
       setTimeout(() => setSuccessToast(null), 3500);
     } catch (err: unknown) {
       soundEffects.playIncorrect();
@@ -107,11 +100,7 @@ export function StoreView() {
 
   const isBatteryFull = batteryCount >= MAX_BATTERY;
   const canAffordBattery = byteBalance >= BATTERY_REFILL_PRICE;
-  const isBatteryDisabled = isBatteryFull || !canAffordBattery || purchasingId === "refill_battery";
-
-  const isFreezeEquipped = streakFreezeCount >= 1;
   const canAffordFreeze = byteBalance >= STREAK_FREEZE_PRICE;
-  const isFreezeDisabled = isFreezeEquipped || !canAffordFreeze || purchasingId === "streak_freeze";
 
   return (
     <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none relative">
@@ -188,7 +177,7 @@ export function StoreView() {
                   type="button"
                   onClick={handleBuyBattery}
                   disabled={purchasingId !== null}
-                  className={`px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
+                  className={`w-[116px] sm:w-[148px] h-9 sm:h-12 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
                     isBatteryFull
                       ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[4px] sm:border-b-[6px] border-b-slate-800 shadow-md"
                       : !canAffordBattery
@@ -232,21 +221,9 @@ export function StoreView() {
 
             <div className="relative z-10 flex flex-col items-start justify-between gap-2 sm:gap-4 pl-4 sm:pl-7 pr-[30%] sm:pr-[33%] py-3 sm:py-5 md:py-6 min-h-[108px] sm:min-h-[164px] md:min-h-[184px]">
               <div className="flex flex-col items-start gap-0.5 sm:gap-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
-                  <h2 className="text-sm sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
-                    Streak Freeze
-                  </h2>
-
-                  <span
-                    className={`text-[9px] sm:text-xs font-black uppercase tracking-wide px-2 sm:px-2.5 py-0.5 rounded-full backdrop-blur-sm border shrink-0 ${
-                      isFreezeEquipped
-                        ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
-                        : "bg-slate-950/75 border-slate-700/80 text-slate-300"
-                    }`}
-                  >
-                    Stock: {isFreezeEquipped ? 1 : 0}/1
-                  </span>
-                </div>
+                <h2 className="text-sm sm:text-xl md:text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+                  Streak Freeze
+                </h2>
 
                 <p className="text-[11px] sm:text-sm md:text-base font-extrabold text-slate-200 leading-snug drop-shadow-sm">
                   Prevent losing your streak
@@ -258,18 +235,14 @@ export function StoreView() {
                   type="button"
                   onClick={handleBuyStreakFreeze}
                   disabled={purchasingId !== null}
-                  className={`px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
-                    isFreezeEquipped
-                      ? "bg-slate-600 hover:bg-slate-500 text-slate-200 border-2 border-slate-400/70 border-b-[4px] sm:border-b-[6px] border-b-slate-800 shadow-md"
-                      : !canAffordFreeze
+                  className={`w-[116px] sm:w-[148px] h-9 sm:h-12 rounded-xl font-black text-xs sm:text-base tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-75 select-none cursor-pointer active:translate-y-[3px] sm:active:translate-y-[4px] active:border-b-[2px] ${
+                    !canAffordFreeze
                       ? "bg-slate-600 hover:bg-slate-500 text-rose-400 border-2 border-slate-400/70 border-b-[4px] sm:border-b-[6px] border-b-slate-800 shadow-md"
                       : "bg-sky-400 hover:bg-sky-300 text-slate-950 border-2 border-sky-200 border-b-[4px] sm:border-b-[6px] border-b-sky-600 shadow-lg shadow-sky-500/25"
                   }`}
                 >
                   {purchasingId === "streak_freeze" ? (
                     <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : isFreezeEquipped ? (
-                    <span>Equipped</span>
                   ) : (
                     <>
                       <Image
