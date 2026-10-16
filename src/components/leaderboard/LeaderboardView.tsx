@@ -393,15 +393,15 @@ export function LeaderboardView() {
           <Image
             src="/images/leaderboard-banner.png"
             alt="Leaderboard Season Banner"
-            width={2991}
-            height={714}
+            width={1902}
+            height={566}
             quality={100}
             unoptimized
             priority
             className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
 
-          <div className="absolute top-[8%] bottom-[7%] left-[3%] right-[29%] sm:right-[30%] md:right-[31%] flex flex-row items-center justify-end">
+          <div className="absolute top-[8%] bottom-[7%] left-[3%] right-[41%] sm:right-[42%] md:right-[43%] flex flex-row items-center justify-end">
             <div className="flex flex-col justify-center items-end text-right">
               <h1 className="text-sm min-[360px]:text-base min-[420px]:text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
                 Current Compile Season
