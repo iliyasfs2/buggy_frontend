@@ -125,8 +125,8 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
 
                     {MORE_SUBITEMS.map((sub) => {
                       const isSubActive =
-                        (sub.id === "leaderboard" && pathname.startsWith("/leaderboard")) ||
-                        (sub.id === "profile" && pathname.startsWith("/profile")) ||
+                        (sub.id === "leaderboard" && (pathname.startsWith("/leaderboard") || (pathname.startsWith("/profile/") && pathname !== "/profile"))) ||
+                        (sub.id === "profile" && (pathname === "/profile" || pathname === "/profile/avatar")) ||
                         (sub.id === "settings" && pathname.startsWith("/settings"));
                       const SubIcon = sub.icon;
 

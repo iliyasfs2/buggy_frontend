@@ -38,11 +38,18 @@ export function DesktopSidebar({
 
         <nav className="flex flex-col gap-1.5" aria-label="Main menu">
           {NAVIGATION_ITEMS.map((item) => {
+            const isLeaderboardActive =
+              pathname.startsWith("/leaderboard") ||
+              (pathname.startsWith("/profile/") && pathname !== "/profile");
+            const isProfileActive =
+              pathname === "/profile" ||
+              pathname === "/profile/avatar";
+
             const isActive =
               (pathname === "/store" && item.id === "store") ||
-              (pathname.startsWith("/profile") && item.id === "profile") ||
+              (isProfileActive && item.id === "profile") ||
               (pathname.startsWith("/debug") && item.id === "debug") ||
-              (pathname.startsWith("/leaderboard") && item.id === "leaderboard") ||
+              (isLeaderboardActive && item.id === "leaderboard") ||
               (pathname.startsWith("/settings") && item.id === "settings") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
