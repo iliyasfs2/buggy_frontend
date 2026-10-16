@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Pencil, UserCheck, UserPlus } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
+import { AvatarCustomizerModal } from "@/components/profile/AvatarCustomizerModal";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
-import { DEFAULT_AVATAR_CONFIG } from "@/services/authApi";
+import { soundEffects } from "@/utils/soundEffects";
+import { useAuthStore } from "@/store/useAuthStore";
+import { DEFAULT_AVATAR_CONFIG, type AvatarConfig } from "@/services/authApi";
 import {
   fetchUserProfileApi,
   fetchUserConnectionsApi,
@@ -22,20 +25,30 @@ interface UserProfileDetailViewProps {
 
 export function UserProfileDetailView({ username }: UserProfileDetailViewProps) {
   const router = useRouter();
+  const { user: currentUser, updateAvatar } = useAuthStore();
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [followers, setFollowers] = useState<UserConnectionItem[]>([]);
   const [following, setFollowing] = useState<UserConnectionItem[]>([]);
   const [activeTab, setActiveTab] = useState<"followers" | "following">("followers");
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const targetIdentifier = useMemo(() => {
+    const raw = decodeURIComponent(username).trim();
+    if (raw.toLowerCase() === "current") {
+      return currentUser?.username || "You";
+    }
+    return raw;
+  }, [username, currentUser?.username]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
 
     Promise.all([
-      fetchUserProfileApi(username),
-      fetchUserConnectionsApi(username).catch(() => ({ followers: [], following: [] })),
+      fetchUserProfileApi(targetIdentifier),
+      fetchUserConnectionsApi(targetIdentifier).catch(() => ({ followers: [], following: [] })),
     ])
       .then(([profData, connData]) => {
         if (!active) return;
@@ -46,21 +59,27 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
       })
       .catch(() => {
         if (!active) return;
-        const decoded = decodeURIComponent(username);
+        const isSelf =
+          targetIdentifier.toLowerCase() === "you" ||
+          targetIdentifier.toLowerCase() === "current" ||
+          (currentUser?.username && targetIdentifier.toLowerCase() === currentUser.username.toLowerCase());
+
         setProfile({
-          id: decoded,
-          username: decoded,
-          avatar_config: DEFAULT_AVATAR_CONFIG,
-          joined_at: "2026-09-01",
-          streak: 12,
-          total_xp: 3200,
-          season_xp: 750,
-          current_rank: 4,
+          id: targetIdentifier,
+          username: isSelf ? (currentUser?.username || "You") : targetIdentifier,
+          avatar_config: isSelf
+            ? (currentUser?.avatar_config || currentUser?.avatar || DEFAULT_AVATAR_CONFIG)
+            : DEFAULT_AVATAR_CONFIG,
+          joined_at: currentUser?.created_at ? currentUser.created_at.slice(0, 10) : "2026-09-01",
+          streak: isSelf ? 1 : 0,
+          total_xp: isSelf ? 50 : 0,
+          season_xp: 0,
+          current_rank: 20,
           rank_title: null,
-          followers_count: 18,
-          following_count: 24,
+          followers_count: 0,
+          following_count: 0,
           is_following: false,
-          is_me: false,
+          is_me: Boolean(isSelf),
         });
         setLoading(false);
       });
@@ -68,11 +87,12 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
     return () => {
       active = false;
     };
-  }, [username]);
+  }, [targetIdentifier, currentUser]);
 
   const handleToggleFollow = useCallback(async () => {
     if (!profile || profile.is_me || isSubmitting) return;
 
+    soundEffects.playSoftClick();
     const previousFollowing = profile.is_following;
     const previousFollowers = profile.followers_count;
     const nextFollowing = !previousFollowing;
@@ -110,17 +130,49 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
     }
   }, [profile, isSubmitting]);
 
-  const currentRank = profile?.current_rank ?? 4;
-  const effectiveAvatar = profile?.avatar_config || DEFAULT_AVATAR_CONFIG;
+  const handleSaveAvatar = async (config: AvatarConfig) => {
+    await updateAvatar(config);
+    setProfile((prev) => (prev ? { ...prev, avatar_config: config } : null));
+    setIsEditModalOpen(false);
+  };
+
+  const handleBack = () => {
+    soundEffects.playSoftClick();
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/leaderboard");
+    }
+  };
+
+  const currentRank = profile?.current_rank ?? 20;
+  const effectiveAvatar =
+    (profile?.is_me
+      ? currentUser?.avatar_config || currentUser?.avatar || profile?.avatar_config
+      : profile?.avatar_config) || DEFAULT_AVATAR_CONFIG;
 
   const avatarBorderClass =
     currentRank === 1
-      ? "border-4 border-amber-400 shadow-xl shadow-amber-400/20"
+      ? "border-4 border-amber-400 shadow-xl shadow-amber-400/25"
       : currentRank === 2
-      ? "border-4 border-slate-300 shadow-xl shadow-slate-300/20"
+      ? "border-4 border-slate-300 shadow-xl shadow-slate-300/25"
       : currentRank === 3
-      ? "border-4 border-amber-600 shadow-xl shadow-amber-600/20"
+      ? "border-4 border-amber-600 shadow-xl shadow-amber-600/25"
       : "border-4 border-slate-700 shadow-md";
+
+  const formattedJoinedDate = useMemo(() => {
+    if (!profile?.joined_at) return null;
+    try {
+      const d = new Date(profile.joined_at);
+      if (isNaN(d.getTime())) return `Joined ${profile.joined_at}`;
+      return `Joined ${d.toLocaleDateString("en-US", { month: "short", year: "numeric" })}`;
+    } catch {
+      return `Joined ${profile.joined_at}`;
+    }
+  }, [profile?.joined_at]);
+
+  const profileDisplayName = profile?.username || targetIdentifier;
+  const profileHandle = profileDisplayName.toLowerCase().replace(/\s+/g, "_");
 
   return (
     <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-20 select-none">
@@ -131,7 +183,7 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
 
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-2 mb-4 cursor-pointer w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -141,24 +193,27 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b-2 border-slate-800 pb-6 mb-6">
           <div className="flex flex-col items-start min-w-0">
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight truncate max-w-full">
-              {profile?.username || decodeURIComponent(username)}
+              {profileDisplayName}
             </h1>
 
             <span className="text-slate-400 font-bold text-sm mt-0.5 dir-ltr">
-              @{profile?.username?.toLowerCase().replace(/\s+/g, "_") || decodeURIComponent(username).toLowerCase().replace(/\s+/g, "_")}
+              @{profileHandle}
             </span>
 
-            {profile?.joined_at && (
+            {formattedJoinedDate && (
               <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold mt-2">
                 <Calendar className="w-3.5 h-3.5" />
-                <span>Joined {profile.joined_at}</span>
+                <span>{formattedJoinedDate}</span>
               </div>
             )}
 
             <div className="flex items-center gap-3 text-sm font-black text-cyan-400 mt-3">
               <button
                 type="button"
-                onClick={() => setActiveTab("following")}
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setActiveTab("following");
+                }}
                 className="hover:underline cursor-pointer"
               >
                 {profile?.following_count ?? following.length} Following
@@ -166,7 +221,10 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
               <span className="text-slate-600 font-black">&bull;</span>
               <button
                 type="button"
-                onClick={() => setActiveTab("followers")}
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setActiveTab("followers");
+                }}
                 className="hover:underline cursor-pointer"
               >
                 {profile?.followers_count ?? followers.length} Followers
@@ -194,6 +252,20 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
                 🥉 Junior
               </span>
             )}
+
+            {profile?.is_me && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsEditModalOpen(true);
+                }}
+                aria-label="Change Avatar"
+                className="absolute bottom-0 right-0 w-8 h-8 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 flex items-center justify-center border-b-2 border-amber-600 active:translate-y-0.5 shadow-md transition-all cursor-pointer z-10"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -203,7 +275,7 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
           ) : profile?.is_me ? (
             <Link
               href="/settings"
-              className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border-2 border-b-4 border-slate-700 border-b-slate-900 text-slate-200 font-black text-sm px-6 py-2.5 rounded-xl transition-all active:translate-y-0.5"
+              className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border-2 border-b-4 border-slate-700 border-b-slate-900 text-slate-200 font-black text-sm px-6 py-2.5 rounded-xl transition-all active:translate-y-0.5 shadow-md"
             >
               <Pencil className="w-4 h-4" />
               <span>Edit Profile</span>
@@ -215,7 +287,7 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
               disabled={isSubmitting}
               className={`inline-flex items-center gap-2 font-black text-sm px-6 py-2.5 rounded-xl transition-all select-none cursor-pointer active:translate-y-0.5 ${
                 profile?.is_following
-                  ? "bg-slate-900 hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400"
+                  ? "bg-slate-900 hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400 shadow-md"
                   : "bg-cyan-500 hover:bg-cyan-400 border-2 border-cyan-400 border-b-4 border-b-cyan-700 text-slate-950 shadow-lg shadow-cyan-950/40"
               }`}
             >
@@ -294,7 +366,10 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
           <div className="flex items-center gap-6 border-b-2 border-slate-800 pb-3 mb-4">
             <button
               type="button"
-              onClick={() => setActiveTab("followers")}
+              onClick={() => {
+                soundEffects.playSoftClick();
+                setActiveTab("followers");
+              }}
               className={`font-black text-sm pb-2 -mb-3 transition-colors cursor-pointer border-b-2 ${
                 activeTab === "followers"
                   ? "border-cyan-400 text-white"
@@ -305,7 +380,10 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab("following")}
+              onClick={() => {
+                soundEffects.playSoftClick();
+                setActiveTab("following");
+              }}
               className={`font-black text-sm pb-2 -mb-3 transition-colors cursor-pointer border-b-2 ${
                 activeTab === "following"
                   ? "border-cyan-400 text-white"
@@ -325,7 +403,10 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
               (activeTab === "followers" ? followers : following).map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => router.push(`/profile/${encodeURIComponent(item.username)}`)}
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    router.push(`/profile/${encodeURIComponent(item.username)}`);
+                  }}
                   className="flex items-center justify-between p-3 rounded-xl bg-[#0b1324] border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -357,6 +438,13 @@ export function UserProfileDetailView({ username }: UserProfileDetailViewProps) 
       <div className="hidden lg:flex flex-1 justify-center sticky top-8">
         <DesktopMetricBar inline />
       </div>
+
+      <AvatarCustomizerModal
+        isOpen={isEditModalOpen}
+        initialConfig={effectiveAvatar}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveAvatar}
+      />
     </div>
   );
 }

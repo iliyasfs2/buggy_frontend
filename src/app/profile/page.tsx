@@ -1,13 +1,13 @@
 import type { ReactElement } from "react";
 import { RouteGuard } from "@/components/auth/RouteGuard";
 import { AppShell } from "@/components/layout/AppShell";
-import { ProfileView } from "@/components/profile/ProfileView";
+import { UserProfileDetailView } from "@/components/profile/UserProfileDetailView";
 
 export default function ProfilePage(): ReactElement {
   return (
     <RouteGuard>
       <AppShell>
-        <ProfileView />
+        <UserProfileDetailView username="current" />
       </AppShell>
     </RouteGuard>
   );

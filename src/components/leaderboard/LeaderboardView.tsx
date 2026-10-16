@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { DEFAULT_AVATAR_CONFIG } from "@/services/authApi";
+import { soundEffects } from "@/utils/soundEffects";
 import {
   fetchLeaderboardApi,
   type LeaderboardResponse,
@@ -304,7 +305,10 @@ export function LeaderboardView() {
     return (
       <div
         key={item.id}
-        onClick={() => router.push(`/profile/${encodeURIComponent(displayName)}`)}
+        onClick={() => {
+          soundEffects.playSoftClick();
+          router.push(`/profile/${encodeURIComponent(displayName)}`);
+        }}
         className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user
             ? "bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-indigo-950/80 border-blue-500 border-b-blue-700 shadow-xl shadow-blue-950/50 ring-1 ring-blue-400/50"

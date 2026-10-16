@@ -235,7 +235,8 @@ export const simulateSeasonEndApi = async (): Promise<{ success: boolean; season
 };
 
 export const fetchUserProfileApi = async (userId: string): Promise<UserProfileData> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/profile`, {
+  const clean = encodeURIComponent(decodeURIComponent(userId).trim());
+  const res = await fetch(`${API_BASE_URL}/api/users/${clean}/profile`, {
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch user profile");
@@ -243,7 +244,8 @@ export const fetchUserProfileApi = async (userId: string): Promise<UserProfileDa
 };
 
 export const followUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/follow`, {
+  const clean = encodeURIComponent(decodeURIComponent(userId).trim());
+  const res = await fetch(`${API_BASE_URL}/api/users/${clean}/follow`, {
     method: "POST",
     headers: getHeaders(),
   });
@@ -252,7 +254,8 @@ export const followUserApi = async (userId: string): Promise<{ success: boolean;
 };
 
 export const unfollowUserApi = async (userId: string): Promise<{ success: boolean; is_following: boolean; followers_count: number }> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/follow`, {
+  const clean = encodeURIComponent(decodeURIComponent(userId).trim());
+  const res = await fetch(`${API_BASE_URL}/api/users/${clean}/follow`, {
     method: "DELETE",
     headers: getHeaders(),
   });
@@ -276,7 +279,8 @@ export interface UserConnectionsResponse {
 }
 
 export const fetchUserConnectionsApi = async (userId: string): Promise<UserConnectionsResponse> => {
-  const res = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/connections`, {
+  const clean = encodeURIComponent(decodeURIComponent(userId).trim());
+  const res = await fetch(`${API_BASE_URL}/api/users/${clean}/connections`, {
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch user connections");
