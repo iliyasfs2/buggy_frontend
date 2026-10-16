@@ -389,7 +389,7 @@ export function LeaderboardView() {
         <div className="hidden md:flex lg:hidden justify-end w-full mb-6">
           <DesktopMetricBar inline />
         </div>
-        <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#0d234a] border-b-4 border-b-slate-700 shadow-xl bg-[#04142c] transition-all select-none min-h-[96px] sm:min-h-[132px] md:min-h-[152px]">
+        <div className="relative w-full select-none">
           <Image
             src="/images/leaderboard-banner.png"
             alt="Leaderboard Season Banner"
@@ -398,21 +398,23 @@ export function LeaderboardView() {
             quality={100}
             unoptimized
             priority
-            className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none select-none"
+            className="w-full h-auto block object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] pointer-events-none"
           />
 
-          <div className="relative z-10 flex flex-col justify-center items-end text-right min-h-[96px] sm:min-h-[132px] md:min-h-[152px] p-3 sm:p-5 pr-[32%] sm:pr-[30%]">
-            <h1 className="text-sm min-[360px]:text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
-              Current Compile Season
-            </h1>
+          <div className="absolute top-[8%] bottom-[7%] left-[4%] right-[30%] flex flex-row items-center justify-end">
+            <div className="flex flex-col justify-center items-end text-right">
+              <h1 className="text-xs min-[360px]:text-sm sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-lg">
+                Current Compile Season
+              </h1>
 
-            <div className="mt-1.5 sm:mt-2.5 inline-flex items-center px-2 sm:px-3.5 py-0.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/80 border border-cyan-400/30 backdrop-blur-md shadow-inner">
-              <span className="sm:hidden text-[10px] min-[360px]:text-[11px] font-black text-cyan-300 whitespace-nowrap">
-                ⏱ {countdownDays}d {countdownHours}h until reset
-              </span>
-              <span className="hidden sm:inline text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
-                {countdownDays} days and {countdownHours} hours until season reset
-              </span>
+              <div className="mt-1 sm:mt-2.5 inline-flex items-center px-2 sm:px-3.5 py-0.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-950/70 border border-cyan-400/30 backdrop-blur-md shadow-inner">
+                <span className="sm:hidden text-[9px] min-[360px]:text-[11px] font-black text-cyan-300 whitespace-nowrap">
+                  ⏱ {countdownDays}d {countdownHours}h until reset
+                </span>
+                <span className="hidden sm:inline text-xs sm:text-sm md:text-base font-black text-cyan-300 whitespace-nowrap">
+                  {countdownDays} days and {countdownHours} hours until season reset
+                </span>
+              </div>
             </div>
           </div>
         </div>
