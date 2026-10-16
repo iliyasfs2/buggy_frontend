@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { Flame, Trophy } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
@@ -335,14 +335,10 @@ export function LeaderboardView() {
     };
   }, [data, leaderboardList, user]);
 
-  const isUserInTopList = currentUserInfo.is_top && currentUserInfo.rank <= 25;
-  const rank25Xp = leaderboardList[24]?.season_xp || 40;
-  const gapToTop25 = Math.max(0, rank25Xp - currentUserInfo.season_xp + 10);
-
   return (
-    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none">
-      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-8 shrink-0">
-        <div className="hidden md:flex lg:hidden justify-end w-full">
+    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-16 select-none">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col shrink-0">
+        <div className="hidden md:flex lg:hidden justify-end w-full mb-6">
           <DesktopMetricBar inline />
         </div>
         <div className="relative w-full select-none">
@@ -372,167 +368,111 @@ export function LeaderboardView() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-amber-400" />
-              League Rankings
-            </h2>
-            <span className="text-xs font-bold text-slate-400">
-              Top 25 Contenders
-            </span>
-          </div>
+        <div className="w-full border-l-2 border-r-2 border-slate-800/80 flex flex-col gap-2 pt-3 pb-8 px-2 sm:px-3">
+          {leaderboardList.map((item) => (
+            <div
+              key={item.id}
+              className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
+                item.is_current_user
+                  ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
+                  : item.rank === 1
+                  ? "bg-amber-500/10 border-amber-500/40 shadow-sm hover:border-amber-500/60"
+                  : item.rank === 2
+                  ? "bg-slate-300/5 border-slate-400/30 hover:border-slate-400/50"
+                  : item.rank === 3
+                  ? "bg-amber-700/5 border-amber-700/30 hover:border-amber-700/50"
+                  : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
+              }`}
+            >
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                <div className="w-8 flex items-center justify-center shrink-0">
+                  {item.rank === 1 ? (
+                    <span className="text-xl leading-none select-none drop-shadow">👑</span>
+                  ) : item.rank === 2 ? (
+                    <span className="text-xl leading-none select-none drop-shadow">🥈</span>
+                  ) : item.rank === 3 ? (
+                    <span className="text-xl leading-none select-none drop-shadow">🥉</span>
+                  ) : (
+                    <span className="font-mono font-bold text-slate-300 text-sm">
+                      {item.rank}
+                    </span>
+                  )}
+                </div>
 
-          <div className="flex flex-col gap-2">
-            {leaderboardList.map((item) => (
-              <div
-                key={item.id}
-                className={`flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-2xl border-2 transition-all ${
-                  item.is_current_user
-                    ? "bg-blue-600/15 border-blue-500 shadow-md ring-1 ring-blue-400/40"
-                    : item.rank === 1
-                    ? "bg-amber-500/10 border-amber-500/40 shadow-sm hover:border-amber-500/60"
-                    : item.rank === 2
-                    ? "bg-slate-300/5 border-slate-400/30 hover:border-slate-400/50"
-                    : item.rank === 3
-                    ? "bg-amber-700/5 border-amber-700/30 hover:border-amber-700/50"
-                    : "bg-slate-900/70 border-slate-800 hover:border-slate-700/80"
-                }`}
-              >
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                  <div className="w-8 flex items-center justify-center shrink-0">
-                    {item.rank === 1 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">👑</span>
-                    ) : item.rank === 2 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">🥈</span>
-                    ) : item.rank === 3 ? (
-                      <span className="text-xl leading-none select-none drop-shadow">🥉</span>
-                    ) : (
-                      <span className="font-mono font-bold text-slate-300 text-sm">
-                        {item.rank}
+                <div
+                  className={`w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center ${
+                    item.rank === 1
+                      ? "border-2 border-amber-400 shadow-sm shadow-amber-500/20"
+                      : item.rank === 2
+                      ? "border-2 border-slate-300"
+                      : item.rank === 3
+                      ? "border-2 border-amber-700"
+                      : "border border-slate-800"
+                  }`}
+                >
+                  {item.avatar_config ? (
+                    <AvatarRenderer config={item.avatar_config} size={40} />
+                  ) : (
+                    <span className="font-black text-slate-400 text-sm">
+                      {item.username.slice(0, 2).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span
+                      className={`font-black text-sm truncate ${
+                        item.is_current_user ? "text-blue-300" : "text-slate-200"
+                      }`}
+                    >
+                      {item.username}
+                    </span>
+                    {item.rank === 1 && (
+                      <span className="px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
+                        Senior
+                      </span>
+                    )}
+                    {item.rank === 2 && (
+                      <span className="px-2 py-0.5 rounded-md bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[10px] font-black uppercase tracking-wider">
+                        Mid-Level
+                      </span>
+                    )}
+                    {item.rank === 3 && (
+                      <span className="px-2 py-0.5 rounded-md bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[10px] font-black uppercase tracking-wider">
+                        Junior
+                      </span>
+                    )}
+                    {item.is_current_user && (
+                      <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
+                        YOU
                       </span>
                     )}
                   </div>
-
-                  <div
-                    className={`w-10 h-10 rounded-full bg-slate-950 overflow-hidden shrink-0 flex items-center justify-center ${
-                      item.rank === 1
-                        ? "border-2 border-amber-400 shadow-sm shadow-amber-500/20"
-                        : item.rank === 2
-                        ? "border-2 border-slate-300"
-                        : item.rank === 3
-                        ? "border-2 border-amber-700"
-                        : "border border-slate-800"
-                    }`}
-                  >
-                    {item.avatar_config ? (
-                      <AvatarRenderer config={item.avatar_config} size={40} />
-                    ) : (
-                      <span className="font-black text-slate-400 text-sm">
-                        {item.username.slice(0, 2).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className={`font-black text-sm truncate ${
-                          item.is_current_user ? "text-blue-300" : "text-slate-200"
-                        }`}
-                      >
-                        {item.username}
-                      </span>
-                      {item.rank === 1 && (
-                        <span className="px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
-                          Senior
-                        </span>
-                      )}
-                      {item.rank === 2 && (
-                        <span className="px-2 py-0.5 rounded-md bg-slate-300/20 text-slate-200 border border-slate-300/40 text-[10px] font-black uppercase tracking-wider">
-                          Mid-Level
-                        </span>
-                      )}
-                      {item.rank === 3 && (
-                        <span className="px-2 py-0.5 rounded-md bg-amber-700/25 text-amber-400 border border-amber-700/50 text-[10px] font-black uppercase tracking-wider">
-                          Junior
-                        </span>
-                      )}
-                      {item.is_current_user && (
-                        <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
-                          YOU
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                      <span className="text-slate-400 truncate">{item.coder_title}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1 text-orange-400/90 font-mono">
-                        <Flame className="w-3 h-3 fill-orange-400" />
-                        {item.streak}d
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                    <span className="text-slate-400 truncate">{item.coder_title}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1 text-orange-400/90 font-mono">
+                      <Flame className="w-3 h-3 fill-orange-400" />
+                      {item.streak}d
+                    </span>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-mono font-black text-sm sm:text-base text-amber-400">
-                    {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-    </div>
-
-    <div className="hidden lg:flex flex-1 justify-center sticky top-8">
-      <DesktopMetricBar inline />
-    </div>
-
-      {!isUserInTopList && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-3xl z-30">
-          <div className="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-slate-900/95 backdrop-blur-md border-2 border-blue-500 shadow-2xl shadow-blue-900/40">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="px-2.5 py-1 rounded-xl bg-blue-500/20 border border-blue-500/40 text-blue-400 font-mono font-black text-sm shrink-0">
-                #{currentUserInfo.rank}
               </div>
 
-              <div className="w-10 h-10 rounded-full bg-slate-950 border border-blue-500/40 overflow-hidden shrink-0 flex items-center justify-center">
-                <AvatarRenderer config={currentUserInfo.avatar_config} size={40} />
-              </div>
-
-              <div className="flex flex-col min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-sm text-blue-200 truncate">
-                    {currentUserInfo.username}
-                  </span>
-                  <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-500 text-slate-950">
-                    YOU
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                  <span>{currentUserInfo.coder_title}</span>
-                  <span>•</span>
-                  <span className="text-amber-400/90 font-mono">
-                    +{gapToTop25} XP to enter Top 25
-                  </span>
-                </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="font-mono font-black text-sm sm:text-base text-amber-400">
+                  {item.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
+                </span>
               </div>
             </div>
-
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="flex items-center gap-1 text-xs font-mono text-orange-400 font-bold">
-                <Flame className="w-3.5 h-3.5 fill-orange-400" />
-                {currentUserInfo.streak}d
-              </div>
-              <span className="font-mono font-black text-base text-amber-400">
-                {currentUserInfo.season_xp.toLocaleString()} <span className="text-xs text-amber-300/80 font-bold font-sans">XP</span>
-              </span>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
+
+      <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+        <DesktopMetricBar inline />
+      </div>
     </div>
   );
 }
