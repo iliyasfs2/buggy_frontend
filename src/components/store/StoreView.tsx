@@ -150,8 +150,10 @@ export function StoreView() {
           <Image
             src="/images/store-banner.png"
             alt="Buggy Store - Use your bytes to refill your energy and protect your daily streak!"
-            width={951}
-            height={283}
+            width={1902}
+            height={566}
+            quality={100}
+            unoptimized
             priority
             className="w-full h-auto object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] select-none pointer-events-none"
           />
@@ -166,6 +168,7 @@ export function StoreView() {
                   alt="Energy Refill"
                   width={56}
                   height={56}
+                  unoptimized
                   className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]"
                 />
               </div>
@@ -245,6 +248,7 @@ export function StoreView() {
                   alt="Streak Freeze"
                   width={60}
                   height={60}
+                  unoptimized
                   className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]"
                 />
               </div>
