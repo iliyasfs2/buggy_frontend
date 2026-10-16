@@ -146,30 +146,15 @@ export function StoreView() {
           )}
         </AnimatePresence>
 
-        <div className="relative w-full rounded-2xl bg-[#162238] border-2 border-slate-700/80 border-b-[5px] border-b-slate-950 p-5 sm:p-7 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5 overflow-hidden">
-          <div className="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-12 -left-12 w-44 h-44 rounded-full bg-sky-400/10 blur-2xl pointer-events-none" />
-
-          <div className="flex items-center gap-4 sm:gap-5 relative z-10 w-full">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-500/15 border-2 border-amber-400/35 border-b-4 border-b-amber-600/40 flex items-center justify-center p-3 shrink-0 shadow-inner">
-              <Image
-                src="/icons/byte.png"
-                alt="Buggy Store"
-                width={64}
-                height={64}
-                className="w-full h-full object-contain drop-shadow-[0_4px_10px_rgba(251,191,36,0.35)]"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1 min-w-0">
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                Buggy Store
-              </h1>
-              <p className="text-xs sm:text-sm font-bold text-slate-300 leading-relaxed">
-                Use your Bytes to refill your energy and protect your daily streak!
-              </p>
-            </div>
-          </div>
+        <div className="relative w-full">
+          <Image
+            src="/images/store-banner.png"
+            alt="Buggy Store - Use your bytes to refill your energy and protect your daily streak!"
+            width={951}
+            height={283}
+            priority
+            className="w-full h-auto object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)] select-none pointer-events-none"
+          />
         </div>
 
         <div className="flex flex-col gap-4">
