@@ -663,71 +663,247 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
 
       {isDevCardOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsDevCardOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-[24px] border-2 border-b-4 border-amber-400/70 border-b-amber-600 bg-gradient-to-b from-[#111e38] to-[#0a1224] p-6 shadow-2xl"
+            className="w-full h-full md:h-auto md:w-[640px] md:max-w-[640px] md:max-h-[85vh] rounded-none md:rounded-[24px] border-0 md:border-2 md:border-b-4 border-[#233b69] border-b-[#091326] bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🪪</span>
-                <h3 className="text-base font-black text-white tracking-wide">
-                  Developer &amp; Skills Card
-                </h3>
+            <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528]/90">
+              <div className="h-7 px-3 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold inline-flex items-center gap-1.5">
+                <span>🟢</span>
+                <span>Open to Work &amp; Projects</span>
               </div>
+
               <button
                 type="button"
-                onClick={() => setIsDevCardOpen(false)}
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsDevCardOpen(false);
+                }}
+                className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-black inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
               >
-                <X className="w-4 h-4" />
+                <span>✕</span>
+                <span>Close</span>
               </button>
             </div>
 
-            <div className="mt-5 flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-slate-950 border-2 border-amber-400/50 flex items-center justify-center overflow-hidden shrink-0">
-                <AvatarRenderer config={effectiveAvatar} size={60} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-lg font-black text-white truncate">{profileDisplayName}</span>
-                  <span className={`h-5 px-2 rounded-full text-[11px] font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}>
-                    {coderLevel}
-                  </span>
+            <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-6">
+              <div>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
+                    <AvatarRenderer config={effectiveAvatar} size={66} />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <h3 className="text-[22px] sm:text-[24px] font-black text-white leading-tight truncate">
+                        {profileDisplayName}
+                      </h3>
+                      <span
+                        className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
+                      >
+                        <span>
+                          {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                        </span>
+                        <span>{coderLevel}</span>
+                      </span>
+                    </div>
+
+                    <div className="text-[15px] font-bold text-cyan-400 mt-1">
+                      {coderLevel} Full-Stack Developer &amp; Debugger
+                    </div>
+
+                    <div className="text-xs font-bold text-slate-400 mt-0.5">
+                      @{profileHandle} • Season Rank #{currentRank}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs font-bold text-slate-400 mt-0.5">@{profileHandle}</div>
-                <div className="text-[11px] font-bold text-cyan-400 mt-1">
-                  Compile Season Rank #{currentRank}
+
+                <p className="mt-4 text-sm text-slate-300 font-medium leading-relaxed">
+                  Passionate software engineer focused on building scalable modern web applications,
+                  hunting down complex runtime bugs, and mastering algorithmic problem-solving through
+                  daily hands-on coding challenges in Buggy.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                  <span>Verified Skills in Buggy</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">JavaScript (ES6+)</span>
+                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
+                        ✓
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-amber-400">
+                      {Math.min(98, Math.max(65, 70 + Math.floor(effectiveXp / 200)))}%
+                    </span>
+                  </div>
+
+                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">Python &amp; Logic</span>
+                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
+                        ✓
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-amber-400">
+                      {Math.min(95, Math.max(55, 60 + Math.floor(effectiveXp / 250)))}%
+                    </span>
+                  </div>
+
+                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">Bug Hunting</span>
+                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
+                        ✓
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-amber-400">Advanced</span>
+                  </div>
+
+                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">TypeScript</span>
+                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
+                        ✓
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-amber-400">84%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-base font-bold text-white mb-3">
+                  Tech Stack &amp; Specialized Skills
+                </h4>
+
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "React",
+                    "Next.js",
+                    "TypeScript",
+                    "JavaScript",
+                    "FastAPI",
+                    "Tailwind CSS",
+                    "Node.js",
+                    "Git & GitHub",
+                    "REST APIs",
+                  ].map((tech) => (
+                    <span
+                      key={tech}
+                      className="h-8 px-3 rounded-full bg-[#132342] border border-[#243f73] text-slate-200 text-[13px] font-bold inline-flex items-center"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-base font-bold text-white mb-3">
+                  Featured Projects &amp; Portfolio
+                </h4>
+
+                <div className="flex flex-col gap-3">
+                  <div className="min-h-[80px] p-3.5 rounded-2xl bg-[#091224] border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[15px] font-bold text-white truncate">
+                        Buggy Interactive Code Sandbox
+                      </div>
+                      <div className="text-xs font-bold text-slate-400 mt-1 line-clamp-1">
+                        Gamified debugging challenges, real-time AST execution, and streak tracking.
+                      </div>
+                    </div>
+
+                    <a
+                      href="https://github.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => soundEffects.playSoftClick()}
+                      className="h-8 px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border border-[#26447d] text-cyan-400 text-xs font-bold inline-flex items-center gap-1 shrink-0 transition-colors"
+                    >
+                      <span>View Link</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
+
+                  <div className="min-h-[80px] p-3.5 rounded-2xl bg-[#091224] border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[15px] font-bold text-white truncate">
+                        Full-Stack Algorithm Visualizer
+                      </div>
+                      <div className="text-xs font-bold text-slate-400 mt-1 line-clamp-1">
+                        Interactive step-by-step visualization of graph, sorting, and dynamic programming.
+                      </div>
+                    </div>
+
+                    <a
+                      href="https://github.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => soundEffects.playSoftClick()}
+                      className="h-8 px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border border-[#26447d] text-cyan-400 text-xs font-bold inline-flex items-center gap-1 shrink-0 transition-colors"
+                    >
+                      <span>View Link</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 space-y-3">
-              <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
-                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span className="text-slate-300">JavaScript &amp; Debugging Track</span>
-                  <span className="text-amber-400">{effectiveXp.toLocaleString()} XP</span>
-                </div>
-                <div className="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-amber-400"
-                    style={{ width: `${Math.min(100, Math.max(18, Math.round((effectiveXp / 5000) * 100)))}%` }}
-                  />
-                </div>
-              </div>
+            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528]/95 shrink-0 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <a
+                href={`https://github.com/${profileHandle}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => soundEffects.playSoftClick()}
+                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-white text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
+              >
+                <span>GitHub</span>
+                <span>↗</span>
+              </a>
 
-              <div className="grid grid-cols-2 gap-2.5 text-xs font-bold">
-                <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                  <span className="text-slate-400">Streak</span>
-                  <span className="text-white font-black">🔥 {effectiveStreak}d</span>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                  <span className="text-slate-400">Weekly XP</span>
-                  <span className="text-amber-400 font-black">🎯 {effectiveSeasonXp}</span>
-                </div>
-              </div>
+              <a
+                href={`https://linkedin.com/in/${profileHandle}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => soundEffects.playSoftClick()}
+                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-cyan-300 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
+              >
+                <span>LinkedIn</span>
+                <span>↗</span>
+              </a>
+
+              <a
+                href={`https://${profileHandle}.dev`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => soundEffects.playSoftClick()}
+                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-amber-300 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
+              >
+                <span>Website</span>
+                <span>↗</span>
+              </a>
+
+              <a
+                href={`https://t.me/${profileHandle}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => soundEffects.playSoftClick()}
+                className="h-[44px] px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 border-2 border-b-4 border-cyan-300 border-b-cyan-700 text-slate-950 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
+              >
+                <span>Telegram</span>
+                <span>↗</span>
+              </a>
             </div>
           </div>
         </div>
