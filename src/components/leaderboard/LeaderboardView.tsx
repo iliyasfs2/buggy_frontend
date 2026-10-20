@@ -99,7 +99,11 @@ export function LeaderboardView() {
         key={item.id}
         onClick={() => {
           soundEffects.playSoftClick();
-          router.push(item.is_current_user ? "/profile" : `/profile/${encodeURIComponent(displayName)}?from=leaderboard`);
+          router.push(
+            item.is_current_user
+              ? "/profile?from=leaderboard"
+              : `/profile/${encodeURIComponent(displayName)}?from=leaderboard`
+          );
         }}
         className={`flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user

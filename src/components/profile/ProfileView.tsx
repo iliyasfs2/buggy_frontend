@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -38,6 +38,7 @@ export interface ProfileViewProps {
 
 export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileViewProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user: currentUser, updateAvatar } = useAuthStore();
   const streakCount = useGameStore((s) => s.streakCount);
   const totalXP = useGameStore((s) => s.totalXP);
@@ -197,7 +198,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
     setIsEditModalOpen(false);
   };
 
-  const cameFromLeaderboard = from === "leaderboard";
+  const cameFromLeaderboard = from === "leaderboard" || searchParams?.get("from") === "leaderboard";
 
   const handleBack = () => {
     soundEffects.playSoftClick();
@@ -300,7 +301,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       )}
 
       {notFound && !loading ? (
-        <div className="w-full max-w-md mx-auto mt-16 p-8 rounded-[24px] border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 text-center">
+        <div className="w-full max-w-md mx-auto mt-16 p-8 rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 text-center">
           <div className="text-4xl mb-3">🔍</div>
           <h2 className="text-lg font-black text-white">User not found</h2>
           <p className="mt-2 text-sm font-bold text-slate-400">
@@ -311,7 +312,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
         <div className="w-full lg:w-[600px] lg:max-w-[60%] flex flex-col shrink-0">
-          <div className="relative w-full h-[180px] md:h-[220px] rounded-[24px] border-2 border-b-4 border-[#1e3a6e] border-b-[#09152b] bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl">
+          <div className="relative w-full h-[180px] md:h-[220px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl">
             <div
               className="absolute inset-0 opacity-25 pointer-events-none"
               style={{
@@ -338,7 +339,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsEditModalOpen(true);
                 }}
-                className="absolute top-3.5 right-3.5 z-20 h-9 px-3.5 rounded-xl bg-[#162a52]/95 hover:bg-[#1e386b] border-2 border-b-4 border-[#2b4c8c] border-b-[#0a162e] text-white font-black text-xs inline-flex items-center gap-1.5 shadow-lg active:translate-y-0.5 transition-all cursor-pointer"
+                className="absolute top-3.5 right-3.5 z-20 h-9 px-3.5 rounded-xl bg-[#162a52]/95 hover:bg-[#1e386b] border-2 border-b-4 border-slate-700 border-b-slate-800 text-white font-black text-xs inline-flex items-center gap-1.5 shadow-lg active:translate-y-0.5 transition-all cursor-pointer"
               >
                 <span>🎨</span>
                 <span>Room &amp; Avatar</span>
@@ -440,7 +441,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   <Link
                     href="/settings"
                     onClick={() => soundEffects.playSoftClick()}
-                    className="flex-1 h-[50px] px-5 rounded-2xl bg-[#132342] hover:bg-[#192d54] border-2 border-b-4 border-[#233b69] border-b-[#091326] text-slate-100 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md"
+                    className="flex-1 h-[50px] px-5 rounded-2xl bg-[#132342] hover:bg-[#192d54] border-2 border-b-4 border-slate-700 border-b-slate-800 text-slate-100 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md"
                   >
                     <span>⚙️</span>
                     <span>Account Settings</span>
@@ -465,7 +466,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   disabled={isSubmitting}
                   className={`w-full h-[50px] px-6 rounded-2xl font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 cursor-pointer ${
                     profile?.is_following
-                      ? "bg-[#0d1b33] hover:bg-[#132647] border-2 border-b-4 border-[#1e3660] border-b-[#071021] text-cyan-400 shadow-md"
+                      ? "bg-[#0d1b33] hover:bg-[#132647] border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400 shadow-md"
                       : "bg-cyan-500 hover:bg-cyan-400 border-2 border-b-4 border-cyan-300 border-b-cyan-700 text-slate-950 shadow-lg shadow-cyan-950/40"
                   }`}
                 >
@@ -561,7 +562,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
                 <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
                   🔥
                 </div>
@@ -575,7 +576,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
               </div>
 
-              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
                 <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
                   ⚡
                 </div>
@@ -589,7 +590,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
               </div>
 
-              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
                 <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
                   🏆
                 </div>
@@ -603,7 +604,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
               </div>
 
-              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
                 <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
                   🎯
                 </div>
@@ -625,7 +626,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             <DesktopMetricBar inline />
           </div>
 
-          <div className="w-full max-h-[460px] rounded-[24px] border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 flex flex-col overflow-hidden shadow-xl">
+          <div className="w-full max-h-[460px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 flex flex-col overflow-hidden shadow-xl">
             <div className="h-[52px] shrink-0 grid grid-cols-2 border-b-2 border-slate-800/90 bg-[#0a1326]/60">
               <button
                 type="button"
@@ -705,7 +706,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           onClick={() => setIsDevCardOpen(false)}
         >
           <div
-            className="w-full h-full md:h-auto md:w-[640px] md:max-w-[640px] md:max-h-[85vh] rounded-none md:rounded-[24px] border-0 md:border-2 md:border-b-4 border-[#233b69] border-b-[#091326] bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full h-full md:h-auto md:w-[640px] md:max-w-[640px] md:max-h-[85vh] rounded-none md:rounded-[24px] border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528]/90">

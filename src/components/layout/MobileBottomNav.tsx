@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type ReactElement } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   useGameStore,
   selectActiveTab,
@@ -40,9 +40,14 @@ const MORE_SUBITEMS = [
 export function MobileBottomNav({ className = "" }: MobileBottomNavProps): ReactElement {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const activeTab = useGameStore(selectActiveTab);
   const setActiveTab = useGameStore(selectSetActiveTab);
   const mistakesCount = useGameStore(selectMistakesCount);
+
+  const isFromLeaderboard = searchParams?.get("from") === "leaderboard";
+  const isLeaderboardActive = pathname.startsWith("/leaderboard") || (pathname.startsWith("/profile") && isFromLeaderboard);
+  const isProfileActive = pathname.startsWith("/profile") && !isFromLeaderboard;
 
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -125,8 +130,8 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
 
                     {MORE_SUBITEMS.map((sub) => {
                       const isSubActive =
-                        (sub.id === "leaderboard" && pathname.startsWith("/leaderboard")) ||
-                        (sub.id === "profile" && pathname.startsWith("/profile")) ||
+                        (sub.id === "leaderboard" && isLeaderboardActive) ||
+                        (sub.id === "profile" && isProfileActive) ||
                         (sub.id === "settings" && pathname.startsWith("/settings"));
                       const SubIcon = sub.icon;
 

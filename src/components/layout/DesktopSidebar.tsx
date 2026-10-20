@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   useGameStore,
   selectActiveTab,
@@ -21,9 +21,12 @@ export function DesktopSidebar({
 }: DesktopSidebarProps): ReactElement {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const activeTab = useGameStore(selectActiveTab);
   const setActiveTab = useGameStore(selectSetActiveTab);
   const mistakesCount = useGameStore(selectMistakesCount);
+
+  const isFromLeaderboard = searchParams?.get("from") === "leaderboard";
 
   return (
     <aside
@@ -38,8 +41,11 @@ export function DesktopSidebar({
 
         <nav className="flex flex-col gap-1.5" aria-label="Main menu">
           {NAVIGATION_ITEMS.map((item) => {
-            const isLeaderboardActive = pathname.startsWith("/leaderboard");
-            const isProfileActive = pathname.startsWith("/profile");
+            const isLeaderboardActive =
+              pathname.startsWith("/leaderboard") ||
+              (pathname.startsWith("/profile") && isFromLeaderboard);
+            const isProfileActive =
+              pathname.startsWith("/profile") && !isFromLeaderboard;
 
             const isActive =
               (pathname === "/store" && item.id === "store") ||
