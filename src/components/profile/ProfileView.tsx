@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { AvatarCustomizerModal } from "@/components/profile/AvatarCustomizerModal";
-import { AchievementsList } from "@/components/profile/AchievementsList";
+import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { soundEffects } from "@/utils/soundEffects";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useGameStore } from "@/store/useGameStore";
@@ -42,8 +42,6 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const streakCount = useGameStore((s) => s.streakCount);
   const totalXP = useGameStore((s) => s.totalXP);
   const seasonXpStore = useGameStore((s) => s.season_xp);
-  const activeCourse = useGameStore((s) => s.activeCourse);
-  const completedNodesCount = useGameStore((s) => s.completedNodesCount);
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [followers, setFollowers] = useState<UserConnectionItem[]>([]);
@@ -54,7 +52,6 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDevCardOpen, setIsDevCardOpen] = useState(false);
-  const [isFriendsModalOpen, setIsFriendsModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [directoryUsers, setDirectoryUsers] = useState<LeaderboardUserEntry[]>([]);
@@ -136,6 +133,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   }, [targetIdentifier, currentUser, isOwnProfile, is_me, username, streakCount, totalXP, seasonXpStore]);
 
   useEffect(() => {
+    if (!isSearchOpen || directoryUsers.length > 0) return;
     fetchLeaderboardApi()
       .then((res) => {
         if (res.leaderboard) {
@@ -145,7 +143,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       .catch(() => {
         setDirectoryUsers([]);
       });
-  }, []);
+  }, [isSearchOpen, directoryUsers.length]);
 
   const handleToggleFollow = useCallback(async () => {
     if (!profile || isMe || isSubmitting) return;
@@ -282,245 +280,179 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
     });
   }, [directoryUsers, searchQuery, currentUser?.username]);
 
-  const friendsForStreaks = useMemo(() => {
-    const list: Array<{ id: string; username: string; avatar_config?: any; streak?: number }> = [];
-    const seen = new Set<string>();
-
-    for (const f of following) {
-      const key = f.username.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push({
-          id: f.id,
-          username: f.username,
-          avatar_config: f.avatar_config,
-          streak: f.streak || 5,
-        });
-      }
-    }
-
-    for (const f of followers) {
-      if (list.length >= 5) break;
-      const key = f.username.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push({
-          id: f.id,
-          username: f.username,
-          avatar_config: f.avatar_config,
-          streak: f.streak || 3,
-        });
-      }
-    }
-
-    for (const u of directoryUsers) {
-      if (list.length >= 5) break;
-      if (u.is_current_user) continue;
-      if (currentUser?.username && u.username.toLowerCase() === currentUser.username.toLowerCase()) continue;
-      const key = u.username.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push({
-          id: String(u.id),
-          username: u.username,
-          avatar_config: u.avatar_config,
-          streak: u.streak || 7,
-        });
-      }
-    }
-
-    return list.slice(0, 5);
-  }, [following, followers, directoryUsers, currentUser?.username]);
-
   const activeConnections = activeTab === "following" ? following : followers;
 
   return (
-    <div className="w-full flex justify-center py-6 md:py-8 pb-24 md:pb-16 select-none">
-      <div className="w-full max-w-[640px] px-4 flex flex-col">
-        {!isMe && (
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-1.5 mb-4 cursor-pointer w-fit"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>{cameFromLeaderboard ? "Back to Leaderboard" : "Back"}</span>
-          </button>
-        )}
+    <div className="w-full max-w-[1024px] mx-auto px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-16 select-none">
+      <div className="flex lg:hidden justify-end w-full mb-4">
+        <DesktopMetricBar inline />
+      </div>
 
-        {notFound && !loading ? (
-          <div className="w-full p-8 rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 text-center mt-8">
-            <div className="text-4xl mb-3">🔍</div>
-            <h2 className="text-lg font-black text-white">User not found</h2>
-            <p className="mt-2 text-sm font-bold text-slate-400">
-              No coder with the username @{targetIdentifier} exists.
-            </p>
-          </div>
-        ) : (
-          <>
+      {!isMe && (
+        <button
+          type="button"
+          onClick={handleBack}
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-1.5 mb-4 cursor-pointer w-fit"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{cameFromLeaderboard ? "Back to Leaderboard" : "Back"}</span>
+        </button>
+      )}
+
+      {notFound && !loading ? (
+        <div className="w-full max-w-md mx-auto mt-16 p-8 rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 text-center">
+          <div className="text-4xl mb-3">🔍</div>
+          <h2 className="text-lg font-black text-white">User not found</h2>
+          <p className="mt-2 text-sm font-bold text-slate-400">
+            No coder with the username @{targetIdentifier} exists.
+          </p>
+        </div>
+      ) : (
+
+      <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
+        <div className="w-full lg:w-[600px] lg:max-w-[60%] flex flex-col shrink-0">
+          <div className="relative w-full h-[180px] md:h-[220px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl">
             <div
-              onClick={() => {
-                if (isMe) {
+              className="absolute inset-0 opacity-25 pointer-events-none"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.28), transparent 65%), linear-gradient(to right, rgba(30, 58, 110, 0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 58, 110, 0.25) 1px, transparent 1px)",
+                backgroundSize: "100% 100%, 28px 28px, 28px 28px",
+              }}
+            />
+
+            <div className="absolute top-5 left-6 hidden sm:flex flex-col gap-1.5 px-3 py-2 rounded-xl bg-slate-950/60 border border-slate-800/80 backdrop-blur-sm">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-rose-500/80" />
+                <span className="w-2 h-2 rounded-full bg-amber-400/80" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400/80" />
+              </div>
+              <div className="w-16 h-1.5 rounded-full bg-cyan-400/30" />
+              <div className="w-12 h-1.5 rounded-full bg-indigo-400/30" />
+            </div>
+
+            {isMe && (
+              <button
+                type="button"
+                onClick={() => {
                   soundEffects.playSoftClick();
                   setIsEditModalOpen(true);
-                }
-              }}
-              className={`relative w-full h-[220px] md:h-[260px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
-                isMe ? "cursor-pointer group" : ""
-              }`}
-            >
-              <div
-                className="absolute inset-0 opacity-25 pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.28), transparent 65%), linear-gradient(to right, rgba(30, 58, 110, 0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 58, 110, 0.25) 1px, transparent 1px)",
-                  backgroundSize: "100% 100%, 28px 28px, 28px 28px",
                 }}
-              />
+                className="absolute top-3.5 right-3.5 z-20 h-9 px-3.5 rounded-xl bg-[#162a52]/95 hover:bg-[#1e386b] border-2 border-b-4 border-slate-700 border-b-slate-800 text-white font-black text-xs inline-flex items-center gap-1.5 shadow-lg active:translate-y-0.5 transition-all cursor-pointer"
+              >
+                <span>🎨</span>
+                <span>Room &amp; Avatar</span>
+              </button>
+            )}
 
-              <div className="absolute bottom-3 left-3.5 z-20 h-7 px-3 rounded-full bg-slate-950/90 border border-slate-700 backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg">
-                {currentRank >= 1 && currentRank <= 3 ? (
-                  <>
-                    <span>{currentRank === 1 ? "👑" : currentRank === 2 ? "🥈" : "🥉"}</span>
-                    <span
-                      className={
-                        currentRank === 1
-                          ? "text-amber-300"
-                          : currentRank === 2
-                          ? "text-slate-200"
-                          : "text-amber-500"
-                      }
-                    >
-                      Rank #{currentRank} Season
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-slate-300">Active Room</span>
-                  </>
-                )}
+            {currentRank >= 1 && currentRank <= 3 && (
+              <div
+                className={`absolute bottom-3.5 left-3.5 z-20 h-7 px-3 rounded-full bg-slate-950/90 border backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${
+                  currentRank === 1
+                    ? "border-amber-400/50 text-amber-300"
+                    : currentRank === 2
+                    ? "border-slate-300/50 text-slate-200"
+                    : "border-amber-600/50 text-amber-400"
+                }`}
+              >
+                <span>{currentRank === 1 ? "👑" : currentRank === 2 ? "🥈" : "🥉"}</span>
+                <span>Season Rank #{currentRank}</span>
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center justify-end pointer-events-none">
+              <div className="relative w-[120px] h-[120px] flex items-center justify-center translate-y-3">
+                <div className="rounded-full p-1 bg-slate-950/90 border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                  <AvatarRenderer config={effectiveAvatar} size={108} />
+                </div>
               </div>
 
-              <div className="absolute bottom-0 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
-                <div className="relative mb-[-10px] z-10 transition-transform duration-200 group-hover:scale-105">
-                  <div className="rounded-full p-1 bg-slate-950/90 border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
-                    <AvatarRenderer config={effectiveAvatar} size={120} />
-                  </div>
-                </div>
-
-                <div className="relative z-10 w-52 sm:w-64 h-5 rounded-t-xl bg-gradient-to-b from-[#1e293b] to-[#0f172a] border-t-2 border-x-2 border-slate-700 flex items-center justify-center shadow-inner">
-                  <div className="w-14 h-1.5 rounded-full bg-cyan-400/40" />
-                </div>
+              <div className="relative z-10 w-48 sm:w-56 h-5 rounded-t-xl bg-gradient-to-b from-[#1e293b] to-[#0f172a] border-t-2 border-x-2 border-slate-700 flex items-center justify-center shadow-inner">
+                <div className="w-12 h-1.5 rounded-full bg-cyan-400/50" />
               </div>
             </div>
+          </div>
 
-            <div className="mt-6 flex flex-col items-start gap-1">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="font-black text-2xl text-white tracking-tight">
+          <div className="mt-6 border-b-2 border-slate-800 pb-6">
+            <div className="flex flex-col items-start">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h1 className="text-[24px] sm:text-[28px] font-black text-white leading-tight tracking-tight">
                   {profileDisplayName}
                 </h1>
+
                 {coderLevel && (
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${coderBadgeStyle}`}
+                    className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
                   >
-                    {coderLevel}
+                    <span>
+                      {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                    </span>
+                    <span>{coderLevel}</span>
                   </span>
                 )}
               </div>
 
-              <div className="text-xs text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
-                <span>@{profileHandle}</span>
-                <span>•</span>
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                <span>{formattedJoinedDate || "Member 2026"}</span>
-              </div>
-            </div>
+              <span className="text-sm font-bold text-slate-400 mt-1 text-left">
+                @{profileHandle}
+              </span>
 
-            <div className="mt-5 grid grid-cols-3 divide-x divide-slate-800/80 py-3 border-y border-slate-800/80">
-              <div className="flex flex-col items-center justify-center py-1">
-                <div className="flex items-center gap-1.5 h-7">
-                  <span className="text-base select-none">⚡</span>
-                  <span className="text-sm font-black text-amber-400 font-mono uppercase">
-                    {activeCourse === "python" ? "PY" : "JS"}
-                  </span>
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
-                    +2
-                  </span>
+              {formattedJoinedDate && (
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-2">
+                  <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>{formattedJoinedDate}</span>
                 </div>
-                <span className="text-xs font-bold text-slate-400 mt-1">Courses</span>
-              </div>
+              )}
 
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setActiveTab("following");
-                  setIsFriendsModalOpen(true);
-                }}
-                className="flex flex-col items-center justify-center py-1 group cursor-pointer transition-colors"
-              >
-                <div className="h-7 flex items-center">
-                  <span className="text-lg sm:text-xl font-black text-white group-hover:text-cyan-400 transition-colors">
-                    {followingCount}
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-slate-300 transition-colors mt-1">
-                  Following
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setActiveTab("followers");
-                  setIsFriendsModalOpen(true);
-                }}
-                className="flex flex-col items-center justify-center py-1 group cursor-pointer transition-colors"
-              >
-                <div className="h-7 flex items-center">
-                  <span className="text-lg sm:text-xl font-black text-white group-hover:text-cyan-400 transition-colors">
-                    {followersCount}
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-slate-300 transition-colors mt-1">
-                  Followers
-                </span>
-              </button>
-            </div>
-
-            <div className="mt-5 flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setIsDevCardOpen(true);
-                }}
-                className="flex-1 h-[52px] px-5 rounded-2xl bg-gradient-to-r from-[#172554] via-[#1e1b4b] to-[#172554] hover:from-[#1e3a8a] hover:via-[#2e1065] hover:to-[#1e3a8a] border-2 border-b-4 border-amber-400/80 border-b-amber-600 text-amber-300 font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-amber-500/10 active:translate-y-0.5 transition-all cursor-pointer"
-              >
-                <span className="text-lg">🪪</span>
-                <span>View Intro &amp; Skills (Dev Card)</span>
-              </button>
-
-              {isMe ? (
+              <div className="flex items-center gap-3 mt-3">
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playSoftClick();
-                    setIsSearchOpen(true);
+                    setActiveTab("following");
                   }}
-                  title="Find Friends"
-                  className="w-[52px] h-[52px] rounded-2xl bg-[#0e172a] hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400 flex items-center justify-center transition-all active:translate-y-0.5 shadow-md cursor-pointer shrink-0"
+                  className="inline-flex items-baseline gap-1.5 hover:opacity-90 transition-opacity cursor-pointer"
                 >
-                  <UserPlus className="w-5 h-5" />
+                  <span className="text-base font-black text-cyan-400">{followingCount}</span>
+                  <span className="text-sm font-bold text-slate-300">Following</span>
+                </button>
+
+                <span className="text-slate-600 font-black">•</span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setActiveTab("followers");
+                  }}
+                  className="inline-flex items-baseline gap-1.5 hover:opacity-90 transition-opacity cursor-pointer"
+                >
+                  <span className="text-base font-black text-cyan-400">{followersCount}</span>
+                  <span className="text-sm font-bold text-slate-300">Followers</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-3">
+              {loading ? (
+                <div className="w-full h-[50px] bg-slate-800/60 rounded-2xl animate-pulse" />
+              ) : isMe ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setIsSearchOpen((prev) => !prev);
+                  }}
+                  className="w-full h-[50px] px-5 rounded-2xl bg-[#0f243c] hover:bg-[#15304f] border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-300 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md cursor-pointer"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Find Friends</span>
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={handleToggleFollow}
                   disabled={isSubmitting}
-                  className={`h-[52px] px-5 rounded-2xl font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 cursor-pointer shrink-0 ${
+                  className={`w-full h-[50px] px-6 rounded-2xl font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 cursor-pointer ${
                     profile?.is_following
                       ? "bg-[#0d1b33] hover:bg-[#132647] border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400 shadow-md"
                       : "bg-cyan-500 hover:bg-cyan-400 border-2 border-b-4 border-cyan-300 border-b-cyan-700 text-slate-950 shadow-lg shadow-cyan-950/40"
@@ -529,191 +461,193 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   {profile?.is_following ? (
                     <>
                       <UserCheck className="w-4 h-4" />
-                      <span>Following</span>
+                      <span>✓ Following</span>
                     </>
                   ) : (
                     <>
                       <UserPlus className="w-4 h-4" />
-                      <span>Follow</span>
+                      <span>+ Follow</span>
                     </>
                   )}
                 </button>
               )}
-            </div>
-
-            <div className="mt-7">
-              <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-3">
-                Overview
-              </h2>
-
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80">
-                <div className="flex items-center gap-3.5 p-1">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">🔥</span>
-                  <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
-                      {effectiveStreak} days
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
-                      Active Streak
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5 p-1">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">💻</span>
-                  <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
-                      {completedNodesCount || 66}
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
-                      Lessons Finished
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5 p-1">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">🏆</span>
-                  <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
-                      {hasRank ? `Rank #${currentRank}` : coderLevel || "Senior"}
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
-                      Season Standing
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5 p-1">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">⚡</span>
-                  <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
-                      {effectiveXp.toLocaleString()} XP
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
-                      Total XP
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-7">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">
-                  Friend Streaks
-                </h2>
-                {isMe && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setIsSearchOpen(true);
-                    }}
-                    className="text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
-                  >
-                    Find Friends
-                  </button>
-                )}
-              </div>
-
-              <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
-                {friendsForStreaks.slice(0, 5).map((f) => (
-                  <div
-                    key={f.id}
-                    onClick={() => openUserProfile(f.username, f.id)}
-                    className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
-                  >
-                    <div className="relative w-14 h-14 rounded-full bg-slate-950 border-2 border-slate-700 group-hover:border-cyan-400 overflow-hidden transition-all flex items-center justify-center shadow-md">
-                      <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={48} />
-                      <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-700 text-[10px] font-black text-rose-400 flex items-center gap-0.5 shadow">
-                        <span>🔥</span>
-                        <span>{f.streak || 1}</span>
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[64px] text-center">
-                      {f.username}
-                    </span>
-                  </div>
-                ))}
-
-                <div
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setIsSearchOpen(true);
-                  }}
-                  className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
-                >
-                  <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-600 group-hover:border-cyan-400 flex items-center justify-center text-slate-400 group-hover:text-cyan-300 transition-colors shadow-sm bg-slate-900/40">
-                    <UserPlus className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-400 group-hover:text-cyan-300 truncate max-w-[64px] text-center">
-                    Add
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-7">
-              <AchievementsList />
-            </div>
-          </>
-        )}
-      </div>
-
-      {isFriendsModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
-          onClick={() => setIsFriendsModalOpen(false)}
-        >
-          <div
-            className="w-full sm:max-w-md max-h-[85vh] h-[520px] rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
-              <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setActiveTab("following");
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition-colors cursor-pointer ${
-                    activeTab === "following"
-                      ? "bg-cyan-500 text-slate-950 shadow"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  Following ({followingCount})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setActiveTab("followers");
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition-colors cursor-pointer ${
-                    activeTab === "followers"
-                      ? "bg-cyan-500 text-slate-950 shadow"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  Followers ({followersCount})
-                </button>
-              </div>
 
               <button
                 type="button"
                 onClick={() => {
                   soundEffects.playSoftClick();
-                  setIsFriendsModalOpen(false);
+                  setIsDevCardOpen(true);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="w-full h-[54px] px-5 rounded-2xl bg-gradient-to-r from-[#132347] via-[#1e1b4b] to-[#132347] hover:from-[#192f5e] hover:via-[#282463] hover:to-[#192f5e] border-2 border-b-4 border-amber-400/75 border-b-amber-600 text-amber-300 font-bold text-[15px] sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-amber-500/10 active:translate-y-0.5 transition-all cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <span>🪪</span>
+                <span>View Intro &amp; Skills Card (Dev Card)</span>
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
+            {isMe && isSearchOpen && (
+              <div className="mt-4 p-4 rounded-2xl border-2 border-b-4 border-slate-800 border-b-slate-950 bg-slate-900/90 shadow-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-black text-white">Find &amp; Follow Coders</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSearchOpen(false)}
+                    className="text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="relative mb-3">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by username..."
+                    className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm font-bold text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2 max-h-56 overflow-y-auto pr-1">
+                  {filteredSearchUsers.length === 0 ? (
+                    <div className="py-4 text-center text-xs font-bold text-slate-500">
+                      No matching users found.
+                    </div>
+                  ) : (
+                    filteredSearchUsers.slice(0, 8).map((u) => (
+                      <div
+                        key={u.id}
+                        onClick={() => {
+                          setIsSearchOpen(false);
+                          openUserProfile(u.username, u.id);
+                        }}
+                        className="flex items-center justify-between p-2.5 rounded-xl bg-[#0b1324] border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-full bg-slate-950 overflow-hidden flex items-center justify-center border border-slate-800 shrink-0">
+                            <AvatarRenderer config={u.avatar_config || DEFAULT_AVATAR_CONFIG} size={36} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-black text-white text-sm truncate">{u.username}</div>
+                            <div className="text-[11px] text-slate-400 font-bold truncate">
+                              @{u.username.toLowerCase().replace(/\s+/g, "_")}
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-xs font-black text-cyan-400 shrink-0">View &rarr;</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 w-full">
+            <h2 className="text-[18px] sm:text-[20px] font-black text-white mb-4 tracking-tight">
+              Performance Statistics
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
+                  🔥
+                </div>
+                <div className="min-w-0 flex flex-col">
+                  <span className="text-[20px] font-black text-white leading-tight truncate">
+                    {effectiveStreak}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    Active Day Streak
+                  </span>
+                </div>
+              </div>
+
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
+                  ⚡
+                </div>
+                <div className="min-w-0 flex flex-col">
+                  <span className="text-[20px] font-black text-white leading-tight truncate">
+                    {effectiveXp.toLocaleString()}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    Total Score (XP)
+                  </span>
+                </div>
+              </div>
+
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
+                  🏆
+                </div>
+                <div className="min-w-0 flex flex-col">
+                  <span className="text-[20px] font-black text-white leading-tight truncate">
+                    {hasRank ? `Rank #${currentRank}` : "Unranked"}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    Current Compile Season
+                  </span>
+                </div>
+              </div>
+
+              <div className="h-[92px] rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 p-4 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shrink-0">
+                  🎯
+                </div>
+                <div className="min-w-0 flex flex-col">
+                  <span className="text-[20px] font-black text-white leading-tight truncate">
+                    {effectiveSeasonXp.toLocaleString()} XP
+                  </span>
+                  <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    XP Earned This Week
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full lg:w-[380px] lg:max-w-[40%] shrink-0 lg:sticky lg:top-6 flex flex-col gap-5">
+          <div className="hidden lg:flex justify-end w-full">
+            <DesktopMetricBar inline />
+          </div>
+
+          <div className="w-full max-h-[460px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 flex flex-col overflow-hidden shadow-xl">
+            <div className="h-[52px] shrink-0 grid grid-cols-2 border-b-2 border-slate-800/90 bg-[#0a1326]/60">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setActiveTab("following");
+                }}
+                className={`h-full font-bold text-sm flex items-center justify-center transition-colors cursor-pointer border-b-4 ${
+                  activeTab === "following"
+                    ? "border-cyan-400 text-cyan-400 font-black"
+                    : "border-transparent text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Following ({followingCount})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setActiveTab("followers");
+                }}
+                className={`h-full font-bold text-sm flex items-center justify-center transition-colors cursor-pointer border-b-4 ${
+                  activeTab === "followers"
+                    ? "border-cyan-400 text-cyan-400 font-black"
+                    : "border-transparent text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Followers ({followersCount})
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60">
               {activeConnections.length === 0 ? (
                 <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-2">
                   <span className="text-sm font-bold text-slate-500">
@@ -724,11 +658,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 activeConnections.map((item) => (
                   <div
                     key={item.id}
-                    onClick={() => {
-                      setIsFriendsModalOpen(false);
-                      openUserProfile(item.username, item.id);
-                    }}
-                    className="h-16 p-3 rounded-xl flex items-center justify-between hover:bg-slate-800/40 transition-colors cursor-pointer"
+                    onClick={() => openUserProfile(item.username, item.id)}
+                    className="h-16 p-4 flex items-center justify-between hover:bg-slate-800/40 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 rounded-full bg-slate-950 overflow-hidden flex items-center justify-center border border-slate-800 shrink-0">
@@ -753,86 +684,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {isSearchOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
-          onClick={() => setIsSearchOpen(false)}
-        >
-          <div
-            className="w-full sm:max-w-md max-h-[85vh] h-[520px] rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-black text-white">Find Coders</span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setIsSearchOpen(false);
-                }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="p-3 border-b border-slate-800/70 bg-[#081020]/50">
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by username or title..."
-                  className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
-              {filteredSearchUsers.length === 0 ? (
-                <div className="py-12 px-4 text-center text-sm font-bold text-slate-500">
-                  {directoryUsers.length === 0 ? "Loading coders..." : "No matching coders found."}
-                </div>
-              ) : (
-                filteredSearchUsers.map((u) => (
-                  <div
-                    key={u.id}
-                    onClick={() => {
-                      setIsSearchOpen(false);
-                      openUserProfile(u.username, u.id);
-                    }}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-800/40 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-slate-950 overflow-hidden flex items-center justify-center border border-slate-800 shrink-0">
-                        <AvatarRenderer config={u.avatar_config || DEFAULT_AVATAR_CONFIG} size={40} />
-                      </div>
-                      <div className="min-w-0 flex flex-col">
-                        <span className="text-sm font-bold text-white leading-tight truncate">
-                          {u.username}
-                        </span>
-                        <span className="text-xs font-bold text-slate-400 truncate mt-0.5">
-                          {u.coder_title || `@${u.username.toLowerCase().replace(/\s+/g, "_")}`}
-                        </span>
-                      </div>
-                    </div>
-
-                    <span className="text-xs font-bold text-amber-400 shrink-0 ml-2">
-                      {(u.total_xp ?? u.season_xp).toLocaleString()} XP
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
       )}
 
       {isDevCardOpen && (
