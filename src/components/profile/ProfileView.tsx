@@ -616,7 +616,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
 
                 <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">💻</span>
+                  {currentCourse.iconSrc ? (
+                    <img
+                      src={currentCourse.iconSrc}
+                      alt={currentCourse.title}
+                      className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow rounded-lg"
+                    />
+                  ) : (
+                    <span className="text-2xl sm:text-3xl select-none shrink-0">
+                      {currentCourse.fallbackEmoji}
+                    </span>
+                  )}
                   <div className="min-w-0 flex flex-col">
                     <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {completedNodesCount || 66}
@@ -628,7 +638,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
 
                 <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">🏆</span>
+                  <img
+                    src="/icons/trophy.png"
+                    alt="Season Standing"
+                    className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
+                  />
                   <div className="min-w-0 flex flex-col">
                     <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {hasRank ? `Rank #${currentRank}` : coderLevel || "Senior"}
@@ -640,7 +654,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </div>
 
                 <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">⚡</span>
+                  <img
+                    src="/icons/lightning.png"
+                    alt="Total XP"
+                    className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
+                  />
                   <div className="min-w-0 flex flex-col">
                     <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {effectiveXp.toLocaleString()} XP
@@ -732,7 +750,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           >
             <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
               <div className="flex items-center gap-2">
-                <span className="text-xl">⚡</span>
+                {currentCourse.iconSrc ? (
+                  <img src={currentCourse.iconSrc} alt="Course" className="w-5 h-5 object-contain" />
+                ) : (
+                  <span className="text-xl">{currentCourse.fallbackEmoji}</span>
+                )}
                 <span className="text-base sm:text-lg font-black text-white">
                   {profileDisplayName} Courses
                 </span>
