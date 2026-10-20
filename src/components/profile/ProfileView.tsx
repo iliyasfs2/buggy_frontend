@@ -264,32 +264,34 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       : profile?.avatar_config) || DEFAULT_AVATAR_CONFIG;
 
   const coderLevel = useMemo<"Senior" | "Mid-Level" | "Junior" | null>(() => {
-    if (profile?.rank_title === "Senior" || profile?.rank_title === "Mid-Level" || profile?.rank_title === "Junior") {
-      return profile.rank_title;
-    }
+    if (profile?.rank_title === "Senior" || currentRank === 1) return "Senior";
+    if (profile?.rank_title === "Mid-Level" || currentRank === 2) return "Mid-Level";
+    if (profile?.rank_title === "Junior" || currentRank === 3) return "Junior";
     return null;
-  }, [profile?.rank_title]);
+  }, [profile?.rank_title, currentRank]);
 
-  const effectiveLevel = useMemo<"Senior" | "Mid-Level" | "Junior">(() => {
-    if (coderLevel) return coderLevel;
-    if (profile?.rank_title === "Senior" || profile?.rank_title === "Mid-Level" || profile?.rank_title === "Junior") {
-      return profile.rank_title;
-    }
-    if (currentRank === 1) return "Senior";
-    if (currentRank === 2) return "Mid-Level";
-    if (currentRank === 3) return "Junior";
-    return "Senior";
-  }, [coderLevel, profile?.rank_title, currentRank]);
+  const leagueName = useMemo<string>(() => {
+    if (profile?.league) return profile.league;
+    if (currentRank <= 0) return "Unranked";
+    if (currentRank <= 3) return "Grandmaster League";
+    if (currentRank <= 10) return "Emerald League";
+    if (currentRank <= 25) return "Diamond League";
+    if (currentRank <= 50) return "Ruby League";
+    return "Obsidian League";
+  }, [profile?.league, currentRank]);
 
   const coderBadgeStyle = useMemo(() => {
-    if (effectiveLevel === "Senior") {
+    if (coderLevel === "Senior") {
       return "bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm shadow-amber-500/10";
     }
-    if (effectiveLevel === "Mid-Level") {
+    if (coderLevel === "Mid-Level") {
       return "bg-slate-300/20 text-slate-200 border border-slate-300/50 shadow-sm";
     }
-    return "bg-amber-700/20 text-amber-400 border border-amber-600/50 shadow-sm";
-  }, [effectiveLevel]);
+    if (coderLevel === "Junior") {
+      return "bg-amber-700/20 text-amber-400 border border-amber-600/50 shadow-sm";
+    }
+    return "";
+  }, [coderLevel]);
 
   const formattedJoinedDate = useMemo(() => {
     const rawDate = profile?.joined_at || (isMe ? currentUser?.created_at : null);
@@ -451,14 +453,16 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 }}
               />
 
-              <div
-                className={`absolute bottom-3.5 left-4 sm:left-4 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
-              >
-                <span>
-                  {effectiveLevel === "Senior" ? "👑" : effectiveLevel === "Mid-Level" ? "🥈" : "🥉"}
-                </span>
-                <span>{effectiveLevel}</span>
-              </div>
+              {coderLevel && (
+                <div
+                  className={`absolute bottom-3.5 left-4 sm:left-4 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
+                >
+                  <span>
+                    {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                  </span>
+                  <span>{coderLevel}</span>
+                </div>
+              )}
 
               <div className="absolute bottom-2 sm:bottom-3 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
                 <div className="relative mb-[-10px] z-10 transition-transform duration-200 group-hover:scale-105">
@@ -481,6 +485,15 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 <span className="text-sm sm:text-base font-bold text-slate-400 font-mono">
                   @{profileHandle}
                 </span>
+                {coderLevel && (
+                  <span
+                    className={`h-6 px-2.5 rounded-full text-xs font-black inline-flex items-center gap-1 select-none ${coderBadgeStyle}`}
+                    title={`Season ${profile?.season_number || 1} • Rank #${currentRank}`}
+                  >
+                    <span>{coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}</span>
+                    <span>{coderLevel}</span>
+                  </span>
+                )}
               </div>
 
               <div className="mt-4 flex items-center gap-6 sm:gap-8 flex-wrap select-none">
@@ -637,18 +650,28 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   </div>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
+                <div
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    router.push("/leaderboard");
+                  }}
+                  className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md cursor-pointer hover:border-blue-500 hover:border-b-blue-600 transition-all group"
+                  title="View 10-Day Season Leaderboard"
+                >
                   <img
                     src="/icons/trophy.png"
                     alt="Season Standing"
-                    className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
+                    className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow group-hover:scale-105 transition-transform"
                   />
                   <div className="min-w-0 flex flex-col">
                     <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
-                      {hasRank ? `Rank #${currentRank}` : coderLevel || "Senior"}
+                      {hasRank ? `Rank #${currentRank}` : coderLevel || "Unranked"}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
-                      Season Standing
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate flex items-center gap-1">
+                      <span>Season {profile?.season_number || 1}</span>
+                      <span className="text-cyan-400 font-mono text-[11px] sm:text-xs">
+                        • {coderLevel ? coderLevel : leagueName}
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -664,7 +687,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       {effectiveXp.toLocaleString()} XP
                     </span>
                     <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
-                      Total XP
+                      Total XP • {effectiveSeasonXp.toLocaleString()} Season
                     </span>
                   </div>
                 </div>
@@ -1087,11 +1110,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   </div>
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
                     <span className="text-sm font-bold text-white">Season Rank</span>
-                    <span className="text-sm font-black text-amber-400">{hasRank ? `#${currentRank}` : "—"}</span>
+                    <span className="text-sm font-black text-amber-400">
+                      {hasRank ? `#${currentRank}${coderLevel ? ` (${coderLevel})` : ""}` : "—"}
+                    </span>
                   </div>
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">XP This Week</span>
+                    <span className="text-sm font-bold text-white">Season XP (10-Day)</span>
                     <span className="text-sm font-black text-amber-400">{effectiveSeasonXp.toLocaleString()}</span>
+                  </div>
+                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between sm:col-span-2">
+                    <span className="text-sm font-bold text-white">Competitive League</span>
+                    <span className="text-sm font-black text-cyan-400">{leagueName}</span>
                   </div>
                 </div>
               </div>

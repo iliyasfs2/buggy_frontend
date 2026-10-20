@@ -90,6 +90,9 @@ export interface UserProfileData {
   is_following: boolean;
   active_course?: string;
   is_me: boolean;
+  season_number?: number;
+  season_days_left?: number;
+  league?: string;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
