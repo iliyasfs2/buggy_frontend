@@ -438,7 +438,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setIsEditModalOpen(true);
                 }
               }}
-              className={`relative w-full h-[220px] md:h-[260px] rounded-none sm:rounded-[24px] border-0 sm:border-2 sm:border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
+              className={`relative w-full h-[260px] md:h-[310px] rounded-none sm:rounded-[24px] border-0 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-2xl ${
                 isMe ? "cursor-pointer group" : ""
               }`}
             >
@@ -452,7 +452,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               />
 
               <div
-                className={`absolute bottom-3 left-4 sm:left-3.5 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
+                className={`absolute bottom-3.5 left-4 sm:left-4 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
               >
                 <span>
                   {effectiveLevel === "Senior" ? "👑" : effectiveLevel === "Mid-Level" ? "🥈" : "🥉"}
@@ -460,7 +460,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 <span>{effectiveLevel}</span>
               </div>
 
-              <div className="absolute bottom-0 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
+              <div className="absolute bottom-2 sm:bottom-3 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
                 <div className="relative mb-[-10px] z-10 transition-transform duration-200 group-hover:scale-105">
                   <div className="rounded-full p-1 bg-slate-950/90 border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
                     <AvatarRenderer config={effectiveAvatar} size={120} />
