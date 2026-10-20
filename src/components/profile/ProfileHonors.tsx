@@ -59,13 +59,13 @@ export function ProfileHonors({
   const specialBadges: SpecialBadgeItem[] = [
     {
       id: "early_bird",
-      name: "دیباگر سحرخیز",
+      name: "Early Bird",
       enTitle: "Early Bird",
-      desc: "حل چالش در ۵ روز مختلف قبل از ساعت ۹ صبح با قهوه گرم و تمرکز بالا.",
-      ruleDesc: "۵ روز مختلف قبل از ساعت ۹:۰۰ صبح حداقل یک چالش کدنویسی حل کنید.",
+      desc: "Solve challenges across 5 separate days before 9:00 AM.",
+      ruleDesc: "Complete at least one debug challenge before 9:00 AM on 5 distinct days.",
       current: Math.min(5, Math.floor(streak / 2) + 1),
       target: 5,
-      unit: "روز سحرخیزی",
+      unit: "days",
       ringColor: "border-amber-400",
       glowColor: "rgba(251, 191, 36, 0.45)",
       accentBg: "from-amber-500/20 to-orange-500/10",
@@ -94,13 +94,13 @@ export function ProfileHonors({
     },
     {
       id: "night_owl",
-      name: "جغد شب‌کار",
+      name: "Night Owl",
       enTitle: "Night Owl",
-      desc: "حل چالش در ۵ شب مختلف بین ساعت ۱۲ شب تا ۴ صبح در سکوت شب.",
-      ruleDesc: "در ۵ شب مجزا در بازه زمانی بامداد (۰۰:۰۰ تا ۰۴:۰۰) چالش حل کنید.",
+      desc: "Solve challenges across 5 separate nights between 12:00 AM and 4:00 AM.",
+      ruleDesc: "Solve debug challenges during late night hours (00:00 to 04:00) on 5 distinct days.",
       current: Math.min(5, Math.floor(streak / 3)),
       target: 5,
-      unit: "شب کدنویسی",
+      unit: "nights",
       ringColor: "border-purple-500",
       glowColor: "rgba(168, 85, 247, 0.45)",
       accentBg: "from-purple-500/20 to-indigo-500/10",
@@ -122,13 +122,13 @@ export function ProfileHonors({
     },
     {
       id: "sniper_coder",
-      name: "تک‌تیرانداز کد",
+      name: "Sniper Coder",
       enTitle: "Sniper Coder",
-      desc: "تکمیل ۵ چالش متوالی با دقت ۱۰۰٪ و بدون حتی یک خطای سینتکسی.",
-      ruleDesc: "بدون ایجاد خطا ۵ گره را با تست‌های ۱۰۰٪ پاس‌شده پشت سر بگذارید.",
+      desc: "Complete 5 consecutive challenges with 100% accuracy and zero errors.",
+      ruleDesc: "Pass 5 nodes in a row on your first attempt without any test errors.",
       current: Math.min(5, Math.max(1, solvedMistakesCount > 0 ? 5 : 2)),
       target: 5,
-      unit: "چالش بی‌نقص",
+      unit: "challenges",
       ringColor: "border-rose-500",
       glowColor: "rgba(244, 63, 94, 0.45)",
       accentBg: "from-rose-500/20 to-red-500/10",
@@ -148,13 +148,13 @@ export function ProfileHonors({
     },
     {
       id: "speed_demon",
-      name: "کامپایلر سرعتی",
+      name: "Speed Demon",
       enTitle: "Speed Demon",
-      desc: "حل یک چالش کامل در کمتر از ۶۰ ثانیه با مهارت و تایپ سریع.",
-      ruleDesc: "یک چالش دیباگ یا کدنویسی را زیر ۱ دقیقه به پایان برسانید.",
+      desc: "Complete an entire challenge in under 60 seconds with rapid coding.",
+      ruleDesc: "Solve and pass any debug node or exercise in less than 60 seconds.",
       current: 1,
       target: 1,
-      unit: "چالش زیر ۱ دقیقه",
+      unit: "challenges",
       ringColor: "border-cyan-400",
       glowColor: "rgba(34, 211, 238, 0.45)",
       accentBg: "from-cyan-500/20 to-blue-500/10",
@@ -175,13 +175,13 @@ export function ProfileHonors({
     },
     {
       id: "weekend_warrior",
-      name: "جنگجوی آخر هفته",
+      name: "Weekend Warrior",
       enTitle: "Weekend Warrior",
-      desc: "حفظ تمرین و استریک در ۴ پنجشنبه و جمعه متوالی بدون افت یادگیری.",
-      ruleDesc: "در روزهای تعطیل آخر هفته استریک خود را برای ۴ هفته متوالی فعال نگه دارید.",
+      desc: "Maintain your streak across 4 consecutive weekends without missing a day.",
+      ruleDesc: "Keep your practice streak alive across 4 consecutive weekends.",
       current: Math.min(4, Math.floor(streak / 7)),
       target: 4,
-      unit: "آخر هفته متوالی",
+      unit: "weekends",
       ringColor: "border-emerald-400",
       glowColor: "rgba(52, 211, 153, 0.45)",
       accentBg: "from-emerald-500/20 to-teal-500/10",
@@ -201,13 +201,13 @@ export function ProfileHonors({
     },
     {
       id: "season_champion",
-      name: "تاجگذار فصل",
+      name: "Season Champion",
       enTitle: "Season Champion",
-      desc: "قرار گرفتن در جمع ۳ نفر اول فصل ۱۰ روزه لیدربورد حداقل یک بار.",
-      ruleDesc: "در پایان یکی از فصل‌های ۱۰ روزه روی سکوی ۱ تا ۳ لیدربورد بایستید.",
+      desc: "Finish in the Top 3 of a 10-day competitive leaderboard season.",
+      ruleDesc: "Reach podium ranks (1st, 2nd, or 3rd) at the conclusion of a 10-day season.",
       current: currentRank > 0 && currentRank <= 3 ? 1 : 0,
       target: 1,
-      unit: "حضور در سکو",
+      unit: "podiums",
       ringColor: "border-yellow-300",
       glowColor: "rgba(253, 224, 71, 0.55)",
       accentBg: "from-yellow-500/25 to-amber-500/15",
@@ -228,10 +228,10 @@ export function ProfileHonors({
   const achievements: AchievementItem[] = [
     {
       id: "wildfire",
-      name: "آتش‌افروز",
+      name: "Wildfire",
       enTitle: "Wildfire",
-      desc: "رسیدن به استریک ۳۰ روز متوالی حل مستمر بدون وقفه.",
-      ruleDesc: "زنجیره یادگیری روزانه خود را ۳۰ روز پیاپی زنده نگه دارید.",
+      desc: "Reach a 30-day consecutive practice streak.",
+      ruleDesc: "Keep your daily learning flame burning for 30 consecutive days.",
       current: streak,
       target: 30,
       displayRecord: "30",
@@ -252,10 +252,10 @@ export function ProfileHonors({
     },
     {
       id: "bug_hunter",
-      name: "شکارچی باگ",
+      name: "Bug Hunter",
       enTitle: "Bug Hunter",
-      desc: "حل موفقیت‌آمیز ۵۰ چالش در بخش دیباگ و اصلاح کدهای معیوب.",
-      ruleDesc: "۵۰ باگ و خطای لاجیک یا سینتکس را در مسیر حل کنید.",
+      desc: "Successfully debug and fix 50 coding challenges.",
+      ruleDesc: "Hunt down and resolve 50 syntax or logic bugs across learning nodes.",
       current: Math.max(solvedMistakesCount, completedNodesCount * 2),
       target: 50,
       displayRecord: "50",
@@ -278,10 +278,10 @@ export function ProfileHonors({
     },
     {
       id: "xp_legend",
-      name: "ژنرال XP",
+      name: "XP Legend",
       enTitle: "XP Legend",
-      desc: "عبور مجموع امتیاز کل تجمیع‌شده از مرز ۱۲,۵۰۰ XP.",
-      ruleDesc: "با حل تمرین‌ها، کوئیزها و چالش‌ها به امتیاز کل ۱۲۵۰۰ برسید.",
+      desc: "Accumulate over 12,500 total XP throughout your Buggy journey.",
+      ruleDesc: "Earn a total of 12,500 XP through lessons, challenges, and quizzes.",
       current: totalXP,
       target: 12500,
       displayRecord: "12500",
@@ -296,10 +296,10 @@ export function ProfileHonors({
     },
     {
       id: "path_conqueror",
-      name: "فاتح مسیر",
+      name: "Path Conqueror",
       enTitle: "Path Conqueror",
-      desc: "تکمیل کامل ۱۵ گره و فصل آموزشی در نقشه یادگیری باگی.",
-      ruleDesc: "۱۵ گره را با موفقیت حل کرده و به خط پایان فصل‌ها برسید.",
+      desc: "Complete 15 learning path nodes across Buggy curricula.",
+      ruleDesc: "Master 15 full nodes on the interactive learning roadmap.",
       current: completedNodesCount,
       target: 15,
       displayRecord: "15",
@@ -316,10 +316,10 @@ export function ProfileHonors({
     },
     {
       id: "chest_collector",
-      name: "کلکسیونر صندوقچه",
+      name: "Chest Collector",
       enTitle: "Chest Collector",
-      desc: "باز کردن ۴۰ صندوقچه جایزه و پاداش در طول مسیرهای یادگیری.",
-      ruleDesc: "صندوقچه‌های موجود در مسیرها و پایان فصل‌ها را باز کنید (هدف: ۴۰).",
+      desc: "Unlock 40 reward chests along learning tracks.",
+      ruleDesc: "Open 40 bonus chests throughout tracks and milestone chapters.",
       current: Math.min(40, completedNodesCount + 5),
       target: 40,
       displayRecord: "40",
@@ -337,10 +337,10 @@ export function ProfileHonors({
     },
     {
       id: "network_star",
-      name: "محبوب شبکه",
+      name: "Network Star",
       enTitle: "Network Star",
-      desc: "رسیدن به ۱۰ دوست و هم‌مسیر در فالوورها و تعامل با کامیونیتی.",
-      ruleDesc: "با دیگر برنامه‌نویسان ارتباط بگیرید تا به ۱۰ فالوور فعال برسید.",
+      desc: "Connect with 10 fellow coders in your developer network.",
+      ruleDesc: "Follow and build connections to reach 10 active coder followers.",
       current: followersCount,
       target: 10,
       displayRecord: "10",
@@ -379,7 +379,7 @@ export function ProfileHonors({
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
             <Award className="w-4 h-4 text-amber-400" />
-            <span>نشان‌های افتخار</span>
+            <span>Special Badges</span>
           </h2>
 
           <button
@@ -389,10 +389,10 @@ export function ProfileHonors({
               setActiveModal("badges_all");
             }}
             className="inline-flex items-center gap-1 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer py-1 px-1.5"
-            title="مشاهده همه نشان‌ها"
+            title="View all badges"
           >
-            <span>مشاهده همه</span>
-            <ChevronRight className="w-4 h-4 rotate-180" />
+            <span>View All</span>
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
@@ -407,7 +407,7 @@ export function ProfileHonors({
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
                 className="flex flex-col items-center gap-1.5 cursor-pointer group"
-                title={`${badge.name} • ${isUnlocked ? "کسب‌شده" : "در حال پیشرفت"}`}
+                title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
                   className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full border-4 flex items-center justify-center relative transition-all group-hover:scale-105 ${
@@ -439,7 +439,7 @@ export function ProfileHonors({
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
             <Shield className="w-4 h-4 text-rose-400" />
-            <span>دستاوردها</span>
+            <span>Achievements</span>
           </h2>
 
           <button
@@ -449,10 +449,10 @@ export function ProfileHonors({
               setActiveModal("achievements_all");
             }}
             className="inline-flex items-center gap-1 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer py-1 px-1.5"
-            title="مشاهده همه دستاوردها"
+            title="View all achievements"
           >
-            <span>مشاهده همه</span>
-            <ChevronRight className="w-4 h-4 rotate-180" />
+            <span>View All</span>
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
@@ -467,7 +467,7 @@ export function ProfileHonors({
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
                 className="flex flex-col items-center gap-1.5 cursor-pointer group"
-                title={`${ach.name} • ${isUnlocked ? "کسب‌شده" : "در حال پیشرفت"}`}
+                title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
                   className={`w-[72px] h-[80px] sm:w-[76px] sm:h-[84px] relative flex flex-col items-center justify-between pt-2 pb-1 transition-all group-hover:scale-105 ${
@@ -535,7 +535,7 @@ export function ProfileHonors({
                   <Shield className="w-5 h-5 text-rose-400" />
                 )}
                 <h3 className="text-base sm:text-lg font-black text-white">
-                  {activeModal === "badges_all" ? "تمام نشان‌های افتخار (۶ نشان)" : "تمام دستاوردهای سیستم (۶ دستاورد)"}
+                  {activeModal === "badges_all" ? "Special Badges (6 Total)" : "Achievements (6 Total)"}
                 </h3>
               </div>
 
@@ -586,7 +586,7 @@ export function ProfileHonors({
                                 : "bg-slate-900 text-slate-400 border border-slate-700"
                             }`}
                           >
-                            {isUnlocked ? "✓ کسب‌شده" : "🔒 در حال پیشرفت"}
+                            {isUnlocked ? "✓ Unlocked" : "🔒 In Progress"}
                           </span>
                         </div>
 
@@ -634,7 +634,7 @@ export function ProfileHonors({
                               {ach.name}
                             </span>
                             <span className="text-xs font-mono font-bold text-amber-400">
-                              (هدف: {ach.displayRecord})
+                              (Goal: {ach.displayRecord})
                             </span>
                           </div>
                           <span
@@ -644,7 +644,7 @@ export function ProfileHonors({
                                 : "bg-slate-900 text-slate-400 border border-slate-700"
                             }`}
                           >
-                            {isUnlocked ? "✓ کسب‌شده" : "🔒 در حال پیشرفت"}
+                            {isUnlocked ? "✓ Unlocked" : "🔒 In Progress"}
                           </span>
                         </div>
 
@@ -714,12 +714,12 @@ export function ProfileHonors({
                 {selectedHonor.item.current >= selectedHonor.item.target ? (
                   <span className="h-7 px-3.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/50 text-xs font-black inline-flex items-center gap-1.5">
                     <Check className="w-3.5 h-3.5" />
-                    <span>✓ کسب‌شده</span>
+                    <span>✓ Unlocked</span>
                   </span>
                 ) : (
                   <span className="h-7 px-3.5 rounded-full bg-amber-950/70 text-amber-400 border border-amber-500/50 text-xs font-black inline-flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5" />
-                    <span>🔒 در حال پیشرفت</span>
+                    <span>🔒 In Progress</span>
                   </span>
                 )}
               </div>
@@ -730,9 +730,9 @@ export function ProfileHonors({
 
               <div className="w-full p-4 rounded-2xl bg-[#091122] border border-slate-800 flex flex-col gap-2.5 mb-6">
                 <div className="flex items-center justify-between text-xs font-bold text-slate-400">
-                  <span>میزان پیشرفت شما:</span>
+                  <span>Your Progress:</span>
                   <span className="font-mono text-amber-400 font-black">
-                    {selectedHonor.item.current.toLocaleString()} از {selectedHonor.item.target.toLocaleString()}
+                    {selectedHonor.item.current.toLocaleString()} of {selectedHonor.item.target.toLocaleString()}
                   </span>
                 </div>
 
@@ -757,7 +757,7 @@ export function ProfileHonors({
                 }}
                 className="w-full h-12 rounded-2xl bg-cyan-600 hover:bg-cyan-500 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-cyan-400 border-b-cyan-800 text-white font-black text-sm transition-all cursor-pointer shadow-lg shadow-cyan-950/50"
               >
-                بستن و ادامه
+                Close &amp; Continue
               </button>
             </div>
           </div>

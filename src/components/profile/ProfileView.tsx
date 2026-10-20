@@ -77,9 +77,9 @@ export interface DevCardDataState {
 }
 
 const DEFAULT_DEV_CARD_DATA: DevCardDataState = {
-  specialtyTitle: "فول‌استک دولوپر و مهندس دیباگ",
-  collabStatus: "🟢 آماده همکاری و پروژه",
-  bio: "علاقه‌مند به معماری سیستم‌های مقیاس‌پذیر، حل چالش‌های الگوریتمی پیچیده و یادگیری مستمر در پلتفرم باگی.",
+  specialtyTitle: "Full-Stack Developer & Debug Engineer",
+  collabStatus: "🟢 Open to Work & Projects",
+  bio: "Passionate about scalable architectures, solving complex algorithmic challenges, and continuous learning on Buggy.",
   techStack: ["React", "Next.js", "FastAPI", "TypeScript", "Tailwind CSS", "Docker", "PostgreSQL", "Python"],
   githubUrl: "https://github.com",
   linkedinUrl: "https://linkedin.com",
@@ -88,31 +88,31 @@ const DEFAULT_DEV_CARD_DATA: DevCardDataState = {
 };
 
 const VERIFIED_BUGGY_SKILLS = [
-  { name: "JavaScript", percent: 92, badge: "تایید باگی ✓", desc: "تایید شده توسط تست‌های پیشرفته باگی" },
-  { name: "دیباگ و رفع باگ", percent: 96, badge: "تایید باگی ✓", desc: "تایید شده با حل بیش از ۵۰ چالش تحلیلی" },
-  { name: "پایتون (Python)", percent: 84, badge: "تایید باگی ✓", desc: "تایید شده در ماژول‌های بک‌اند" },
-  { name: "React & Architecture", percent: 88, badge: "تایید باگی ✓", desc: "تایید شده در معماری فرانت‌اند" },
+  { name: "JavaScript", percent: 92, badge: "Buggy Verified ✓", desc: "Verified via advanced Buggy tests" },
+  { name: "Debugging & Problem Solving", percent: 96, badge: "Buggy Verified ✓", desc: "Verified with 50+ solved challenges" },
+  { name: "Python & Backend", percent: 84, badge: "Buggy Verified ✓", desc: "Verified in backend tracks" },
+  { name: "React & Architecture", percent: 88, badge: "Buggy Verified ✓", desc: "Verified in frontend architecture" },
 ];
 
 const FEATURED_DEV_PROJECTS = [
   {
     id: "p1",
     title: "Buggy Core Engine",
-    desc: "موتور ارزیابی و کامپایل ابری تست‌های دیباگ به صورت بلادرنگ و سندباکس ایزوله.",
+    desc: "Real-time cloud evaluation and sandboxed execution engine for debug challenges.",
     tech: "FastAPI • Docker • Redis",
     link: "https://github.com",
   },
   {
     id: "p2",
     title: "DevPulse Leaderboard",
-    desc: "سیستم لیدربورد رقابتی ۱۰ روزه با محاسبه داینامیک رنکینگ و مدال‌های فصلی.",
+    desc: "10-day competitive leaderboard system with dynamic ranking and seasonal badges.",
     tech: "Next.js • Tailwind • PostgreSQL",
     link: "https://github.com",
   },
   {
     id: "p3",
     title: "SmartCode Runner",
-    desc: "محیط تعاملی کدنویسی کلاینت-ساید با فیدبک هوشمند و تجزیه خطای AST.",
+    desc: "Interactive client-side sandbox with intelligent error diagnostics and AST analysis.",
     tech: "TypeScript • WebAssembly",
     link: "https://github.com",
   },
@@ -692,15 +692,6 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 <span className="text-sm sm:text-base font-bold text-slate-400 font-mono">
                   @{profileHandle}
                 </span>
-                {coderLevel && (
-                  <span
-                    className={`h-6 px-2.5 rounded-full text-xs font-black inline-flex items-center gap-1 select-none ${coderBadgeStyle}`}
-                    title={`Season ${profile?.season_number || 1} • Rank #${currentRank}`}
-                  >
-                    <span>{coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}</span>
-                    <span>{coderLevel}</span>
-                  </span>
-                )}
               </div>
 
               <div className="mt-4 flex items-center gap-6 sm:gap-8 flex-wrap select-none">
@@ -1260,7 +1251,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528] sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/dev-card.png" alt="Dev Card" className="w-5 h-auto max-h-5 object-contain" />
-                <span className="text-base font-black text-white">کارت توسعه‌دهنده (Dev Card)</span>
+                <span className="text-base font-black text-white">Developer Card (Dev Card)</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -1275,7 +1266,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 hover:text-cyan-300 text-xs font-black inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
-                    <span>ویرایش کارت</span>
+                    <span>Edit Card</span>
                   </button>
                 )}
                 <button
@@ -1296,43 +1287,43 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               {isEditingDevCard ? (
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">عنوان تخصصی دولوپر:</label>
+                    <label className="text-xs font-bold text-slate-300">Developer Specialty Title:</label>
                     <input
                       type="text"
                       value={editDevCardForm.specialtyTitle}
                       onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
-                      placeholder="مثال: فول‌استک دولوپر و مهندس دیباگ"
+                      placeholder="e.g. Full-Stack Developer & Debug Engineer"
                       className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">وضعیت همکاری و پروژه:</label>
+                    <label className="text-xs font-bold text-slate-300">Collaboration &amp; Project Status:</label>
                     <select
                       value={editDevCardForm.collabStatus}
                       onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, collabStatus: e.target.value }))}
                       className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
                     >
-                      <option value="🟢 آماده همکاری و پروژه">🟢 آماده همکاری و پروژه</option>
-                      <option value="🟡 در حال بررسی موقعیت‌های جدید">🟡 در حال بررسی موقعیت‌های جدید</option>
-                      <option value="🔴 مشغول پروژه‌های فعلی">🔴 مشغول پروژه‌های فعلی</option>
-                      <option value="💼 در دسترس برای منتورینگ و مشاوره">💼 در دسترس برای منتورینگ و مشاوره</option>
+                      <option value="🟢 Open to Work & Projects">🟢 Open to Work &amp; Projects</option>
+                      <option value="🟡 Exploring New Opportunities">🟡 Exploring New Opportunities</option>
+                      <option value="🔴 Busy with Current Projects">🔴 Busy with Current Projects</option>
+                      <option value="💼 Available for Mentorship & Consulting">💼 Available for Mentorship &amp; Consulting</option>
                     </select>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">بیوگرافی کوتاه (حداکثر ۲ خط):</label>
+                    <label className="text-xs font-bold text-slate-300">Short Bio (max 2 lines):</label>
                     <textarea
                       rows={2}
                       value={editDevCardForm.bio}
                       onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, bio: e.target.value }))}
-                      placeholder="درباره علایق کدنویسی و اهداف خود بنویسید..."
+                      placeholder="Write about your coding passions and current goals..."
                       className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">مهارت‌ها و ابزارها (با کاما جدا کنید):</label>
+                    <label className="text-xs font-bold text-slate-300">Tech Stack &amp; Tools (comma separated):</label>
                     <input
                       type="text"
                       value={editDevCardForm.techStack.join(", ")}
@@ -1352,7 +1343,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">لینک گیت‌هاب (GitHub):</label>
+                      <label className="text-[11px] font-bold text-slate-400">GitHub Link:</label>
                       <input
                         type="text"
                         value={editDevCardForm.githubUrl}
@@ -1362,7 +1353,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">لینک لینکدین (LinkedIn):</label>
+                      <label className="text-[11px] font-bold text-slate-400">LinkedIn Link:</label>
                       <input
                         type="text"
                         value={editDevCardForm.linkedinUrl}
@@ -1372,7 +1363,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">لینک وب‌سایت / پورتفولیو:</label>
+                      <label className="text-[11px] font-bold text-slate-400">Website / Portfolio Link:</label>
                       <input
                         type="text"
                         value={editDevCardForm.websiteUrl}
@@ -1382,7 +1373,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">آدرس ایمیل کاری:</label>
+                      <label className="text-[11px] font-bold text-slate-400">Work Email:</label>
                       <input
                         type="email"
                         value={editDevCardForm.email}
@@ -1399,7 +1390,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       onClick={() => setIsEditingDevCard(false)}
                       className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      انصراف
+                      Cancel
                     </button>
                     <button
                       type="button"
@@ -1407,7 +1398,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       className="h-10 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all shadow-md shadow-cyan-950/40 cursor-pointer"
                     >
                       <Check className="w-4 h-4" />
-                      <span>ذخیره تغییرات</span>
+                      <span>Save Changes</span>
                     </button>
                   </div>
                 </div>
@@ -1418,22 +1409,12 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       <AvatarRenderer config={effectiveAvatar} size={74} />
                     </div>
 
-                    <div className="flex-1 min-w-0 text-center sm:text-right">
+                    <div className="flex-1 min-w-0 text-center sm:text-left">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
                         <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                           <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
                             {profileDisplayName}
                           </h3>
-                          {coderLevel && (
-                            <span
-                              className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
-                            >
-                              <span>
-                                {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
-                              </span>
-                              <span>{coderLevel}</span>
-                            </span>
-                          )}
                         </div>
 
                         <span className="text-xs font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-full self-center sm:self-auto shrink-0 shadow-sm">
@@ -1461,7 +1442,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-sm font-black text-white flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-amber-400" />
-                        <span>بخش اول: مهارت‌های تایید شده در باگی (Verified Skills)</span>
+                        <span>Section 1: Verified Skills in Buggy</span>
                       </h4>
                     </div>
 
@@ -1499,7 +1480,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   <div>
                     <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
                       <span>🛠️</span>
-                      <span>بخش دوم: پشته فنی و ابزارها (Tech Stack &amp; Tools)</span>
+                      <span>Section 2: Tech Stack &amp; Tools</span>
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {devCardData.techStack.map((tech) => (
@@ -1516,7 +1497,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   <div>
                     <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
                       <span>🚀</span>
-                      <span>بخش سوم: پروژه‌ها و نمونه‌کارها (Featured Projects)</span>
+                      <span>Section 3: Featured Projects &amp; Portfolio</span>
                     </h4>
 
                     <div className="space-y-2.5">
@@ -1539,7 +1520,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                               rel="noreferrer"
                               className="text-xs font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
                             >
-                              <span>مشاهده</span>
+                              <span>View</span>
                               <ExternalLink className="w-3 h-3" />
                             </a>
                           </div>
@@ -1558,7 +1539,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528] shrink-0">
               <div className="flex items-center justify-between flex-wrap gap-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-slate-400">راه‌های ارتباطی:</span>
+                  <span className="text-xs font-black text-slate-400">Contact &amp; Social:</span>
                   <a
                     href={devCardData.githubUrl}
                     target="_blank"
@@ -1715,7 +1696,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 >
                   <span>🚨</span>
                   <span>
-                    {pokedFriends[selectedStreakFriend.id] ? "Poke Sent!" : "Send Poke (چراغ قرمز)"}
+                    {pokedFriends[selectedStreakFriend.id] ? "Poke Sent!" : "Send Poke (Red-light Alert)"}
                   </span>
                 </button>
 
