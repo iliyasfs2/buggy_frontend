@@ -92,7 +92,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const [selectedStreakFriend, setSelectedStreakFriend] = useState<{
     id: string;
     username: string;
-    avatar_config?: any;
+    avatar_config?: Partial<AvatarConfig> | null;
     streak?: number;
     has_completed_today?: boolean;
   } | null>(null);
@@ -365,7 +365,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
     const list: Array<{
       id: string;
       username: string;
-      avatar_config?: any;
+      avatar_config?: Partial<AvatarConfig> | null;
       streak?: number;
       has_completed_today?: boolean;
     }> = [];
@@ -698,26 +698,9 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
             <div className="mt-7">
               <div className="flex items-center justify-between mb-3.5">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-black text-slate-300 uppercase tracking-wider">
-                    Friend Streaks
-                  </h2>
-                  <span className="text-[11px] font-bold text-slate-400">
-                    ({friendsForStreaks.length}/5 Chains)
-                  </span>
-                </div>
-                {isMe && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setIsSearchOpen(true);
-                    }}
-                    className="text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
-                  >
-                    + Add Friends
-                  </button>
-                )}
+                <h2 className="text-sm sm:text-base font-black text-slate-300 uppercase tracking-wider">
+                  Friend Streaks
+                </h2>
               </div>
 
               <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pt-2 pb-4 px-1 scrollbar-none">
@@ -739,7 +722,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                             : "border-2 border-amber-500/90 shadow-[0_0_14px_rgba(245,158,11,0.3)] animate-pulse"
                         }`}
                       >
-                        <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={56} />
+                        <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} className="w-full h-full scale-[1.05]" />
                       </div>
 
                       <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#0b1324] border border-slate-700 text-[11px] font-black text-white flex items-center gap-1 shadow-lg shadow-black/60 z-10 whitespace-nowrap">
@@ -749,7 +732,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     </div>
 
                     <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[70px] text-center mt-1">
-                      {f.username}
+                      Streak
                     </span>
                   </div>
                 ))}
@@ -1200,7 +1183,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               <div className="flex items-center justify-center gap-4 py-4 px-3 bg-[#081120]/80 rounded-2xl border border-slate-800/80 shadow-inner">
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-cyan-400 overflow-hidden flex items-center justify-center shadow-md">
-                    <AvatarRenderer config={effectiveAvatar} size={50} />
+                    <AvatarRenderer config={effectiveAvatar} className="w-full h-full scale-[1.05]" />
                   </div>
                   <span className="text-xs font-bold text-slate-300">You</span>
                 </div>
@@ -1220,7 +1203,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-slate-700 overflow-hidden flex items-center justify-center shadow-md">
-                    <AvatarRenderer config={selectedStreakFriend.avatar_config || DEFAULT_AVATAR_CONFIG} size={50} />
+                    <AvatarRenderer config={selectedStreakFriend.avatar_config || DEFAULT_AVATAR_CONFIG} className="w-full h-full scale-[1.05]" />
                   </div>
                   <span className="text-xs font-bold text-slate-300 truncate max-w-[80px]">
                     {selectedStreakFriend.username}

@@ -12,7 +12,7 @@ export interface AvatarRendererProps {
 
 export function AvatarRenderer({
   config,
-  size = 120,
+  size,
   className = "",
 }: AvatarRendererProps) {
   const uniqueId = useId().replace(/:/g, "");
@@ -30,11 +30,11 @@ export function AvatarRenderer({
   return (
     <svg
       viewBox="0 0 200 200"
-      width={size}
-      height={size}
+      width={size ?? "100%"}
+      height={size ?? "100%"}
       className={`shrink-0 select-none ${className}`}
       xmlns="http://www.w3.org/2000/svg"
-      style={{ width: size, height: size }}
+      style={size ? { width: size, height: size } : undefined}
     >
       <defs>
         <clipPath id={clipId}>
