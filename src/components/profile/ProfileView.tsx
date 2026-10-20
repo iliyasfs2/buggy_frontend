@@ -7,6 +7,7 @@ import {
   Search,
   UserCheck,
   UserPlus,
+  Plus,
   X,
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
@@ -88,6 +89,15 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [directoryUsers, setDirectoryUsers] = useState<LeaderboardUserEntry[]>([]);
+  const [selectedStreakFriend, setSelectedStreakFriend] = useState<{
+    id: string;
+    username: string;
+    avatar_config?: any;
+    streak?: number;
+    has_completed_today?: boolean;
+  } | null>(null);
+  const [pokedFriends, setPokedFriends] = useState<Record<string, boolean>>({});
+  const [pokeToast, setPokeToast] = useState<string | null>(null);
 
   const targetIdentifier = useMemo(() => {
     if (!username || username.trim() === "" || username.trim().toLowerCase() === "current") {
@@ -352,7 +362,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   }, [directoryUsers, searchQuery, currentUser?.username]);
 
   const friendsForStreaks = useMemo(() => {
-    const list: Array<{ id: string; username: string; avatar_config?: any; streak?: number }> = [];
+    const list: Array<{
+      id: string;
+      username: string;
+      avatar_config?: any;
+      streak?: number;
+      has_completed_today?: boolean;
+    }> = [];
     const seen = new Set<string>();
 
     for (const f of following) {
@@ -364,6 +380,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           username: f.username,
           avatar_config: f.avatar_config,
           streak: f.streak || 5,
+          has_completed_today: (key.charCodeAt(0) % 2 === 0),
         });
       }
     }
@@ -378,28 +395,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           username: f.username,
           avatar_config: f.avatar_config,
           streak: f.streak || 3,
-        });
-      }
-    }
-
-    for (const u of directoryUsers) {
-      if (list.length >= 5) break;
-      if (u.is_current_user) continue;
-      if (currentUser?.username && u.username.toLowerCase() === currentUser.username.toLowerCase()) continue;
-      const key = u.username.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push({
-          id: String(u.id),
-          username: u.username,
-          avatar_config: u.avatar_config,
-          streak: u.streak || 7,
+          has_completed_today: (key.charCodeAt(0) % 3 !== 0),
         });
       }
     }
 
     return list.slice(0, 5);
-  }, [following, followers, directoryUsers, currentUser?.username]);
+  }, [following, followers]);
 
   const activeConnections = activeTab === "following" ? following : followers;
 
@@ -695,10 +697,15 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </div>
 
             <div className="mt-7">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">
-                  Friend Streaks
-                </h2>
+              <div className="flex items-center justify-between mb-3.5">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm sm:text-base font-black text-slate-300 uppercase tracking-wider">
+                    Friend Streaks
+                  </h2>
+                  <span className="text-[11px] font-bold text-slate-400">
+                    ({friendsForStreaks.length}/5 Chains)
+                  </span>
+                </div>
                 {isMe && (
                   <button
                     type="button"
@@ -708,19 +715,29 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     }}
                     className="text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
-                    Find Friends
+                    + Add Friends
                   </button>
                 )}
               </div>
 
               <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
-                {friendsForStreaks.slice(0, 5).map((f) => (
+                {friendsForStreaks.map((f) => (
                   <div
                     key={f.id}
-                    onClick={() => openUserProfile(f.username, f.id)}
+                    onClick={() => {
+                      soundEffects.playSoftClick();
+                      setSelectedStreakFriend(f);
+                    }}
                     className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
+                    title={`${f.username} • ${f.streak || 1} days shared streak • Click to Poke!`}
                   >
-                    <div className="relative w-14 h-14 rounded-full bg-slate-950 border-2 border-slate-700 group-hover:border-cyan-400 overflow-hidden transition-all flex items-center justify-center shadow-md">
+                    <div
+                      className={`relative w-14 h-14 rounded-full bg-slate-950 overflow-hidden transition-all flex items-center justify-center shadow-md group-hover:scale-105 ${
+                        f.has_completed_today
+                          ? "border-2 border-slate-700 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                          : "border-2 border-amber-500/90 shadow-[0_0_14px_rgba(245,158,11,0.3)] animate-pulse"
+                      }`}
+                    >
                       <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={48} />
                       <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-700 text-[10px] font-black text-rose-400 flex items-center gap-1 shadow">
                         <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain shrink-0" />
@@ -733,20 +750,24 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   </div>
                 ))}
 
-                <div
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setIsSearchOpen(true);
-                  }}
-                  className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
-                >
-                  <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-600 group-hover:border-cyan-400 flex items-center justify-center text-slate-400 group-hover:text-cyan-300 transition-colors shadow-sm bg-slate-900/40">
-                    <img src="/icons/add-friend.png" alt="Add" className="w-6 h-6 object-contain" />
+                {Array.from({ length: Math.max(0, 5 - friendsForStreaks.length) }).map((_, idx) => (
+                  <div
+                    key={`empty-streak-slot-${idx}`}
+                    onClick={() => {
+                      soundEffects.playSoftClick();
+                      setIsSearchOpen(true);
+                    }}
+                    className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
+                    title="Add a friend to form a Debug Peer Streak!"
+                  >
+                    <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-700 group-hover:border-cyan-400 flex items-center justify-center text-slate-500 group-hover:text-cyan-300 transition-all shadow-sm bg-slate-900/30 group-hover:bg-slate-900/60 group-hover:scale-105">
+                      <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-500 group-hover:text-cyan-300 truncate max-w-[64px] text-center transition-colors">
+                      Add
+                    </span>
                   </div>
-                  <span className="text-xs font-bold text-slate-400 group-hover:text-cyan-300 truncate max-w-[64px] text-center">
-                    Add
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -1140,6 +1161,145 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               <p className="text-sm text-slate-500 font-bold text-center">No contact links added yet.</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {selectedStreakFriend && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedStreakFriend(null)}
+        >
+          <div
+            className="w-full sm:max-w-md rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+              <div className="flex items-center gap-2">
+                <img src="/icons/streak.png" alt="Streak" className="w-5 h-5 object-contain" />
+                <span className="text-base sm:text-lg font-black text-white">
+                  Friend Streak Chain
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setSelectedStreakFriend(null);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-6 flex flex-col gap-5">
+              <div className="flex items-center justify-center gap-4 py-4 px-3 bg-[#081120]/80 rounded-2xl border border-slate-800/80 shadow-inner">
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-cyan-400 overflow-hidden flex items-center justify-center shadow-md">
+                    <AvatarRenderer config={effectiveAvatar} size={50} />
+                  </div>
+                  <span className="text-xs font-bold text-slate-300">You</span>
+                </div>
+
+                <div className="flex flex-col items-center gap-1 px-1">
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 sm:w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-orange-400" />
+                    <div className="w-10 h-10 rounded-full bg-orange-500/20 border border-orange-500/40 flex items-center justify-center shadow-inner">
+                      <img src="/icons/streak.png" alt="Streak" className="w-6 h-6 object-contain drop-shadow animate-pulse" />
+                    </div>
+                    <div className="w-6 sm:w-8 h-0.5 bg-gradient-to-r from-orange-400 to-cyan-400" />
+                  </div>
+                  <span className="text-xs font-black text-amber-400 font-mono">
+                    {selectedStreakFriend.streak || 1} Days
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-slate-700 overflow-hidden flex items-center justify-center shadow-md">
+                    <AvatarRenderer config={selectedStreakFriend.avatar_config || DEFAULT_AVATAR_CONFIG} size={50} />
+                  </div>
+                  <span className="text-xs font-bold text-slate-300 truncate max-w-[80px]">
+                    {selectedStreakFriend.username}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#0d1b33]/60 border border-slate-800 flex flex-col gap-2.5">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-400">
+                  Daily Streak Rule
+                </span>
+                <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                  Both peers must solve at least one debug challenge daily before midnight to keep this shared flame alive.
+                </p>
+
+                <div className="mt-1 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                    <span className="font-bold text-slate-300">Your status today:</span>
+                    <span className="font-black text-emerald-400 flex items-center gap-1">
+                      ✓ Solved
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+                    <span className="font-bold text-slate-300">{selectedStreakFriend.username}&apos;s status:</span>
+                    {selectedStreakFriend.has_completed_today ? (
+                      <span className="font-black text-emerald-400 flex items-center gap-1">
+                        ✓ Solved
+                      </span>
+                    ) : (
+                      <span className="font-black text-amber-400 flex items-center gap-1 animate-pulse">
+                        ⏳ Pending (Flame Melting!)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                <button
+                  type="button"
+                  disabled={pokedFriends[selectedStreakFriend.id]}
+                  onClick={() => {
+                    soundEffects.playIgnite();
+                    setPokedFriends((prev) => ({ ...prev, [selectedStreakFriend.id]: true }));
+                    setPokeToast(`Red-light Poke sent to @${selectedStreakFriend.username}!`);
+                    setTimeout(() => setPokeToast(null), 3000);
+                  }}
+                  className={`flex-1 h-[46px] px-4 rounded-xl font-bold text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    pokedFriends[selectedStreakFriend.id]
+                      ? "bg-slate-800 text-slate-400 border border-slate-700 cursor-not-allowed"
+                      : "bg-rose-600 hover:bg-rose-500 text-white border-2 border-b-4 border-rose-400 border-b-rose-800 shadow-lg shadow-rose-950/50 active:translate-y-0.5"
+                  }`}
+                >
+                  <span>🚨</span>
+                  <span>
+                    {pokedFriends[selectedStreakFriend.id] ? "Poke Sent!" : "Send Poke (چراغ قرمز)"}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    const friendName = selectedStreakFriend.username;
+                    setSelectedStreakFriend(null);
+                    router.push(`/profile/${encodeURIComponent(friendName)}`);
+                  }}
+                  className="h-[46px] px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-b-4 border-slate-600 border-b-slate-900 text-white font-bold text-sm inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5 cursor-pointer"
+                >
+                  <span>View Profile</span>
+                  <span>↗</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {pokeToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-rose-950/90 border border-rose-500/60 text-rose-200 text-xs sm:text-sm font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-200">
+          <span>🚨</span>
+          <span>{pokeToast}</span>
         </div>
       )}
 
