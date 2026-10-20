@@ -436,7 +436,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setIsEditModalOpen(true);
                 }
               }}
-              className={`relative w-full h-[220px] md:h-[260px] rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
+              className={`relative -mx-4 w-[calc(100%+2rem)] sm:mx-0 sm:w-full h-[220px] md:h-[260px] rounded-none sm:rounded-[24px] border-y-2 border-b-4 sm:border-2 sm:border-b-4 border-x-0 sm:border-x-2 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
                 isMe ? "cursor-pointer group" : ""
               }`}
             >
