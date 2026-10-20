@@ -70,26 +70,12 @@ export function ProfileHonors({
       glowColor: "rgba(251, 191, 36, 0.45)",
       accentBg: "from-amber-500/20 to-orange-500/10",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="32" fill="#f59e0b" />
-          <g stroke="#fbbf24" strokeWidth="4" strokeLinecap="round">
-            <line x1="50" y1="6" x2="50" y2="14" />
-            <line x1="50" y1="86" x2="50" y2="94" />
-            <line x1="6" y1="50" x2="14" y2="50" />
-            <line x1="86" y1="50" x2="94" y2="50" />
-            <line x1="18" y1="18" x2="24" y2="24" />
-            <line x1="76" y1="76" x2="82" y2="82" />
-            <line x1="18" y1="82" x2="24" y2="76" />
-            <line x1="76" y1="24" x2="82" y2="18" />
-          </g>
-          <rect x="30" y="44" width="16" height="10" rx="3" fill="#0f172a" />
-          <rect x="54" y="44" width="16" height="10" rx="3" fill="#0f172a" />
-          <line x1="46" y1="49" x2="54" y2="49" stroke="#0f172a" strokeWidth="3" />
-          <path d="M42 66 Q50 72 58 66" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" fill="none" />
-          <path d="M68 62 L78 62 L78 74 C78 78 68 78 68 74 Z" fill="#b45309" />
-          <path d="M78 65 C82 65 84 67 84 70 C84 73 82 74 78 74" stroke="#b45309" strokeWidth="2" fill="none" />
-          <path d="M71 58 Q72 55 71 52 M75 58 Q76 55 75 52" stroke="#fef3c7" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        </svg>
+        <img
+          src="/badges/early-bird.png"
+          alt="Early Bird"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -406,11 +392,11 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
-                className="flex flex-col items-center gap-1.5 cursor-pointer group"
+                className="flex flex-col items-center cursor-pointer group"
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full border-4 flex items-center justify-center relative transition-all group-hover:scale-105 ${
+                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full border-4 flex items-center justify-center relative transition-all group-hover:scale-105 overflow-hidden ${
                     isUnlocked
                       ? `${badge.ringColor} bg-[#0b1426] shadow-lg`
                       : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -419,16 +405,13 @@ export function ProfileHonors({
                     boxShadow: isUnlocked ? `0 0 16px ${badge.glowColor}` : undefined,
                   }}
                 >
-                  {badge.iconSvg(isUnlocked, 48)}
+                  {badge.iconSvg(isUnlocked, badge.id === "early_bird" ? 64 : 48)}
                   {!isUnlocked && (
                     <div className="absolute inset-0 rounded-full bg-slate-950/60 flex items-center justify-center">
                       <Lock className="w-4 h-4 text-slate-400" />
                     </div>
                   )}
                 </div>
-                <span className="text-[11px] sm:text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[76px] text-center">
-                  {badge.name}
-                </span>
               </div>
             );
           })}
@@ -466,7 +449,7 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
-                className="flex flex-col items-center gap-1.5 cursor-pointer group"
+                className="flex flex-col items-center cursor-pointer group"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
@@ -508,10 +491,6 @@ export function ProfileHonors({
                     </div>
                   )}
                 </div>
-
-                <span className="text-[11px] sm:text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[76px] text-center">
-                  {ach.name}
-                </span>
               </div>
             );
           })}
