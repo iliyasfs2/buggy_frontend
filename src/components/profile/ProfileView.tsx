@@ -714,26 +714,20 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
                     title={`${f.username} • ${f.streak || 1} days shared streak • Click to Poke!`}
                   >
-                    <div className="relative w-16 h-16 sm:w-[70px] sm:h-[70px] group-hover:scale-105 transition-transform">
-                      <div
-                        className={`w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center shadow-md transition-all ${
-                          f.has_completed_today
-                            ? "border-2 border-slate-700 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.35)]"
-                            : "border-2 border-amber-500/90 shadow-[0_0_14px_rgba(245,158,11,0.3)] animate-pulse"
-                        }`}
-                      >
-                        <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} className="w-full h-full scale-[1.05]" />
-                      </div>
-
-                      <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#0b1324] border border-slate-700 text-[11px] font-black text-white flex items-center gap-1 shadow-lg shadow-black/60 z-10 whitespace-nowrap">
-                        <img src="/icons/streak.png" alt="Streak" className="w-3.5 h-3.5 object-contain shrink-0 drop-shadow" />
-                        <span className="font-mono text-amber-400">{f.streak || 1}</span>
-                      </div>
+                    <div className="w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full bg-slate-950 overflow-hidden flex items-center justify-center shadow-md transition-all border-2 border-slate-700 group-hover:border-cyan-400 group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.35)]">
+                      <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} className="w-full h-full scale-[1.05]" />
                     </div>
 
-                    <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[70px] text-center mt-1">
-                      Streak
-                    </span>
+                    <div className="flex items-center gap-1 mt-1 text-xs sm:text-sm font-black text-white group-hover:scale-105 transition-transform select-none">
+                      <img
+                        src="/icons/streak.png"
+                        alt="Streak"
+                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain drop-shadow shrink-0"
+                      />
+                      <span className="font-mono text-amber-400 font-bold">
+                        {f.streak || 1}
+                      </span>
+                    </div>
                   </div>
                 ))}
 
