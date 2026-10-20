@@ -24,10 +24,38 @@ import {
   fetchLeaderboardApi,
   followUserApi,
   unfollowUserApi,
+  switchCourseApi,
   type UserProfileData,
   type UserConnectionItem,
   type LeaderboardUserEntry,
 } from "@/services/progressApi";
+
+const ALL_COURSES = [
+  {
+    id: "javascript",
+    title: "JavaScript",
+    code: "JS",
+    iconSrc: "/icons/js-badge.png",
+    fallbackEmoji: "⚡",
+    badge: "Active",
+  },
+  {
+    id: "python",
+    title: "Python",
+    code: "PY",
+    iconSrc: null,
+    fallbackEmoji: "🐍",
+    badge: "Available",
+  },
+  {
+    id: "react",
+    title: "React",
+    code: "React",
+    iconSrc: null,
+    fallbackEmoji: "⚛️",
+    badge: "Available",
+  },
+] as const;
 
 export interface ProfileViewProps {
   username?: string;
@@ -44,6 +72,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const totalXP = useGameStore((s) => s.totalXP);
   const seasonXpStore = useGameStore((s) => s.season_xp);
   const activeCourse = useGameStore((s) => s.activeCourse);
+  const switchCourse = useGameStore((s) => s.switchCourse);
   const completedNodesCount = useGameStore((s) => s.completedNodesCount);
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
@@ -56,6 +85,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDevCardOpen, setIsDevCardOpen] = useState(false);
   const [isFriendsModalOpen, setIsFriendsModalOpen] = useState(false);
+  const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [directoryUsers, setDirectoryUsers] = useState<LeaderboardUserEntry[]>([]);
@@ -241,15 +271,26 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
     return null;
   }, [profile?.rank_title]);
 
-  const coderBadgeStyle = useMemo(() => {
-    if (coderLevel === "Senior") {
-      return "bg-amber-400/15 text-amber-300 border border-amber-400/50 shadow-sm shadow-amber-500/10";
+  const effectiveLevel = useMemo<"Senior" | "Mid-Level" | "Junior">(() => {
+    if (coderLevel) return coderLevel;
+    if (profile?.rank_title === "Senior" || profile?.rank_title === "Mid-Level" || profile?.rank_title === "Junior") {
+      return profile.rank_title;
     }
-    if (coderLevel === "Mid-Level") {
-      return "bg-slate-300/15 text-slate-200 border border-slate-300/50 shadow-sm";
+    if (currentRank === 1) return "Senior";
+    if (currentRank === 2) return "Mid-Level";
+    if (currentRank === 3) return "Junior";
+    return "Senior";
+  }, [coderLevel, profile?.rank_title, currentRank]);
+
+  const coderBadgeStyle = useMemo(() => {
+    if (effectiveLevel === "Senior") {
+      return "bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm shadow-amber-500/10";
+    }
+    if (effectiveLevel === "Mid-Level") {
+      return "bg-slate-300/20 text-slate-200 border border-slate-300/50 shadow-sm";
     }
     return "bg-amber-700/20 text-amber-400 border border-amber-600/50 shadow-sm";
-  }, [coderLevel]);
+  }, [effectiveLevel]);
 
   const formattedJoinedDate = useMemo(() => {
     const rawDate = profile?.joined_at || (isMe ? currentUser?.created_at : null);
@@ -409,28 +450,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 }}
               />
 
-              <div className="absolute bottom-3 left-3.5 z-20 h-7 px-3 rounded-full bg-slate-950/90 border border-slate-700 backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg">
-                {currentRank >= 1 && currentRank <= 3 ? (
-                  <>
-                    <span>{currentRank === 1 ? "👑" : currentRank === 2 ? "🥈" : "🥉"}</span>
-                    <span
-                      className={
-                        currentRank === 1
-                          ? "text-amber-300"
-                          : currentRank === 2
-                          ? "text-slate-200"
-                          : "text-amber-500"
-                      }
-                    >
-                      Rank #{currentRank} Season
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-slate-300">Active Room</span>
-                  </>
-                )}
+              <div
+                className={`absolute bottom-3 left-3.5 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
+              >
+                <span>
+                  {effectiveLevel === "Senior" ? "👑" : effectiveLevel === "Mid-Level" ? "🥈" : "🥉"}
+                </span>
+                <span>{effectiveLevel}</span>
               </div>
 
               <div className="absolute bottom-0 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
@@ -447,46 +473,38 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </div>
 
             <div className="mt-6 flex flex-col items-start gap-1">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="font-black text-2xl text-white tracking-tight">
-                  {profileDisplayName}
-                </h1>
-                {coderLevel && (
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${coderBadgeStyle}`}
-                  >
-                    {coderLevel}
-                  </span>
-                )}
-              </div>
+              <h1 className="font-black text-2xl sm:text-3xl text-white tracking-tight">
+                {profileDisplayName}
+              </h1>
 
-              <div className="text-xs text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
+              <div className="text-sm font-bold text-slate-300 font-mono flex items-center gap-2 mt-1">
                 <span>@{profileHandle}</span>
                 <span>•</span>
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <Calendar className="w-4 h-4 text-slate-400" />
                 <span>{formattedJoinedDate || "Member 2026"}</span>
               </div>
             </div>
 
-            <div className="mt-4 flex items-center gap-5 sm:gap-7 flex-wrap select-none">
-              <div className="flex items-center gap-1.5">
+            <div className="mt-4 flex items-center gap-4 sm:gap-6 flex-wrap select-none">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsCoursesModalOpen(true);
+                }}
+                title={`${profileDisplayName}'s Courses`}
+                className="w-10 h-10 rounded-xl bg-slate-900/90 hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md"
+              >
                 {currentCourse.iconSrc ? (
                   <img
                     src={currentCourse.iconSrc}
                     alt={currentCourse.title}
-                    className="w-5 h-5 object-contain shrink-0"
+                    className="w-6 h-6 object-contain"
                   />
                 ) : (
-                  <span className="text-base select-none">{currentCourse.fallbackEmoji}</span>
+                  <span className="text-xl select-none">{currentCourse.fallbackEmoji}</span>
                 )}
-                <span className="text-sm font-black text-amber-400 font-mono uppercase">
-                  {currentCourse.code}
-                </span>
-                <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
-                  +2
-                </span>
-                <span className="text-xs sm:text-sm font-black text-slate-400">Courses</span>
-              </div>
+              </button>
 
               <button
                 type="button"
@@ -497,7 +515,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 }}
                 className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95"
               >
-                <span className="text-sm sm:text-base font-black text-white">
+                <span className="text-sm sm:text-base font-black text-cyan-400">
                   {followingCount}
                 </span>
                 <span className="text-sm sm:text-base font-black text-cyan-400 group-hover:text-cyan-300 transition-colors">
@@ -514,7 +532,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 }}
                 className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95"
               >
-                <span className="text-sm sm:text-base font-black text-white">
+                <span className="text-sm sm:text-base font-black text-cyan-400">
                   {followersCount}
                 </span>
                 <span className="text-sm sm:text-base font-black text-cyan-400 group-hover:text-cyan-300 transition-colors">
@@ -696,6 +714,94 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       <div className="hidden lg:flex flex-1 justify-center sticky top-8">
         <DesktopMetricBar inline />
       </div>
+
+      {isCoursesModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          onClick={() => setIsCoursesModalOpen(false)}
+        >
+          <div
+            className="w-full sm:max-w-md rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">⚡</span>
+                <span className="text-base sm:text-lg font-black text-white">
+                  {profileDisplayName} Courses
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsCoursesModalOpen(false);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-6 flex flex-col gap-4">
+              <span className="text-xs font-bold text-slate-400">
+                Programming tracks and learning paths:
+              </span>
+
+              <div className="grid grid-cols-3 gap-3">
+                {ALL_COURSES.map((c) => {
+                  const isActive = (profile?.active_course || activeCourse || "javascript").toLowerCase() === c.id;
+                  return (
+                    <div
+                      key={c.id}
+                      onClick={async () => {
+                        if (isMe && !isActive) {
+                          soundEffects.playSoftClick();
+                          try {
+                            await switchCourseApi(c.id);
+                            switchCourse(c.id);
+                          } catch {
+                            switchCourse(c.id);
+                          }
+                        }
+                      }}
+                      className={`p-3.5 rounded-2xl border-2 border-b-4 flex flex-col items-center gap-2 transition-all ${
+                        isActive
+                          ? "bg-slate-900/90 border-amber-400 border-b-amber-600 shadow-lg shadow-amber-500/10"
+                          : isMe
+                          ? "bg-slate-950/80 border-slate-700 border-b-slate-800 hover:border-slate-600 cursor-pointer hover:scale-[1.02]"
+                          : "bg-slate-950/80 border-slate-700 border-b-slate-800 opacity-75"
+                      }`}
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shadow-inner">
+                        {c.iconSrc ? (
+                          <img src={c.iconSrc} alt={c.title} className="w-8 h-8 object-contain" />
+                        ) : (
+                          <span>{c.fallbackEmoji}</span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-xs font-black text-white">{c.title}</span>
+                        <span
+                          className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full mt-1 ${
+                            isActive
+                              ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
+                              : "bg-slate-800 text-slate-400"
+                          }`}
+                        >
+                          {isActive ? "Active" : c.badge}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isFriendsModalOpen && (
         <div
