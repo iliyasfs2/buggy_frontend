@@ -703,7 +703,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 </h2>
               </div>
 
-              <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pt-2 pb-4 px-1 scrollbar-none">
+              <div className="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6 justify-items-center pt-2 pb-3 px-1">
                 {friendsForStreaks.map((f) => (
                   <div
                     key={f.id}
@@ -711,20 +711,20 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       soundEffects.playSoftClick();
                       setSelectedStreakFriend(f);
                     }}
-                    className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
+                    className="flex flex-col items-center gap-1.5 sm:gap-2 w-full max-w-[76px] cursor-pointer group"
                     title={`${f.username} • ${f.streak || 1} days shared streak • Click to Poke!`}
                   >
-                    <div className="w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full bg-slate-950 overflow-hidden flex items-center justify-center shadow-md transition-all border-2 border-slate-700 group-hover:border-cyan-400 group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.35)]">
+                    <div className="w-[54px] h-[54px] sm:w-[68px] sm:h-[68px] md:w-[76px] md:h-[76px] rounded-full bg-slate-950 overflow-hidden flex items-center justify-center shadow-md transition-all border-2 border-slate-700 group-hover:border-cyan-400 group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.35)] shrink-0">
                       <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} className="w-full h-full scale-[1.05]" />
                     </div>
 
-                    <div className="flex items-center gap-1 mt-1 text-xs sm:text-sm font-black text-white group-hover:scale-105 transition-transform select-none">
+                    <div className="flex items-center gap-1.5 mt-1 text-sm sm:text-base font-black text-white group-hover:scale-105 transition-transform select-none">
                       <img
                         src="/icons/streak.png"
                         alt="Streak"
-                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain drop-shadow shrink-0"
+                        className="w-4 h-4 sm:w-5 sm:h-5 object-contain drop-shadow shrink-0"
                       />
-                      <span className="font-mono text-amber-400 font-bold">
+                      <span className="font-mono text-amber-400 font-black">
                         {f.streak || 1}
                       </span>
                     </div>
@@ -738,13 +738,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       soundEffects.playSoftClick();
                       setIsSearchOpen(true);
                     }}
-                    className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
+                    className="flex flex-col items-center gap-1.5 sm:gap-2 w-full max-w-[76px] cursor-pointer group"
                     title="Add a friend to form a Debug Peer Streak!"
                   >
-                    <div className="w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full border-2 border-dashed border-slate-700 group-hover:border-cyan-400 flex items-center justify-center text-slate-500 group-hover:text-cyan-300 transition-all shadow-sm bg-slate-900/30 group-hover:bg-slate-900/60 group-hover:scale-105">
-                      <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
+                    <div className="w-[54px] h-[54px] sm:w-[68px] sm:h-[68px] md:w-[76px] md:h-[76px] rounded-full border-2 border-dashed border-slate-700 group-hover:border-cyan-400 flex items-center justify-center text-slate-500 group-hover:text-cyan-300 transition-all shadow-sm bg-slate-900/30 group-hover:bg-slate-900/60 group-hover:scale-105 shrink-0">
+                      <Plus className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 transition-transform group-hover:rotate-90" />
                     </div>
-                    <span className="text-xs font-bold text-slate-500 group-hover:text-cyan-300 truncate max-w-[70px] text-center transition-colors mt-1">
+                    <span className="text-xs sm:text-sm font-black text-slate-400 group-hover:text-cyan-300 truncate max-w-[70px] text-center transition-colors mt-1 select-none">
                       Add
                     </span>
                   </div>
