@@ -551,8 +551,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 }}
                 className="flex-1 h-[52px] px-5 rounded-2xl bg-[#101826] hover:bg-slate-800/40 active:bg-slate-700 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-blue-600 border-b-blue-800 text-white font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-blue-950/50 transition-all cursor-pointer"
               >
-                <img src="/icons/dev-card.png" alt="Dev Card" className="w-6 h-auto max-h-6 object-contain shrink-0 drop-shadow" />
-                <span>View Intro &amp; Skills (Dev Card)</span>
+                <img src="/icons/dev-card.png" alt="Dev Card" className="w-8 h-auto max-h-8 object-contain shrink-0 drop-shadow" />
+                <span>View Intro &amp; Skills</span>
               </button>
 
               {isMe ? (
@@ -563,7 +563,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     setIsSearchOpen(true);
                   }}
                   title="Find Friends"
-                  className="w-[52px] h-[52px] rounded-2xl bg-[#101826] hover:bg-slate-800/40 active:bg-slate-700 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-slate-700 border-b-slate-800 flex items-center justify-center transition-all shadow-md cursor-pointer shrink-0"
+                  className="w-[52px] h-[52px] rounded-2xl bg-[#101826] hover:bg-slate-800/40 active:bg-slate-700 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-blue-600 border-b-blue-800 flex items-center justify-center transition-all shadow-md shadow-blue-950/40 cursor-pointer shrink-0"
                 >
                   <img src="/icons/add-friend.png" alt="Add Friend" className="w-7 h-7 object-contain" />
                 </button>
