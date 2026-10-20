@@ -493,17 +493,20 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setIsCoursesModalOpen(true);
                 }}
                 title={`${profileDisplayName}'s Courses`}
-                className="w-10 h-10 rounded-xl bg-slate-900/90 hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md"
+                className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95 hover:opacity-90"
               >
                 {currentCourse.iconSrc ? (
                   <img
                     src={currentCourse.iconSrc}
                     alt={currentCourse.title}
-                    className="w-6 h-6 object-contain"
+                    className="w-6 h-6 object-contain shrink-0"
                   />
                 ) : (
                   <span className="text-xl select-none">{currentCourse.fallbackEmoji}</span>
                 )}
+                <span className="text-sm sm:text-base font-black text-white font-mono">
+                  +2
+                </span>
               </button>
 
               <button
