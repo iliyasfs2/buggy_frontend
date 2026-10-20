@@ -402,25 +402,27 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const activeConnections = activeTab === "following" ? following : followers;
 
   return (
-    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none relative">
+    <div className="w-full min-h-screen px-0 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 sm:pr-8 lg:pr-10 pt-0 pb-32 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 select-none relative">
       <div className="w-full max-w-xl xl:max-w-2xl flex flex-col shrink-0">
-        <div className="hidden md:flex lg:hidden justify-end w-full mb-4">
+        <div className="hidden md:flex lg:hidden justify-end w-full mb-4 px-4 sm:px-0">
           <DesktopMetricBar inline />
         </div>
 
         {!isMe && (
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-1.5 mb-4 cursor-pointer w-fit"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>{cameFromLeaderboard ? "Back to Leaderboard" : "Back"}</span>
-          </button>
+          <div className="px-4 sm:px-0">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-1.5 mb-4 cursor-pointer w-fit"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>{cameFromLeaderboard ? "Back to Leaderboard" : "Back"}</span>
+            </button>
+          </div>
         )}
 
         {notFound && !loading ? (
-          <div className="w-full p-8 rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 text-center mt-8">
+          <div className="w-full p-8 rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/90 text-center mt-8 mx-4 sm:mx-0">
             <div className="text-4xl mb-3">🔍</div>
             <h2 className="text-lg font-black text-white">User not found</h2>
             <p className="mt-2 text-sm font-bold text-slate-400">
@@ -436,7 +438,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setIsEditModalOpen(true);
                 }
               }}
-              className={`relative -mx-4 w-[calc(100%+2rem)] sm:mx-0 sm:w-full h-[220px] md:h-[260px] rounded-none sm:rounded-[24px] border-y-2 border-b-4 sm:border-2 sm:border-b-4 border-x-0 sm:border-x-2 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
+              className={`relative w-full h-[220px] md:h-[260px] rounded-none sm:rounded-[24px] border-0 sm:border-2 sm:border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-xl ${
                 isMe ? "cursor-pointer group" : ""
               }`}
             >
@@ -450,7 +452,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               />
 
               <div
-                className={`absolute bottom-3 left-3.5 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
+                className={`absolute bottom-3 left-4 sm:left-3.5 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
               >
                 <span>
                   {effectiveLevel === "Senior" ? "👑" : effectiveLevel === "Mid-Level" ? "🥈" : "🥉"}
@@ -471,7 +473,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </div>
             </div>
 
-            <div className="mt-6 flex items-baseline gap-2.5 flex-wrap">
+            <div className="px-4 sm:px-0 flex flex-col">
+              <div className="mt-6 flex items-baseline gap-2.5 flex-wrap">
               <h1 className="font-black text-2xl sm:text-3xl text-white tracking-tight">
                 {profileDisplayName}
               </h1>
@@ -705,8 +708,9 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             <div className="mt-7">
               <AchievementsList />
             </div>
-          </>
-        )}
+          </div>
+        </>
+      )}
       </div>
 
       <div className="hidden lg:flex flex-1 justify-center sticky top-8">
