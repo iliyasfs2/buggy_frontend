@@ -720,7 +720,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 )}
               </div>
 
-              <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pt-2 pb-4 px-1 scrollbar-none">
                 {friendsForStreaks.map((f) => (
                   <div
                     key={f.id}
@@ -728,23 +728,27 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       soundEffects.playSoftClick();
                       setSelectedStreakFriend(f);
                     }}
-                    className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
+                    className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
                     title={`${f.username} • ${f.streak || 1} days shared streak • Click to Poke!`}
                   >
-                    <div
-                      className={`relative w-14 h-14 rounded-full bg-slate-950 overflow-hidden transition-all flex items-center justify-center shadow-md group-hover:scale-105 ${
-                        f.has_completed_today
-                          ? "border-2 border-slate-700 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                          : "border-2 border-amber-500/90 shadow-[0_0_14px_rgba(245,158,11,0.3)] animate-pulse"
-                      }`}
-                    >
-                      <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={48} />
-                      <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-700 text-[10px] font-black text-rose-400 flex items-center gap-1 shadow">
-                        <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain shrink-0" />
-                        <span>{f.streak || 1}</span>
+                    <div className="relative w-16 h-16 sm:w-[70px] sm:h-[70px] group-hover:scale-105 transition-transform">
+                      <div
+                        className={`w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center shadow-md transition-all ${
+                          f.has_completed_today
+                            ? "border-2 border-slate-700 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.35)]"
+                            : "border-2 border-amber-500/90 shadow-[0_0_14px_rgba(245,158,11,0.3)] animate-pulse"
+                        }`}
+                      >
+                        <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={56} />
+                      </div>
+
+                      <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#0b1324] border border-slate-700 text-[11px] font-black text-white flex items-center gap-1 shadow-lg shadow-black/60 z-10 whitespace-nowrap">
+                        <img src="/icons/streak.png" alt="Streak" className="w-3.5 h-3.5 object-contain shrink-0 drop-shadow" />
+                        <span className="font-mono text-amber-400">{f.streak || 1}</span>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[64px] text-center">
+
+                    <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[70px] text-center mt-1">
                       {f.username}
                     </span>
                   </div>
@@ -757,13 +761,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                       soundEffects.playSoftClick();
                       setIsSearchOpen(true);
                     }}
-                    className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
+                    className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
                     title="Add a friend to form a Debug Peer Streak!"
                   >
-                    <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-700 group-hover:border-cyan-400 flex items-center justify-center text-slate-500 group-hover:text-cyan-300 transition-all shadow-sm bg-slate-900/30 group-hover:bg-slate-900/60 group-hover:scale-105">
-                      <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
+                    <div className="w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full border-2 border-dashed border-slate-700 group-hover:border-cyan-400 flex items-center justify-center text-slate-500 group-hover:text-cyan-300 transition-all shadow-sm bg-slate-900/30 group-hover:bg-slate-900/60 group-hover:scale-105">
+                      <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
                     </div>
-                    <span className="text-xs font-bold text-slate-500 group-hover:text-cyan-300 truncate max-w-[64px] text-center transition-colors">
+                    <span className="text-xs font-bold text-slate-500 group-hover:text-cyan-300 truncate max-w-[70px] text-center transition-colors mt-1">
                       Add
                     </span>
                   </div>
