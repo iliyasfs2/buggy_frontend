@@ -396,20 +396,31 @@ export function ProfileHonors({
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full border-4 flex items-center justify-center relative transition-all group-hover:scale-105 overflow-hidden ${
-                    isUnlocked
-                      ? `${badge.ringColor} bg-[#0b1426] shadow-lg`
-                      : "border-slate-800 bg-slate-950/80 opacity-70"
+                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full flex items-center justify-center relative transition-all group-hover:scale-105 ${
+                    badge.id === "early_bird"
+                      ? ""
+                      : `border-4 ${
+                          isUnlocked
+                            ? `${badge.ringColor} bg-[#0b1426] shadow-lg`
+                            : "border-slate-800 bg-slate-950/80 opacity-70"
+                        }`
                   }`}
                   style={{
-                    boxShadow: isUnlocked ? `0 0 16px ${badge.glowColor}` : undefined,
+                    boxShadow: isUnlocked && badge.id !== "early_bird" ? `0 0 16px ${badge.glowColor}` : undefined,
                   }}
                 >
-                  {badge.iconSvg(isUnlocked, badge.id === "early_bird" ? 64 : 48)}
-                  {!isUnlocked && (
-                    <div className="absolute inset-0 rounded-full bg-slate-950/60 flex items-center justify-center">
-                      <Lock className="w-4 h-4 text-slate-400" />
-                    </div>
+                  {badge.id === "early_bird" ? (
+                    <img
+                      src="/badges/early-bird.png"
+                      alt={badge.name}
+                      className={`w-full h-full object-contain transition-all ${
+                        isUnlocked
+                          ? "drop-shadow-[0_0_12px_rgba(251,191,36,0.6)]"
+                          : "grayscale opacity-50"
+                      }`}
+                    />
+                  ) : (
+                    badge.iconSvg(isUnlocked, 48)
                   )}
                 </div>
               </div>
@@ -482,14 +493,6 @@ export function ProfileHonors({
                   <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1 drop-shadow">
                     {ach.displayRecord}
                   </span>
-
-                  {!isUnlocked && (
-                    <div className="absolute inset-0 flex items-center justify-center z-20">
-                      <div className="w-5 h-5 rounded-full bg-slate-950/80 border border-slate-700 flex items-center justify-center">
-                        <Lock className="w-2.5 h-2.5 text-slate-400" />
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             );
@@ -546,11 +549,25 @@ export function ProfileHonors({
                       className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
                     >
                       <div
-                        className={`w-14 h-14 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                          isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
+                        className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${
+                          badge.id === "early_bird"
+                            ? ""
+                            : `border-2 ${
+                                isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
+                              }`
                         }`}
                       >
-                        {badge.iconSvg(isUnlocked, 38)}
+                        {badge.id === "early_bird" ? (
+                          <img
+                            src="/badges/early-bird.png"
+                            alt={badge.name}
+                            className={`w-full h-full object-contain ${
+                              isUnlocked ? "drop-shadow-sm" : "grayscale opacity-50"
+                            }`}
+                          />
+                        ) : (
+                          badge.iconSvg(isUnlocked, 38)
+                        )}
                       </div>
 
                       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
@@ -674,14 +691,30 @@ export function ProfileHonors({
 
             <div className="flex flex-col items-center text-center mt-4">
               <div
-                className="w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800 flex items-center justify-center relative shadow-2xl mb-5"
+                className={`w-[150px] h-[150px] flex items-center justify-center relative shadow-2xl mb-5 ${
+                  selectedHonor.item.id === "early_bird"
+                    ? ""
+                    : "rounded-3xl bg-slate-950 border-2 border-slate-800"
+                }`}
                 style={{
                   boxShadow: `0 0 50px ${selectedHonor.item.glowColor}`,
                 }}
               >
-                {selectedHonor.item.iconSvg(
-                  selectedHonor.item.current >= selectedHonor.item.target,
-                  100
+                {selectedHonor.item.id === "early_bird" ? (
+                  <img
+                    src="/badges/early-bird.png"
+                    alt={selectedHonor.item.name}
+                    className={`w-[150px] h-[150px] object-contain transition-all ${
+                      selectedHonor.item.current >= selectedHonor.item.target
+                        ? "drop-shadow-[0_0_24px_rgba(251,191,36,0.7)]"
+                        : "grayscale opacity-50"
+                    }`}
+                  />
+                ) : (
+                  selectedHonor.item.iconSvg(
+                    selectedHonor.item.current >= selectedHonor.item.target,
+                    100
+                  )
                 )}
               </div>
 
