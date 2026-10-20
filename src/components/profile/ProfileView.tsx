@@ -549,7 +549,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsDevCardOpen(true);
                 }}
-                className="flex-1 h-[52px] px-5 rounded-2xl bg-gradient-to-r from-[#172554] via-[#1e3a8a] to-[#172554] hover:from-[#1e3a8a] hover:via-[#2563eb] hover:to-[#1e3a8a] border-2 border-b-4 border-blue-600 border-b-blue-800 text-white font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-blue-950/50 active:translate-y-0.5 transition-all cursor-pointer"
+                className="flex-1 h-[52px] px-5 rounded-2xl bg-[#101826] hover:bg-slate-800/40 active:bg-slate-700 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-blue-600 border-b-blue-800 text-white font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-blue-950/50 transition-all cursor-pointer"
               >
                 <img src="/icons/dev-card.png" alt="Dev Card" className="w-6 h-auto max-h-6 object-contain shrink-0 drop-shadow" />
                 <span>View Intro &amp; Skills (Dev Card)</span>
@@ -563,9 +563,9 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     setIsSearchOpen(true);
                   }}
                   title="Find Friends"
-                  className="w-[52px] h-[52px] rounded-2xl bg-[#0e172a] hover:bg-slate-800 border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-400 flex items-center justify-center transition-all active:translate-y-0.5 shadow-md cursor-pointer shrink-0"
+                  className="w-[52px] h-[52px] rounded-2xl bg-[#101826] hover:bg-slate-800/40 active:bg-slate-700 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-slate-700 border-b-slate-800 flex items-center justify-center transition-all shadow-md cursor-pointer shrink-0"
                 >
-                  <UserPlus className="w-5 h-5" />
+                  <img src="/icons/add-friend.png" alt="Add Friend" className="w-7 h-7 object-contain" />
                 </button>
               ) : (
                 <button
@@ -696,7 +696,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
                 >
                   <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-600 group-hover:border-cyan-400 flex items-center justify-center text-slate-400 group-hover:text-cyan-300 transition-colors shadow-sm bg-slate-900/40">
-                    <UserPlus className="w-5 h-5" />
+                    <img src="/icons/add-friend.png" alt="Add" className="w-6 h-6 object-contain" />
                   </div>
                   <span className="text-xs font-bold text-slate-400 group-hover:text-cyan-300 truncate max-w-[64px] text-center">
                     Add
