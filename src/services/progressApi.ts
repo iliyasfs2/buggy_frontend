@@ -54,6 +54,7 @@ export interface LeaderboardUserEntry {
   streak: number;
   avatar_config?: AvatarConfig;
   is_current_user: boolean;
+  total_xp?: number;
 }
 
 export interface CurrentUserLeaderboardInfo {
@@ -271,6 +272,7 @@ export interface UserConnectionItem {
   season_xp?: number;
   rank?: number;
   rank_title?: string | null;
+  streak?: number;
 }
 
 export interface UserConnectionsResponse {
