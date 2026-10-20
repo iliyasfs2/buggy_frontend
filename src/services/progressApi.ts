@@ -88,6 +88,7 @@ export interface UserProfileData {
   followers_count: number;
   following_count: number;
   is_following: boolean;
+  active_course?: string;
   is_me: boolean;
 }
 

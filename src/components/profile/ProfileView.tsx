@@ -271,6 +271,32 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const followingCount = following.length;
   const followersCount = followers.length;
 
+  const currentCourse = useMemo(() => {
+    const raw = (profile?.active_course || activeCourse || "javascript").toLowerCase();
+    if (raw === "python") {
+      return {
+        title: "Python",
+        code: "PY",
+        iconSrc: null,
+        fallbackEmoji: "🐍",
+      };
+    }
+    if (raw === "react") {
+      return {
+        title: "React",
+        code: "React",
+        iconSrc: null,
+        fallbackEmoji: "⚛️",
+      };
+    }
+    return {
+      title: "JavaScript",
+      code: "JS",
+      iconSrc: "/icons/js-badge.png",
+      fallbackEmoji: "⚡",
+    };
+  }, [profile?.active_course, activeCourse]);
+
   const filteredSearchUsers = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return directoryUsers.filter((u) => {
@@ -442,18 +468,24 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </div>
             </div>
 
-            <div className="mt-5 grid grid-cols-3 divide-x divide-slate-800/80 py-3 border-y border-slate-800/80">
-              <div className="flex flex-col items-center justify-center py-1">
-                <div className="flex items-center gap-1.5 h-7">
-                  <span className="text-base select-none">⚡</span>
-                  <span className="text-sm font-black text-amber-400 font-mono uppercase">
-                    {activeCourse === "python" ? "PY" : "JS"}
-                  </span>
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
-                    +2
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-400 mt-1">Courses</span>
+            <div className="mt-4 flex items-center gap-5 sm:gap-7 flex-wrap select-none">
+              <div className="flex items-center gap-1.5">
+                {currentCourse.iconSrc ? (
+                  <img
+                    src={currentCourse.iconSrc}
+                    alt={currentCourse.title}
+                    className="w-5 h-5 object-contain shrink-0"
+                  />
+                ) : (
+                  <span className="text-base select-none">{currentCourse.fallbackEmoji}</span>
+                )}
+                <span className="text-sm font-black text-amber-400 font-mono uppercase">
+                  {currentCourse.code}
+                </span>
+                <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                  +2
+                </span>
+                <span className="text-xs sm:text-sm font-black text-slate-400">Courses</span>
               </div>
 
               <button
@@ -463,14 +495,12 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setActiveTab("following");
                   setIsFriendsModalOpen(true);
                 }}
-                className="flex flex-col items-center justify-center py-1 group cursor-pointer transition-colors"
+                className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95"
               >
-                <div className="h-7 flex items-center">
-                  <span className="text-lg sm:text-xl font-black text-white group-hover:text-cyan-400 transition-colors">
-                    {followingCount}
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-slate-300 transition-colors mt-1">
+                <span className="text-sm sm:text-base font-black text-white">
+                  {followingCount}
+                </span>
+                <span className="text-sm sm:text-base font-black text-cyan-400 group-hover:text-cyan-300 transition-colors">
                   Following
                 </span>
               </button>
@@ -482,14 +512,12 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setActiveTab("followers");
                   setIsFriendsModalOpen(true);
                 }}
-                className="flex flex-col items-center justify-center py-1 group cursor-pointer transition-colors"
+                className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95"
               >
-                <div className="h-7 flex items-center">
-                  <span className="text-lg sm:text-xl font-black text-white group-hover:text-cyan-400 transition-colors">
-                    {followersCount}
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-slate-300 transition-colors mt-1">
+                <span className="text-sm sm:text-base font-black text-white">
+                  {followersCount}
+                </span>
+                <span className="text-sm sm:text-base font-black text-cyan-400 group-hover:text-cyan-300 transition-colors">
                   Followers
                 </span>
               </button>
