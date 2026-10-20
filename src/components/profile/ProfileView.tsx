@@ -475,37 +475,37 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
             <div className="px-4 sm:px-0 flex flex-col">
               <div className="mt-6 flex items-baseline gap-2.5 flex-wrap">
-              <h1 className="font-black text-2xl sm:text-3xl text-white tracking-tight">
-                {profileDisplayName}
-              </h1>
-              <span className="text-sm sm:text-base font-bold text-slate-400 font-mono">
-                @{profileHandle}
-              </span>
-            </div>
-
-            <div className="mt-4 flex items-center gap-4 sm:gap-6 flex-wrap select-none">
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setIsCoursesModalOpen(true);
-                }}
-                title={`${profileDisplayName}'s Courses`}
-                className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95 hover:opacity-90"
-              >
-                {currentCourse.iconSrc ? (
-                  <img
-                    src={currentCourse.iconSrc}
-                    alt={currentCourse.title}
-                    className="w-6 h-6 object-contain shrink-0"
-                  />
-                ) : (
-                  <span className="text-xl select-none">{currentCourse.fallbackEmoji}</span>
-                )}
-                <span className="text-sm sm:text-base font-black text-white font-mono">
-                  +2
+                <h1 className="font-black text-[22px] sm:text-[26px] text-white tracking-tight">
+                  {profileDisplayName}
+                </h1>
+                <span className="text-sm sm:text-base font-bold text-slate-400 font-mono">
+                  @{profileHandle}
                 </span>
-              </button>
+              </div>
+
+              <div className="mt-4 flex items-center gap-6 sm:gap-8 flex-wrap select-none">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setIsCoursesModalOpen(true);
+                  }}
+                  title={`${profileDisplayName}'s Courses`}
+                  className="inline-flex items-center gap-1.5 group cursor-pointer transition-transform active:scale-95 hover:opacity-90 mr-1 sm:mr-2"
+                >
+                  {currentCourse.iconSrc ? (
+                    <img
+                      src={currentCourse.iconSrc}
+                      alt={currentCourse.title}
+                      className="w-6 h-6 object-contain shrink-0"
+                    />
+                  ) : (
+                    <span className="text-xl select-none">{currentCourse.fallbackEmoji}</span>
+                  )}
+                  <span className="text-sm sm:text-base font-black text-white font-mono">
+                    +2
+                  </span>
+                </button>
 
               <button
                 type="button"
