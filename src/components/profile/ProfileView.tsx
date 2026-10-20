@@ -9,10 +9,18 @@ import {
   UserPlus,
   Plus,
   X,
+  Globe,
+  Mail,
+  Github,
+  Linkedin,
+  Edit3,
+  ExternalLink,
+  ShieldCheck,
+  Check,
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { AvatarCustomizerModal } from "@/components/profile/AvatarCustomizerModal";
-import { AchievementsList } from "@/components/profile/AchievementsList";
+import { ProfileHonors } from "@/components/profile/ProfileHonors";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { soundEffects } from "@/utils/soundEffects";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -57,6 +65,59 @@ const ALL_COURSES = [
   },
 ] as const;
 
+export interface DevCardDataState {
+  specialtyTitle: string;
+  collabStatus: string;
+  bio: string;
+  techStack: string[];
+  githubUrl: string;
+  linkedinUrl: string;
+  websiteUrl: string;
+  email: string;
+}
+
+const DEFAULT_DEV_CARD_DATA: DevCardDataState = {
+  specialtyTitle: "فول‌استک دولوپر و مهندس دیباگ",
+  collabStatus: "🟢 آماده همکاری و پروژه",
+  bio: "علاقه‌مند به معماری سیستم‌های مقیاس‌پذیر، حل چالش‌های الگوریتمی پیچیده و یادگیری مستمر در پلتفرم باگی.",
+  techStack: ["React", "Next.js", "FastAPI", "TypeScript", "Tailwind CSS", "Docker", "PostgreSQL", "Python"],
+  githubUrl: "https://github.com",
+  linkedinUrl: "https://linkedin.com",
+  websiteUrl: "https://buggy.dev",
+  email: "coder@buggy.dev",
+};
+
+const VERIFIED_BUGGY_SKILLS = [
+  { name: "JavaScript", percent: 92, badge: "تایید باگی ✓", desc: "تایید شده توسط تست‌های پیشرفته باگی" },
+  { name: "دیباگ و رفع باگ", percent: 96, badge: "تایید باگی ✓", desc: "تایید شده با حل بیش از ۵۰ چالش تحلیلی" },
+  { name: "پایتون (Python)", percent: 84, badge: "تایید باگی ✓", desc: "تایید شده در ماژول‌های بک‌اند" },
+  { name: "React & Architecture", percent: 88, badge: "تایید باگی ✓", desc: "تایید شده در معماری فرانت‌اند" },
+];
+
+const FEATURED_DEV_PROJECTS = [
+  {
+    id: "p1",
+    title: "Buggy Core Engine",
+    desc: "موتور ارزیابی و کامپایل ابری تست‌های دیباگ به صورت بلادرنگ و سندباکس ایزوله.",
+    tech: "FastAPI • Docker • Redis",
+    link: "https://github.com",
+  },
+  {
+    id: "p2",
+    title: "DevPulse Leaderboard",
+    desc: "سیستم لیدربورد رقابتی ۱۰ روزه با محاسبه داینامیک رنکینگ و مدال‌های فصلی.",
+    tech: "Next.js • Tailwind • PostgreSQL",
+    link: "https://github.com",
+  },
+  {
+    id: "p3",
+    title: "SmartCode Runner",
+    desc: "محیط تعاملی کدنویسی کلاینت-ساید با فیدبک هوشمند و تجزیه خطای AST.",
+    tech: "TypeScript • WebAssembly",
+    link: "https://github.com",
+  },
+];
+
 export interface ProfileViewProps {
   username?: string;
   isOwnProfile?: boolean;
@@ -74,6 +135,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const activeCourse = useGameStore((s) => s.activeCourse);
   const switchCourse = useGameStore((s) => s.switchCourse);
   const completedNodesCount = useGameStore((s) => s.completedNodesCount);
+  const mistakesCount = useGameStore((s) => s.mistakesCount);
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [followers, setFollowers] = useState<UserConnectionItem[]>([]);
@@ -137,6 +199,42 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       return next;
     });
   }, [currentUser?.id, currentUser?.username]);
+
+  const [isEditingDevCard, setIsEditingDevCard] = useState(false);
+  const [devCardData, setDevCardData] = useState<DevCardDataState>(DEFAULT_DEV_CARD_DATA);
+  const [editDevCardForm, setEditDevCardForm] = useState<DevCardDataState>(DEFAULT_DEV_CARD_DATA);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const devCardStorageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
+    try {
+      const stored = localStorage.getItem(devCardStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") {
+          setDevCardData((prev) => {
+            const next = { ...prev, ...parsed };
+            setEditDevCardForm(next);
+            return next;
+          });
+        }
+      }
+    } catch {
+    }
+  }, [currentUser?.id, currentUser?.username]);
+
+  const handleSaveDevCard = (updated: DevCardDataState) => {
+    soundEffects.playSoftClick();
+    setDevCardData(updated);
+    setIsEditingDevCard(false);
+    if (typeof window !== "undefined") {
+      const devCardStorageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
+      try {
+        localStorage.setItem(devCardStorageKey, JSON.stringify(updated));
+      } catch {
+      }
+    }
+  };
 
   const targetIdentifier = useMemo(() => {
     if (!username || username.trim() === "" || username.trim().toLowerCase() === "current") {
@@ -486,22 +584,97 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   setIsEditModalOpen(true);
                 }
               }}
-              className={`relative w-full h-[260px] md:h-[310px] rounded-none sm:rounded-[24px] border-0 bg-gradient-to-b from-[#0f1f3d] via-[#0b162c] to-[#081021] overflow-hidden shadow-2xl ${
+              className={`relative w-full rounded-none sm:rounded-[24px] border-0 overflow-hidden shadow-2xl bg-[#091122] ${
                 isMe ? "cursor-pointer group" : ""
               }`}
             >
-              <div
-                className="absolute inset-0 opacity-25 pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.28), transparent 65%), linear-gradient(to right, rgba(30, 58, 110, 0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(30, 58, 110, 0.25) 1px, transparent 1px)",
-                  backgroundSize: "100% 100%, 28px 28px, 28px 28px",
-                }}
-              />
+              <svg
+                viewBox="0 0 800 360"
+                className="w-full h-auto block select-none pointer-events-none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="roomWallGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0f1f3d" />
+                    <stop offset="65%" stopColor="#0b152b" />
+                    <stop offset="100%" stopColor="#070c18" />
+                  </linearGradient>
+                  <linearGradient id="roomFloorGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#070d1a" />
+                    <stop offset="100%" stopColor="#03060d" />
+                  </linearGradient>
+                  <linearGradient id="deskGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1e293b" />
+                    <stop offset="100%" stopColor="#0f172a" />
+                  </linearGradient>
+                  <radialGradient id="cyberGlow" cx="50%" cy="40%" r="50%">
+                    <stop offset="0%" stopColor="rgba(56, 189, 248, 0.25)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </radialGradient>
+                </defs>
+
+                <rect x="0" y="0" width="800" height="260" fill="url(#roomWallGrad)" />
+                <rect x="0" y="0" width="800" height="260" fill="url(#cyberGlow)" />
+
+                <g stroke="rgba(30, 58, 110, 0.3)" strokeWidth="1">
+                  <line x1="0" y1="65" x2="800" y2="65" />
+                  <line x1="0" y1="130" x2="800" y2="130" />
+                  <line x1="0" y1="195" x2="800" y2="195" />
+                  <line x1="160" y1="0" x2="160" y2="260" />
+                  <line x1="320" y1="0" x2="320" y2="260" />
+                  <line x1="480" y1="0" x2="480" y2="260" />
+                  <line x1="640" y1="0" x2="640" y2="260" />
+                </g>
+
+                <rect x="70" y="70" width="130" height="8" rx="2" fill="#1e293b" />
+                <rect x="80" y="52" width="12" height="18" fill="#38bdf8" fillOpacity="0.8" rx="1" />
+                <rect x="94" y="46" width="10" height="24" fill="#a855f7" fillOpacity="0.8" rx="1" />
+                <rect x="106" y="56" width="14" height="14" fill="#34d399" fillOpacity="0.8" rx="1" />
+
+                <rect x="600" y="70" width="130" height="8" rx="2" fill="#1e293b" />
+                <rect x="615" y="48" width="22" height="22" rx="3" fill="#0f172a" stroke="#0ea5e9" strokeWidth="1.5" />
+                <circle cx="626" cy="59" r="3" fill="#22d3ee" />
+
+                <polygon points="0,260 800,260 800,360 0,360" fill="url(#roomFloorGrad)" />
+                <line x1="0" y1="260" x2="800" y2="260" stroke="#0284c7" strokeWidth="2" strokeOpacity="0.7" />
+
+                <g stroke="rgba(2, 132, 199, 0.25)" strokeWidth="1.5">
+                  <line x1="0" y1="360" x2="200" y2="260" />
+                  <line x1="200" y1="360" x2="320" y2="260" />
+                  <line x1="600" y1="360" x2="480" y2="260" />
+                  <line x1="800" y1="360" x2="600" y2="260" />
+                </g>
+
+                <g transform="translate(240, 285)">
+                  <rect x="0" y="0" width="320" height="24" rx="6" fill="url(#deskGrad)" stroke="#334155" strokeWidth="2" />
+                  <rect x="110" y="6" width="100" height="4" rx="2" fill="#38bdf8" fillOpacity="0.7" />
+                </g>
+              </svg>
+
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-[50%] max-w-[400px] aspect-square flex items-center justify-center transition-transform duration-300 group-hover:scale-105 mb-2 sm:mb-4">
+                  <svg
+                    viewBox="0 0 400 400"
+                    className="w-full h-full select-none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <radialGradient id="charGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(34, 211, 238, 0.3)" />
+                        <stop offset="100%" stopColor="transparent" />
+                      </radialGradient>
+                    </defs>
+                    <circle cx="200" cy="200" r="160" fill="url(#charGlow)" />
+                    <g transform="translate(60, 60)">
+                      <AvatarRenderer config={effectiveAvatar} size={280} />
+                    </g>
+                  </svg>
+                </div>
+              </div>
 
               {coderLevel && (
                 <div
-                  className={`absolute bottom-3.5 left-4 sm:left-4 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
+                  className={`absolute bottom-3.5 left-4 z-20 h-7 px-3 rounded-full backdrop-blur-md inline-flex items-center gap-1.5 text-xs font-black shadow-lg ${coderBadgeStyle}`}
                 >
                   <span>
                     {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
@@ -509,18 +682,6 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   <span>{coderLevel}</span>
                 </div>
               )}
-
-              <div className="absolute bottom-2 sm:bottom-3 inset-x-0 flex flex-col items-center justify-end pointer-events-none">
-                <div className="relative mb-[-10px] z-10 transition-transform duration-200 group-hover:scale-105">
-                  <div className="rounded-full p-1 bg-slate-950/90 border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
-                    <AvatarRenderer config={effectiveAvatar} size={120} />
-                  </div>
-                </div>
-
-                <div className="relative z-10 w-52 sm:w-64 h-5 rounded-t-xl bg-gradient-to-b from-[#1e293b] to-[#0f172a] border-t-2 border-x-2 border-slate-700 flex items-center justify-center shadow-inner">
-                  <div className="w-14 h-1.5 rounded-full bg-cyan-400/40" />
-                </div>
-              </div>
             </div>
 
             <div className="px-4 sm:px-0 flex flex-col">
@@ -802,7 +963,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </div>
 
             <div className="mt-7">
-              <AchievementsList />
+              <ProfileHonors
+                streak={effectiveStreak}
+                totalXP={effectiveXp}
+                completedNodesCount={completedNodesCount}
+                followersCount={followersCount}
+                currentRank={currentRank}
+                solvedMistakesCount={mistakesCount}
+              />
             </div>
           </div>
         </>
@@ -815,14 +983,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isCoursesModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsCoursesModalOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 {currentCourse.iconSrc ? (
                   <img src={currentCourse.iconSrc} alt="Course" className="w-5 h-5 object-contain" />
@@ -846,7 +1014,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 flex flex-col gap-4">
+            <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
               <span className="text-xs font-bold text-slate-400">
                 Programming tracks and learning paths:
               </span>
@@ -907,14 +1075,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isFriendsModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsFriendsModalOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md max-h-[85vh] h-[520px] rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[540px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                 <button
                   type="button"
@@ -1002,14 +1170,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isSearchOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsSearchOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md max-h-[85vh] h-[520px] rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[540px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <Search className="w-4 h-4 text-cyan-400" />
                 <span className="text-sm font-black text-white">Find Coders</span>
@@ -1027,7 +1195,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </button>
             </div>
 
-            <div className="p-3 border-b border-slate-800/70 bg-[#081020]/50">
+            <div className="p-3 border-b border-slate-800/70 bg-[#081020]/50 shrink-0">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
@@ -1082,113 +1250,357 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isDevCardOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsDevCardOpen(false)}
         >
           <div
-            className="w-full h-full md:h-auto md:w-[640px] md:max-w-[640px] md:max-h-[85vh] rounded-none md:rounded-[24px] border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:w-[640px] md:max-w-[640px] md:max-h-[88vh] rounded-none md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528]/90">
+            <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528] sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/dev-card.png" alt="Dev Card" className="w-5 h-auto max-h-5 object-contain" />
-                <span className="text-sm font-black text-white">Dev Card</span>
+                <span className="text-base font-black text-white">کارت توسعه‌دهنده (Dev Card)</span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSoftClick();
-                  setIsDevCardOpen(false);
-                }}
-                className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-black inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
-              >
-                <span>✕</span>
-                <span>Close</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {isMe && !isEditingDevCard && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playSoftClick();
+                      setEditDevCardForm(devCardData);
+                      setIsEditingDevCard(true);
+                    }}
+                    className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 hover:text-cyan-300 text-xs font-black inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>ویرایش کارت</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setIsDevCardOpen(false);
+                    setIsEditingDevCard(false);
+                  }}
+                  className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
-                  <AvatarRenderer config={effectiveAvatar} size={66} />
-                </div>
+              {isEditingDevCard ? (
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">عنوان تخصصی دولوپر:</label>
+                    <input
+                      type="text"
+                      value={editDevCardForm.specialtyTitle}
+                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
+                      placeholder="مثال: فول‌استک دولوپر و مهندس دیباگ"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-[22px] sm:text-[24px] font-black text-white leading-tight truncate">
-                      {profileDisplayName}
-                    </h3>
-                    {coderLevel && (
-                      <span
-                        className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
-                      >
-                        <span>
-                          {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">وضعیت همکاری و پروژه:</label>
+                    <select
+                      value={editDevCardForm.collabStatus}
+                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, collabStatus: e.target.value }))}
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                    >
+                      <option value="🟢 آماده همکاری و پروژه">🟢 آماده همکاری و پروژه</option>
+                      <option value="🟡 در حال بررسی موقعیت‌های جدید">🟡 در حال بررسی موقعیت‌های جدید</option>
+                      <option value="🔴 مشغول پروژه‌های فعلی">🔴 مشغول پروژه‌های فعلی</option>
+                      <option value="💼 در دسترس برای منتورینگ و مشاوره">💼 در دسترس برای منتورینگ و مشاوره</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">بیوگرافی کوتاه (حداکثر ۲ خط):</label>
+                    <textarea
+                      rows={2}
+                      value={editDevCardForm.bio}
+                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, bio: e.target.value }))}
+                      placeholder="درباره علایق کدنویسی و اهداف خود بنویسید..."
+                      className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">مهارت‌ها و ابزارها (با کاما جدا کنید):</label>
+                    <input
+                      type="text"
+                      value={editDevCardForm.techStack.join(", ")}
+                      onChange={(e) =>
+                        setEditDevCardForm((prev) => ({
+                          ...prev,
+                          techStack: e.target.value
+                            .split(",")
+                            .map((s) => s.trim())
+                            .filter(Boolean),
+                        }))
+                      }
+                      placeholder="React, Next.js, FastAPI, Docker, TypeScript"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-bold text-slate-400">لینک گیت‌هاب (GitHub):</label>
+                      <input
+                        type="text"
+                        value={editDevCardForm.githubUrl}
+                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, githubUrl: e.target.value }))}
+                        placeholder="https://github.com/..."
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-bold text-slate-400">لینک لینکدین (LinkedIn):</label>
+                      <input
+                        type="text"
+                        value={editDevCardForm.linkedinUrl}
+                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
+                        placeholder="https://linkedin.com/in/..."
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-bold text-slate-400">لینک وب‌سایت / پورتفولیو:</label>
+                      <input
+                        type="text"
+                        value={editDevCardForm.websiteUrl}
+                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, websiteUrl: e.target.value }))}
+                        placeholder="https://mysite.dev"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-bold text-slate-400">آدرس ایمیل کاری:</label>
+                      <input
+                        type="email"
+                        value={editDevCardForm.email}
+                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, email: e.target.value }))}
+                        placeholder="coder@example.com"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingDevCard(false)}
+                      className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs transition-colors cursor-pointer"
+                    >
+                      انصراف
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveDevCard(editDevCardForm)}
+                      className="h-10 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all shadow-md shadow-cyan-950/40 cursor-pointer"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>ذخیره تغییرات</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-2xl bg-[#091326] border border-slate-800/80">
+                    <div className="w-20 h-20 rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
+                      <AvatarRenderer config={effectiveAvatar} size={74} />
+                    </div>
+
+                    <div className="flex-1 min-w-0 text-center sm:text-right">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
+                        <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                          <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                            {profileDisplayName}
+                          </h3>
+                          {coderLevel && (
+                            <span
+                              className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
+                            >
+                              <span>
+                                {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                              </span>
+                              <span>{coderLevel}</span>
+                            </span>
+                          )}
+                        </div>
+
+                        <span className="text-xs font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-full self-center sm:self-auto shrink-0 shadow-sm">
+                          {devCardData.collabStatus}
                         </span>
-                        <span>{coderLevel}</span>
-                      </span>
-                    )}
+                      </div>
+
+                      <div className="text-sm font-black text-cyan-300 mt-1">
+                        {devCardData.specialtyTitle}
+                      </div>
+
+                      <div className="text-xs font-bold text-slate-400 mt-0.5">
+                        @{profileHandle}
+                        {hasRank ? ` • Season Rank #${currentRank}` : ""}
+                        {formattedJoinedDate ? ` • ${formattedJoinedDate}` : ""}
+                      </div>
+
+                      <p className="text-xs text-slate-300 leading-relaxed font-medium mt-3 bg-[#060c18] p-2.5 rounded-xl border border-slate-800/70">
+                        {devCardData.bio}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="text-xs font-bold text-slate-400 mt-1">
-                    @{profileHandle}
-                    {hasRank ? ` • Season Rank #${currentRank}` : ""}
-                  </div>
-                  {formattedJoinedDate && (
-                    <div className="text-xs font-bold text-slate-500 mt-0.5">{formattedJoinedDate}</div>
-                  )}
-                </div>
-              </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-black text-white flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 text-amber-400" />
+                        <span>بخش اول: مهارت‌های تایید شده در باگی (Verified Skills)</span>
+                      </h4>
+                    </div>
 
-              <div>
-                <h4 className="text-base font-bold text-white mb-3">About</h4>
-                <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                  {isMe ? "You haven't added a bio yet." : "This coder hasn't added a bio yet."}
-                </p>
-              </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {VERIFIED_BUGGY_SKILLS.map((skill) => (
+                        <div
+                          key={skill.name}
+                          className="p-3 rounded-2xl bg-[#091326] border border-slate-800 flex flex-col gap-2 shadow-sm"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-black text-white">{skill.name}</span>
+                            <span className="text-[10px] font-black text-amber-400 bg-amber-950/80 border border-amber-500/50 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <ShieldCheck className="w-2.5 h-2.5" />
+                              <span>{skill.badge}</span>
+                            </span>
+                          </div>
 
-              <div>
-                <h4 className="text-base font-bold text-white mb-3">Verified Stats in Buggy</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">Total XP</span>
-                    <span className="text-sm font-black text-amber-400">{effectiveXp.toLocaleString()}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-full"
+                                style={{ width: `${skill.percent}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-mono font-black text-amber-400 shrink-0">
+                              {skill.percent}%
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-slate-500 font-medium">{skill.desc}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">Day Streak</span>
-                    <span className="text-sm font-black text-amber-400">{effectiveStreak}</span>
-                  </div>
-                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">Season Rank</span>
-                    <span className="text-sm font-black text-amber-400">
-                      {hasRank ? `#${currentRank}${coderLevel ? ` (${coderLevel})` : ""}` : "—"}
-                    </span>
-                  </div>
-                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">Season XP (10-Day)</span>
-                    <span className="text-sm font-black text-amber-400">{effectiveSeasonXp.toLocaleString()}</span>
-                  </div>
-                  <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between sm:col-span-2">
-                    <span className="text-sm font-bold text-white">Competitive League</span>
-                    <span className="text-sm font-black text-cyan-400">{leagueName}</span>
-                  </div>
-                </div>
-              </div>
 
-              <div>
-                <h4 className="text-base font-bold text-white mb-3">Tech Stack &amp; Specialized Skills</h4>
-                <p className="text-sm text-slate-500 font-medium">No tech stack added yet.</p>
-              </div>
+                  <div>
+                    <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
+                      <span>🛠️</span>
+                      <span>بخش دوم: پشته فنی و ابزارها (Tech Stack &amp; Tools)</span>
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {devCardData.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1.5 rounded-xl bg-[#09152b] hover:bg-[#0d2042] border border-cyan-500/30 text-cyan-300 hover:text-white text-xs font-black shadow-sm transition-colors cursor-default"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-              <div>
-                <h4 className="text-base font-bold text-white mb-3">Featured Projects &amp; Portfolio</h4>
-                <p className="text-sm text-slate-500 font-medium">No projects added yet.</p>
-              </div>
+                  <div>
+                    <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
+                      <span>🚀</span>
+                      <span>بخش سوم: پروژه‌ها و نمونه‌کارها (Featured Projects)</span>
+                    </h4>
+
+                    <div className="space-y-2.5">
+                      {FEATURED_DEV_PROJECTS.map((proj) => (
+                        <div
+                          key={proj.id}
+                          className="p-3.5 rounded-2xl bg-[#091326] border border-slate-800 hover:border-slate-700 flex flex-col gap-2 transition-colors"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-black text-white">{proj.title}</span>
+                              <span className="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-800">
+                                {proj.tech}
+                              </span>
+                            </div>
+
+                            <a
+                              href={proj.link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-xs font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
+                            >
+                              <span>مشاهده</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          </div>
+
+                          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                            {proj.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528]/95 shrink-0">
-              <p className="text-sm text-slate-500 font-bold text-center">No contact links added yet.</p>
+            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528] shrink-0">
+              <div className="flex items-center justify-between flex-wrap gap-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-slate-400">راه‌های ارتباطی:</span>
+                  <a
+                    href={devCardData.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="GitHub"
+                  >
+                    <Github className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={devCardData.linkedinUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="LinkedIn"
+                  >
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={devCardData.websiteUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="Website"
+                  >
+                    <Globe className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={`mailto:${devCardData.email}`}
+                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="Email"
+                  >
+                    <Mail className="w-4 h-4" />
+                  </a>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold text-slate-500">
+                    ID: {profile?.id || currentUser?.id || "buggy-coder"}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1196,14 +1608,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {selectedStreakFriend && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setSelectedStreakFriend(null)}
         >
           <div
-            className="w-full sm:max-w-md rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/streak.png" alt="Streak" className="w-5 h-5 object-contain" />
                 <span className="text-base sm:text-lg font-black text-white">
@@ -1222,7 +1634,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 flex flex-col gap-5">
+            <div className="p-5 sm:p-6 flex flex-col gap-5 flex-1">
               <div className="flex items-center justify-center gap-4 py-4 px-3 bg-[#081120]/80 rounded-2xl border border-slate-800/80 shadow-inner">
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-cyan-400 overflow-hidden flex items-center justify-center shadow-md">
@@ -1341,14 +1753,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isStreakPickerOpen && isMe && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsStreakPickerOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md max-h-[85vh] rounded-t-[28px] sm:rounded-[24px] border-2 border-b-4 border-slate-700 border-b-slate-800 bg-gradient-to-b from-[#101d38] via-[#0c162c] to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[580px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528]/90 shrink-0">
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/streak.png" alt="Streak" className="w-5 h-5 object-contain" />
                 <h3 className="text-base sm:text-lg font-black text-white">

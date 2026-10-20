@@ -1,0 +1,768 @@
+"use client";
+
+import React, { useState } from "react";
+import { X, ChevronRight, Lock, Check, Award, Shield } from "lucide-react";
+import { soundEffects } from "@/utils/soundEffects";
+
+export interface SpecialBadgeItem {
+  id: string;
+  name: string;
+  enTitle: string;
+  desc: string;
+  ruleDesc: string;
+  current: number;
+  target: number;
+  unit: string;
+  ringColor: string;
+  glowColor: string;
+  accentBg: string;
+  iconSvg: (isUnlocked: boolean, size?: number) => React.ReactNode;
+}
+
+export interface AchievementItem {
+  id: string;
+  name: string;
+  enTitle: string;
+  desc: string;
+  ruleDesc: string;
+  current: number;
+  target: number;
+  displayRecord: string;
+  shieldGradient: string;
+  glowColor: string;
+  iconSvg: (isUnlocked: boolean, size?: number) => React.ReactNode;
+}
+
+interface ProfileHonorsProps {
+  streak?: number;
+  totalXP?: number;
+  completedNodesCount?: number;
+  followersCount?: number;
+  currentRank?: number;
+  solvedMistakesCount?: number;
+}
+
+export function ProfileHonors({
+  streak = 0,
+  totalXP = 0,
+  completedNodesCount = 0,
+  followersCount = 0,
+  currentRank = 0,
+  solvedMistakesCount = 0,
+}: ProfileHonorsProps) {
+  const [activeModal, setActiveModal] = useState<"badges_all" | "achievements_all" | null>(null);
+  const [selectedHonor, setSelectedHonor] = useState<{
+    type: "badge" | "achievement";
+    item: SpecialBadgeItem | AchievementItem;
+  } | null>(null);
+
+  const specialBadges: SpecialBadgeItem[] = [
+    {
+      id: "early_bird",
+      name: "دیباگر سحرخیز",
+      enTitle: "Early Bird",
+      desc: "حل چالش در ۵ روز مختلف قبل از ساعت ۹ صبح با قهوه گرم و تمرکز بالا.",
+      ruleDesc: "۵ روز مختلف قبل از ساعت ۹:۰۰ صبح حداقل یک چالش کدنویسی حل کنید.",
+      current: Math.min(5, Math.floor(streak / 2) + 1),
+      target: 5,
+      unit: "روز سحرخیزی",
+      ringColor: "border-amber-400",
+      glowColor: "rgba(251, 191, 36, 0.45)",
+      accentBg: "from-amber-500/20 to-orange-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="32" fill="#f59e0b" />
+          <g stroke="#fbbf24" strokeWidth="4" strokeLinecap="round">
+            <line x1="50" y1="6" x2="50" y2="14" />
+            <line x1="50" y1="86" x2="50" y2="94" />
+            <line x1="6" y1="50" x2="14" y2="50" />
+            <line x1="86" y1="50" x2="94" y2="50" />
+            <line x1="18" y1="18" x2="24" y2="24" />
+            <line x1="76" y1="76" x2="82" y2="82" />
+            <line x1="18" y1="82" x2="24" y2="76" />
+            <line x1="76" y1="24" x2="82" y2="18" />
+          </g>
+          <rect x="30" y="44" width="16" height="10" rx="3" fill="#0f172a" />
+          <rect x="54" y="44" width="16" height="10" rx="3" fill="#0f172a" />
+          <line x1="46" y1="49" x2="54" y2="49" stroke="#0f172a" strokeWidth="3" />
+          <path d="M42 66 Q50 72 58 66" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M68 62 L78 62 L78 74 C78 78 68 78 68 74 Z" fill="#b45309" />
+          <path d="M78 65 C82 65 84 67 84 70 C84 73 82 74 78 74" stroke="#b45309" strokeWidth="2" fill="none" />
+          <path d="M71 58 Q72 55 71 52 M75 58 Q76 55 75 52" stroke="#fef3c7" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        </svg>
+      ),
+    },
+    {
+      id: "night_owl",
+      name: "جغد شب‌کار",
+      enTitle: "Night Owl",
+      desc: "حل چالش در ۵ شب مختلف بین ساعت ۱۲ شب تا ۴ صبح در سکوت شب.",
+      ruleDesc: "در ۵ شب مجزا در بازه زمانی بامداد (۰۰:۰۰ تا ۰۴:۰۰) چالش حل کنید.",
+      current: Math.min(5, Math.floor(streak / 3)),
+      target: 5,
+      unit: "شب کدنویسی",
+      ringColor: "border-purple-500",
+      glowColor: "rgba(168, 85, 247, 0.45)",
+      accentBg: "from-purple-500/20 to-indigo-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="40" fill="#0b0f19" />
+          <path d="M30 35 C30 25 70 25 70 35 C70 58 60 74 50 74 C40 74 30 58 30 35 Z" fill="#312e81" />
+          <circle cx="40" cy="46" r="10" fill="#e0e7ff" />
+          <circle cx="60" cy="46" r="10" fill="#e0e7ff" />
+          <circle cx="40" cy="46" r="5" fill="#a855f7" />
+          <circle cx="60" cy="46" r="5" fill="#a855f7" />
+          <polygon points="50,56 46,62 54,62" fill="#f59e0b" />
+          <path d="M22 45 C22 28 32 18 50 18 C68 18 78 28 78 45" stroke="#ec4899" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <rect x="18" y="42" width="8" height="16" rx="4" fill="#a855f7" />
+          <rect x="74" y="42" width="8" height="16" rx="4" fill="#a855f7" />
+          <rect x="36" y="70" width="28" height="16" rx="2" fill="#22d3ee" fillOpacity="0.8" />
+        </svg>
+      ),
+    },
+    {
+      id: "sniper_coder",
+      name: "تک‌تیرانداز کد",
+      enTitle: "Sniper Coder",
+      desc: "تکمیل ۵ چالش متوالی با دقت ۱۰۰٪ و بدون حتی یک خطای سینتکسی.",
+      ruleDesc: "بدون ایجاد خطا ۵ گره را با تست‌های ۱۰۰٪ پاس‌شده پشت سر بگذارید.",
+      current: Math.min(5, Math.max(1, solvedMistakesCount > 0 ? 5 : 2)),
+      target: 5,
+      unit: "چالش بی‌نقص",
+      ringColor: "border-rose-500",
+      glowColor: "rgba(244, 63, 94, 0.45)",
+      accentBg: "from-rose-500/20 to-red-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="40" fill="#4c0519" />
+          <circle cx="50" cy="50" r="32" stroke="#f43f5e" strokeWidth="3" fill="none" />
+          <circle cx="50" cy="50" r="22" stroke="#fda4af" strokeWidth="2" fill="none" />
+          <circle cx="50" cy="50" r="10" fill="#f43f5e" />
+          <circle cx="50" cy="50" r="4" fill="#ffffff" />
+          <line x1="50" y1="12" x2="50" y2="88" stroke="#f43f5e" strokeWidth="2.5" />
+          <line x1="12" y1="50" x2="88" y2="50" stroke="#f43f5e" strokeWidth="2.5" />
+          <path d="M50 50 L75 25" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" />
+          <polygon points="75,25 67,27 73,33" fill="#38bdf8" />
+        </svg>
+      ),
+    },
+    {
+      id: "speed_demon",
+      name: "کامپایلر سرعتی",
+      enTitle: "Speed Demon",
+      desc: "حل یک چالش کامل در کمتر از ۶۰ ثانیه با مهارت و تایپ سریع.",
+      ruleDesc: "یک چالش دیباگ یا کدنویسی را زیر ۱ دقیقه به پایان برسانید.",
+      current: 1,
+      target: 1,
+      unit: "چالش زیر ۱ دقیقه",
+      ringColor: "border-cyan-400",
+      glowColor: "rgba(34, 211, 238, 0.45)",
+      accentBg: "from-cyan-500/20 to-blue-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="40" fill="#082f49" />
+          <g transform="translate(18, 14) rotate(25 32 32)">
+            <path d="M32 6 C24 16 20 30 20 44 L44 44 C44 30 40 16 32 6 Z" fill="#06b6d4" />
+            <circle cx="32" cy="24" r="5" fill="#e0f2fe" />
+            <path d="M20 34 L12 44 L20 44 Z" fill="#0284c7" />
+            <path d="M44 34 L52 44 L44 44 Z" fill="#0284c7" />
+            <path d="M24 44 Q32 58 40 44 Q36 50 32 60 Q28 50 24 44 Z" fill="#f97316" />
+            <path d="M28 44 Q32 52 36 44 Q34 48 32 54 Q30 48 28 44 Z" fill="#fde047" />
+          </g>
+          <text x="14" y="80" fill="#22d3ee" fontSize="10" fontFamily="monospace" fontWeight="bold">0101</text>
+        </svg>
+      ),
+    },
+    {
+      id: "weekend_warrior",
+      name: "جنگجوی آخر هفته",
+      enTitle: "Weekend Warrior",
+      desc: "حفظ تمرین و استریک در ۴ پنجشنبه و جمعه متوالی بدون افت یادگیری.",
+      ruleDesc: "در روزهای تعطیل آخر هفته استریک خود را برای ۴ هفته متوالی فعال نگه دارید.",
+      current: Math.min(4, Math.floor(streak / 7)),
+      target: 4,
+      unit: "آخر هفته متوالی",
+      ringColor: "border-emerald-400",
+      glowColor: "rgba(52, 211, 153, 0.45)",
+      accentBg: "from-emerald-500/20 to-teal-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="40" fill="#064e3b" />
+          <circle cx="50" cy="42" r="20" fill="#34d399" />
+          <rect x="36" y="38" width="12" height="6" rx="2" fill="#022c22" />
+          <rect x="52" y="38" width="12" height="6" rx="2" fill="#022c22" />
+          <line x1="48" y1="41" x2="52" y2="41" stroke="#022c22" strokeWidth="2" />
+          <path d="M44 54 Q50 58 56 54" stroke="#022c22" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <rect x="28" y="62" width="44" height="20" rx="3" fill="#047857" stroke="#6ee7b7" strokeWidth="2" />
+          <polygon points="34,70 40,73 34,76" fill="#a7f3d0" />
+          <line x1="44" y1="76" x2="52" y2="76" stroke="#a7f3d0" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      id: "season_champion",
+      name: "تاجگذار فصل",
+      enTitle: "Season Champion",
+      desc: "قرار گرفتن در جمع ۳ نفر اول فصل ۱۰ روزه لیدربورد حداقل یک بار.",
+      ruleDesc: "در پایان یکی از فصل‌های ۱۰ روزه روی سکوی ۱ تا ۳ لیدربورد بایستید.",
+      current: currentRank > 0 && currentRank <= 3 ? 1 : 0,
+      target: 1,
+      unit: "حضور در سکو",
+      ringColor: "border-yellow-300",
+      glowColor: "rgba(253, 224, 71, 0.55)",
+      accentBg: "from-yellow-500/25 to-amber-500/15",
+      iconSvg: (isUnlocked, size = 44) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="50" cy="50" r="40" fill="#451a03" />
+          <polygon points="26,48 34,32 50,42 66,32 74,48 26,48" fill="#facc15" stroke="#fef08a" strokeWidth="2" />
+          <circle cx="34" cy="30" r="3" fill="#fef08a" />
+          <circle cx="50" cy="40" r="3" fill="#fef08a" />
+          <circle cx="66" cy="30" r="3" fill="#fef08a" />
+          <rect x="26" y="48" width="48" height="8" rx="2" fill="#ca8a04" />
+          <text x="32" y="74" fill="#fde047" fontSize="16" fontFamily="monospace" fontWeight="900">&lt;/&gt;</text>
+        </svg>
+      ),
+    },
+  ];
+
+  const achievements: AchievementItem[] = [
+    {
+      id: "wildfire",
+      name: "آتش‌افروز",
+      enTitle: "Wildfire",
+      desc: "رسیدن به استریک ۳۰ روز متوالی حل مستمر بدون وقفه.",
+      ruleDesc: "زنجیره یادگیری روزانه خود را ۳۰ روز پیاپی زنده نگه دارید.",
+      current: streak,
+      target: 30,
+      displayRecord: "30",
+      shieldGradient: "from-amber-600 via-orange-600 to-red-700",
+      glowColor: "rgba(234, 88, 12, 0.45)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <path d="M50 14 C54 28 66 36 66 50 C66 64 58 74 50 74 C42 74 34 64 34 50 C34 38 42 26 50 14 Z" fill="#ea580c" />
+          <path d="M50 34 C52 42 58 46 58 54 C58 62 54 68 50 68 C46 68 42 62 42 54 C42 46 46 40 50 34 Z" fill="#fde047" />
+          <rect x="26" y="72" width="48" height="12" rx="2" fill="#431407" stroke="#ea580c" strokeWidth="1.5" />
+          <circle cx="34" cy="78" r="2" fill="#fdba74" />
+          <circle cx="42" cy="78" r="2" fill="#fdba74" />
+          <circle cx="50" cy="78" r="2" fill="#fdba74" />
+          <circle cx="58" cy="78" r="2" fill="#fdba74" />
+          <circle cx="66" cy="78" r="2" fill="#fdba74" />
+        </svg>
+      ),
+    },
+    {
+      id: "bug_hunter",
+      name: "شکارچی باگ",
+      enTitle: "Bug Hunter",
+      desc: "حل موفقیت‌آمیز ۵۰ چالش در بخش دیباگ و اصلاح کدهای معیوب.",
+      ruleDesc: "۵۰ باگ و خطای لاجیک یا سینتکس را در مسیر حل کنید.",
+      current: Math.max(solvedMistakesCount, completedNodesCount * 2),
+      target: 50,
+      displayRecord: "50",
+      shieldGradient: "from-rose-600 via-red-600 to-rose-900",
+      glowColor: "rgba(225, 29, 72, 0.45)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <ellipse cx="46" cy="52" rx="14" ry="18" fill="#be123c" />
+          <circle cx="46" cy="30" r="8" fill="#881337" />
+          <line x1="32" y1="44" x2="20" y2="40" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <line x1="32" y1="54" x2="18" y2="54" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <line x1="32" y1="64" x2="20" y2="68" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <line x1="60" y1="44" x2="72" y2="40" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <line x1="60" y1="54" x2="74" y2="54" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <line x1="60" y1="64" x2="72" y2="68" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="56" cy="46" r="14" stroke="#38bdf8" strokeWidth="3.5" fill="none" />
+          <line x1="66" y1="56" x2="80" y2="70" stroke="#38bdf8" strokeWidth="4.5" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    {
+      id: "xp_legend",
+      name: "ژنرال XP",
+      enTitle: "XP Legend",
+      desc: "عبور مجموع امتیاز کل تجمیع‌شده از مرز ۱۲,۵۰۰ XP.",
+      ruleDesc: "با حل تمرین‌ها، کوئیزها و چالش‌ها به امتیاز کل ۱۲۵۰۰ برسید.",
+      current: totalXP,
+      target: 12500,
+      displayRecord: "12500",
+      shieldGradient: "from-amber-500 via-yellow-500 to-amber-700",
+      glowColor: "rgba(245, 158, 11, 0.5)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <polygon points="44,14 26,48 40,48 34,82 58,42 46,42 56,14" fill="#fbbf24" stroke="#fff" strokeWidth="1" />
+          <polygon points="62,22 48,50 60,50 54,78 74,44 64,44 72,22" fill="#f59e0b" />
+        </svg>
+      ),
+    },
+    {
+      id: "path_conqueror",
+      name: "فاتح مسیر",
+      enTitle: "Path Conqueror",
+      desc: "تکمیل کامل ۱۵ گره و فصل آموزشی در نقشه یادگیری باگی.",
+      ruleDesc: "۱۵ گره را با موفقیت حل کرده و به خط پایان فصل‌ها برسید.",
+      current: completedNodesCount,
+      target: 15,
+      displayRecord: "15",
+      shieldGradient: "from-blue-600 via-indigo-600 to-slate-900",
+      glowColor: "rgba(59, 130, 246, 0.45)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <polygon points="50,22 18,74 82,74" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="2" />
+          <polygon points="50,22 40,42 50,46 60,42" fill="#e0f2fe" />
+          <line x1="50" y1="22" x2="50" y2="8" stroke="#f1f5f9" strokeWidth="2.5" />
+          <polygon points="50,8 66,14 50,20" fill="#ef4444" />
+        </svg>
+      ),
+    },
+    {
+      id: "chest_collector",
+      name: "کلکسیونر صندوقچه",
+      enTitle: "Chest Collector",
+      desc: "باز کردن ۴۰ صندوقچه جایزه و پاداش در طول مسیرهای یادگیری.",
+      ruleDesc: "صندوقچه‌های موجود در مسیرها و پایان فصل‌ها را باز کنید (هدف: ۴۰).",
+      current: Math.min(40, completedNodesCount + 5),
+      target: 40,
+      displayRecord: "40",
+      shieldGradient: "from-purple-600 via-fuchsia-600 to-indigo-900",
+      glowColor: "rgba(168, 85, 247, 0.45)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <path d="M22 42 C22 34 34 30 50 30 C66 30 78 34 78 42 Z" fill="#ca8a04" stroke="#fef08a" strokeWidth="2" />
+          <rect x="22" y="42" width="56" height="32" rx="3" fill="#7e22ce" stroke="#fef08a" strokeWidth="2" />
+          <rect x="46" y="44" width="8" height="14" rx="2" fill="#facc15" />
+          <circle cx="50" cy="50" r="2" fill="#0f172a" />
+          <line x1="22" y1="52" x2="78" y2="52" stroke="#facc15" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      id: "network_star",
+      name: "محبوب شبکه",
+      enTitle: "Network Star",
+      desc: "رسیدن به ۱۰ دوست و هم‌مسیر در فالوورها و تعامل با کامیونیتی.",
+      ruleDesc: "با دیگر برنامه‌نویسان ارتباط بگیرید تا به ۱۰ فالوور فعال برسید.",
+      current: followersCount,
+      target: 10,
+      displayRecord: "10",
+      shieldGradient: "from-cyan-600 via-teal-600 to-slate-900",
+      glowColor: "rgba(20, 184, 166, 0.45)",
+      iconSvg: (isUnlocked, size = 36) => (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
+          <circle cx="34" cy="38" r="10" fill="#2dd4bf" />
+          <circle cx="66" cy="38" r="10" fill="#38bdf8" />
+          <path d="M22 64 C22 52 46 52 46 64" fill="#14b8a6" />
+          <path d="M54 64 C54 52 78 52 78 64" fill="#0284c7" />
+          <path d="M42 66 L50 72 L58 66" stroke="#fef08a" strokeWidth="3" strokeLinecap="round" fill="none" />
+        </svg>
+      ),
+    },
+  ];
+
+  const sortedBadges = [...specialBadges].sort((a, b) => {
+    const aUnlocked = a.current >= a.target ? 1 : 0;
+    const bUnlocked = b.current >= b.target ? 1 : 0;
+    return bUnlocked - aUnlocked;
+  });
+
+  const sortedAchievements = [...achievements].sort((a, b) => {
+    const aUnlocked = a.current >= a.target ? 1 : 0;
+    const bUnlocked = b.current >= b.target ? 1 : 0;
+    return bUnlocked - aUnlocked;
+  });
+
+  const previewBadges = sortedBadges.slice(0, 4);
+  const previewAchievements = sortedAchievements.slice(0, 4);
+
+  return (
+    <div className="w-full flex flex-col gap-6 select-none mt-2">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <Award className="w-4 h-4 text-amber-400" />
+            <span>نشان‌های افتخار</span>
+          </h2>
+
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playSoftClick();
+              setActiveModal("badges_all");
+            }}
+            className="inline-flex items-center gap-1 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer py-1 px-1.5"
+            title="مشاهده همه نشان‌ها"
+          >
+            <span>مشاهده همه</span>
+            <ChevronRight className="w-4 h-4 rotate-180" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2.5 sm:gap-4 justify-items-center">
+          {previewBadges.map((badge) => {
+            const isUnlocked = badge.current >= badge.target;
+            return (
+              <div
+                key={badge.id}
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setSelectedHonor({ type: "badge", item: badge });
+                }}
+                className="flex flex-col items-center gap-1.5 cursor-pointer group"
+                title={`${badge.name} • ${isUnlocked ? "کسب‌شده" : "در حال پیشرفت"}`}
+              >
+                <div
+                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full border-4 flex items-center justify-center relative transition-all group-hover:scale-105 ${
+                    isUnlocked
+                      ? `${badge.ringColor} bg-[#0b1426] shadow-lg`
+                      : "border-slate-800 bg-slate-950/80 opacity-70"
+                  }`}
+                  style={{
+                    boxShadow: isUnlocked ? `0 0 16px ${badge.glowColor}` : undefined,
+                  }}
+                >
+                  {badge.iconSvg(isUnlocked, 48)}
+                  {!isUnlocked && (
+                    <div className="absolute inset-0 rounded-full bg-slate-950/60 flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-slate-400" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-[11px] sm:text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[76px] text-center">
+                  {badge.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <Shield className="w-4 h-4 text-rose-400" />
+            <span>دستاوردها</span>
+          </h2>
+
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playSoftClick();
+              setActiveModal("achievements_all");
+            }}
+            className="inline-flex items-center gap-1 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer py-1 px-1.5"
+            title="مشاهده همه دستاوردها"
+          >
+            <span>مشاهده همه</span>
+            <ChevronRight className="w-4 h-4 rotate-180" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2.5 sm:gap-4 justify-items-center">
+          {previewAchievements.map((ach) => {
+            const isUnlocked = ach.current >= ach.target;
+            return (
+              <div
+                key={ach.id}
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setSelectedHonor({ type: "achievement", item: ach });
+                }}
+                className="flex flex-col items-center gap-1.5 cursor-pointer group"
+                title={`${ach.name} • ${isUnlocked ? "کسب‌شده" : "در حال پیشرفت"}`}
+              >
+                <div
+                  className={`w-[72px] h-[80px] sm:w-[76px] sm:h-[84px] relative flex flex-col items-center justify-between pt-2 pb-1 transition-all group-hover:scale-105 ${
+                    isUnlocked ? "opacity-100" : "opacity-65"
+                  }`}
+                >
+                  <svg
+                    viewBox="0 0 76 84"
+                    className="absolute inset-0 w-full h-full pointer-events-none drop-shadow-md"
+                  >
+                    <defs>
+                      <linearGradient id={`shield-grad-${ach.id}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={isUnlocked ? "#38bdf8" : "#334155"} stopOpacity="0.8" />
+                        <stop offset="100%" stopColor={isUnlocked ? "#0f172a" : "#020617"} stopOpacity="0.95" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M38 2 L72 12 C72 50 56 74 38 82 C20 74 4 50 4 12 Z"
+                      fill={`url(#shield-grad-${ach.id})`}
+                      stroke={isUnlocked ? "#38bdf8" : "#475569"}
+                      strokeWidth="2.5"
+                    />
+                  </svg>
+
+                  <div className="relative z-10 mt-1">
+                    {ach.iconSvg(isUnlocked, 36)}
+                  </div>
+
+                  <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1 drop-shadow">
+                    {ach.displayRecord}
+                  </span>
+
+                  {!isUnlocked && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <div className="w-5 h-5 rounded-full bg-slate-950/80 border border-slate-700 flex items-center justify-center">
+                        <Lock className="w-2.5 h-2.5 text-slate-400" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <span className="text-[11px] sm:text-xs font-bold text-slate-300 group-hover:text-white truncate max-w-[76px] text-center">
+                  {ach.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {activeModal && (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="w-full min-h-screen md:min-h-0 md:max-w-[640px] md:rounded-3xl md:border-2 md:border-b-4 md:border-slate-700 md:border-b-slate-800 bg-[#0f172a] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+              <div className="flex items-center gap-2">
+                {activeModal === "badges_all" ? (
+                  <Award className="w-5 h-5 text-amber-400" />
+                ) : (
+                  <Shield className="w-5 h-5 text-rose-400" />
+                )}
+                <h3 className="text-base sm:text-lg font-black text-white">
+                  {activeModal === "badges_all" ? "تمام نشان‌های افتخار (۶ نشان)" : "تمام دستاوردهای سیستم (۶ دستاورد)"}
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setActiveModal(null);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
+              {activeModal === "badges_all" ? (
+                specialBadges.map((badge) => {
+                  const isUnlocked = badge.current >= badge.target;
+                  const percent = Math.min(100, Math.round((badge.current / badge.target) * 100));
+
+                  return (
+                    <div
+                      key={badge.id}
+                      onClick={() => {
+                        soundEffects.playSoftClick();
+                        setSelectedHonor({ type: "badge", item: badge });
+                      }}
+                      className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
+                    >
+                      <div
+                        className={`w-14 h-14 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                          isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
+                        }`}
+                      >
+                        {badge.iconSvg(isUnlocked, 38)}
+                      </div>
+
+                      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm sm:text-base font-black text-white truncate">
+                            {badge.name}
+                          </span>
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                              isUnlocked
+                                ? "bg-emerald-950 text-emerald-400 border border-emerald-500/50"
+                                : "bg-slate-900 text-slate-400 border border-slate-700"
+                            }`}
+                          >
+                            {isUnlocked ? "✓ کسب‌شده" : "🔒 در حال پیشرفت"}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-400 font-medium line-clamp-1">
+                          {badge.desc}
+                        </p>
+
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <div className="flex-1 h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+                            <div
+                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-500"
+                              style={{ width: `${percent}%` }}
+                            />
+                          </div>
+                          <span className="text-[11px] font-mono font-bold text-slate-400 shrink-0">
+                            {badge.current} / {badge.target}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                achievements.map((ach) => {
+                  const isUnlocked = ach.current >= ach.target;
+                  const percent = Math.min(100, Math.round((ach.current / ach.target) * 100));
+
+                  return (
+                    <div
+                      key={ach.id}
+                      onClick={() => {
+                        soundEffects.playSoftClick();
+                        setSelectedHonor({ type: "achievement", item: ach });
+                      }}
+                      className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+                        {ach.iconSvg(isUnlocked, 36)}
+                      </div>
+
+                      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 truncate">
+                            <span className="text-sm sm:text-base font-black text-white truncate">
+                              {ach.name}
+                            </span>
+                            <span className="text-xs font-mono font-bold text-amber-400">
+                              (هدف: {ach.displayRecord})
+                            </span>
+                          </div>
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                              isUnlocked
+                                ? "bg-emerald-950 text-emerald-400 border border-emerald-500/50"
+                                : "bg-slate-900 text-slate-400 border border-slate-700"
+                            }`}
+                          >
+                            {isUnlocked ? "✓ کسب‌شده" : "🔒 در حال پیشرفت"}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-400 font-medium line-clamp-1">
+                          {ach.desc}
+                        </p>
+
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <div className="flex-1 h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+                            <div
+                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-500"
+                              style={{ width: `${percent}%` }}
+                            />
+                          </div>
+                          <span className="text-[11px] font-mono font-bold text-slate-400 shrink-0">
+                            {ach.current.toLocaleString()} / {ach.target.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedHonor && (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedHonor(null)}
+        >
+          <div
+            className="w-full min-h-screen md:min-h-0 md:max-w-md md:rounded-[28px] md:border-2 md:border-b-4 md:border-slate-700 md:border-b-slate-800 bg-[#0f172a] flex flex-col overflow-hidden shadow-2xl p-6 sm:p-7 relative animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playSoftClick();
+                setSelectedHonor(null);
+              }}
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer z-10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center text-center mt-4">
+              <div
+                className="w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800 flex items-center justify-center relative shadow-2xl mb-5"
+                style={{
+                  boxShadow: `0 0 50px ${selectedHonor.item.glowColor}`,
+                }}
+              >
+                {selectedHonor.item.iconSvg(
+                  selectedHonor.item.current >= selectedHonor.item.target,
+                  100
+                )}
+              </div>
+
+              <h3 className="text-2xl font-black text-white leading-tight mb-2">
+                {selectedHonor.item.name}
+              </h3>
+
+              <div className="mb-4">
+                {selectedHonor.item.current >= selectedHonor.item.target ? (
+                  <span className="h-7 px-3.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/50 text-xs font-black inline-flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>✓ کسب‌شده</span>
+                  </span>
+                ) : (
+                  <span className="h-7 px-3.5 rounded-full bg-amber-950/70 text-amber-400 border border-amber-500/50 text-xs font-black inline-flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>🔒 در حال پیشرفت</span>
+                  </span>
+                )}
+              </div>
+
+              <p className="text-sm text-slate-300 leading-relaxed font-medium px-2 mb-6 text-center">
+                {selectedHonor.item.ruleDesc}
+              </p>
+
+              <div className="w-full p-4 rounded-2xl bg-[#091122] border border-slate-800 flex flex-col gap-2.5 mb-6">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+                  <span>میزان پیشرفت شما:</span>
+                  <span className="font-mono text-amber-400 font-black">
+                    {selectedHonor.item.current.toLocaleString()} از {selectedHonor.item.target.toLocaleString()}
+                  </span>
+                </div>
+
+                <div className="w-full h-3 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        Math.round((selectedHonor.item.current / selectedHonor.item.target) * 100)
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setSelectedHonor(null);
+                }}
+                className="w-full h-12 rounded-2xl bg-cyan-600 hover:bg-cyan-500 active:translate-y-1 active:border-b-2 border-2 border-b-4 border-cyan-400 border-b-cyan-800 text-white font-black text-sm transition-all cursor-pointer shadow-lg shadow-cyan-950/50"
+              >
+                بستن و ادامه
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
