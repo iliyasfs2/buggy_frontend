@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import {
   ArrowLeft,
   Calendar,
@@ -437,28 +436,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               {loading ? (
                 <div className="w-full h-[50px] bg-slate-800/60 rounded-2xl animate-pulse" />
               ) : isMe ? (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/settings"
-                    onClick={() => soundEffects.playSoftClick()}
-                    className="flex-1 h-[50px] px-5 rounded-2xl bg-[#132342] hover:bg-[#192d54] border-2 border-b-4 border-slate-700 border-b-slate-800 text-slate-100 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md"
-                  >
-                    <span>⚙️</span>
-                    <span>Account Settings</span>
-                  </Link>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setIsSearchOpen((prev) => !prev);
-                    }}
-                    className="h-[50px] px-4 rounded-2xl bg-[#0f243c] hover:bg-[#15304f] border-2 border-b-4 border-cyan-500/40 border-b-cyan-900 text-cyan-300 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md cursor-pointer shrink-0"
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    <span className="hidden sm:inline">Find Friends</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playSoftClick();
+                    setIsSearchOpen((prev) => !prev);
+                  }}
+                  className="w-full h-[50px] px-5 rounded-2xl bg-[#0f243c] hover:bg-[#15304f] border-2 border-b-4 border-slate-700 border-b-slate-800 text-cyan-300 font-bold text-sm inline-flex items-center justify-center gap-2 transition-all active:translate-y-0.5 shadow-md cursor-pointer"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Find Friends</span>
+                </button>
               ) : (
                 <button
                   type="button"
