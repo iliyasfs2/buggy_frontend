@@ -33,9 +33,10 @@ export interface ProfileViewProps {
   username?: string;
   isOwnProfile?: boolean;
   is_me?: boolean;
+  from?: string;
 }
 
-export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps) {
+export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileViewProps) {
   const router = useRouter();
   const { user: currentUser, updateAvatar } = useAuthStore();
   const streakCount = useGameStore((s) => s.streakCount);
@@ -47,6 +48,7 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
   const [following, setFollowing] = useState<UserConnectionItem[]>([]);
   const [activeTab, setActiveTab] = useState<"following" | "followers">("following");
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDevCardOpen, setIsDevCardOpen] = useState(false);
@@ -75,6 +77,7 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setNotFound(false);
 
     Promise.all([
       fetchUserProfileApi(targetIdentifier),
@@ -97,22 +100,29 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
           targetIdentifier.toLowerCase() === "current" ||
           Boolean(currentUser?.username && targetIdentifier.toLowerCase() === currentUser.username.toLowerCase());
 
+        if (!selfCheck) {
+          setProfile(null);
+          setFollowers([]);
+          setFollowing([]);
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
         setProfile({
-          id: targetIdentifier,
-          username: selfCheck ? (currentUser?.username || "You") : targetIdentifier,
-          avatar_config: selfCheck
-            ? (currentUser?.avatar_config || currentUser?.avatar || DEFAULT_AVATAR_CONFIG)
-            : DEFAULT_AVATAR_CONFIG,
-          joined_at: currentUser?.created_at ? currentUser.created_at.slice(0, 10) : "2026-10-01",
-          streak: selfCheck ? streakCount : 0,
-          total_xp: selfCheck ? totalXP : 0,
-          season_xp: selfCheck ? seasonXpStore : 0,
-          current_rank: 1,
-          rank_title: "Senior",
+          id: "current",
+          username: currentUser?.username || "You",
+          avatar_config: currentUser?.avatar_config || currentUser?.avatar || DEFAULT_AVATAR_CONFIG,
+          joined_at: currentUser?.created_at ? currentUser.created_at.slice(0, 10) : "",
+          streak: streakCount,
+          total_xp: totalXP,
+          season_xp: seasonXpStore,
+          current_rank: 0,
+          rank_title: null,
           followers_count: 0,
           following_count: 0,
           is_following: false,
-          is_me: selfCheck,
+          is_me: true,
         });
         setLoading(false);
       });
@@ -187,12 +197,31 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
     setIsEditModalOpen(false);
   };
 
+  const cameFromLeaderboard = from === "leaderboard";
+
   const handleBack = () => {
     soundEffects.playSoftClick();
-    router.push("/leaderboard");
+    if (cameFromLeaderboard) {
+      router.push("/leaderboard");
+      return;
+    }
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+      return;
+    }
+    router.push("/profile");
   };
 
-  const currentRank = profile?.current_rank ?? 20;
+  const openUserProfile = (name: string, connectionId?: string) => {
+    soundEffects.playSoftClick();
+    const isSelf =
+      (currentUser?.username && name.toLowerCase() === currentUser.username.toLowerCase()) ||
+      (currentUser?.id !== undefined && connectionId === `user_${currentUser.id}`);
+    router.push(isSelf ? "/profile" : `/profile/${encodeURIComponent(name)}`);
+  };
+
+  const currentRank = profile?.current_rank ?? 0;
+  const hasRank = currentRank > 0;
   const effectiveXp = profile?.total_xp ?? (isMe ? totalXP : 0);
   const effectiveStreak = profile?.streak ?? (isMe ? streakCount : 0);
   const effectiveSeasonXp = profile?.season_xp ?? (isMe ? seasonXpStore : 0);
@@ -202,15 +231,12 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
       ? currentUser?.avatar_config || currentUser?.avatar || profile?.avatar_config
       : profile?.avatar_config) || DEFAULT_AVATAR_CONFIG;
 
-  const coderLevel = useMemo<"Senior" | "Mid-Level" | "Junior">(() => {
-    if (profile?.rank_title === "Senior" || currentRank === 1 || effectiveXp >= 3000) {
-      return "Senior";
+  const coderLevel = useMemo<"Senior" | "Mid-Level" | "Junior" | null>(() => {
+    if (profile?.rank_title === "Senior" || profile?.rank_title === "Mid-Level" || profile?.rank_title === "Junior") {
+      return profile.rank_title;
     }
-    if (profile?.rank_title === "Mid-Level" || currentRank === 2 || effectiveXp >= 1000) {
-      return "Mid-Level";
-    }
-    return "Junior";
-  }, [profile?.rank_title, currentRank, effectiveXp]);
+    return null;
+  }, [profile?.rank_title]);
 
   const coderBadgeStyle = useMemo(() => {
     if (coderLevel === "Senior") {
@@ -224,7 +250,7 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
 
   const formattedJoinedDate = useMemo(() => {
     const rawDate = profile?.joined_at || (isMe ? currentUser?.created_at : null);
-    if (!rawDate) return "Joined Oct 2026";
+    if (!rawDate) return null;
     try {
       const d = new Date(rawDate);
       if (isNaN(d.getTime())) return `Joined ${rawDate}`;
@@ -239,8 +265,8 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
     : profile?.username || targetIdentifier;
   const profileHandle = profileDisplayName.toLowerCase().replace(/\s+/g, "_");
 
-  const followingCount = profile?.following_count ?? following.length;
-  const followersCount = profile?.followers_count ?? followers.length;
+  const followingCount = following.length;
+  const followersCount = followers.length;
 
   const filteredSearchUsers = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -269,9 +295,19 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
           className="inline-flex items-center gap-2 text-slate-400 hover:text-white font-black text-sm transition-colors py-1.5 mb-4 cursor-pointer w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Leaderboard</span>
+          <span>{cameFromLeaderboard ? "Back to Leaderboard" : "Back"}</span>
         </button>
       )}
+
+      {notFound && !loading ? (
+        <div className="w-full max-w-md mx-auto mt-16 p-8 rounded-[24px] border-2 border-b-4 border-[#172a4f] border-b-[#091224] bg-[#0d182e]/90 text-center">
+          <div className="text-4xl mb-3">🔍</div>
+          <h2 className="text-lg font-black text-white">User not found</h2>
+          <p className="mt-2 text-sm font-bold text-slate-400">
+            No coder with the username @{targetIdentifier} exists.
+          </p>
+        </div>
+      ) : (
 
       <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
         <div className="w-full lg:w-[600px] lg:max-w-[60%] flex flex-col shrink-0">
@@ -344,24 +380,28 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
                   {profileDisplayName}
                 </h1>
 
-                <span
-                  className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
-                >
-                  <span>
-                    {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                {coderLevel && (
+                  <span
+                    className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
+                  >
+                    <span>
+                      {coderLevel === "Senior" ? "👑" : coderLevel === "Mid-Level" ? "🥈" : "🥉"}
+                    </span>
+                    <span>{coderLevel}</span>
                   </span>
-                  <span>{coderLevel}</span>
-                </span>
+                )}
               </div>
 
               <span className="text-sm font-bold text-slate-400 mt-1 text-left">
                 @{profileHandle}
               </span>
 
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-2">
-                <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                <span>{formattedJoinedDate}</span>
-              </div>
+              {formattedJoinedDate && (
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-2">
+                  <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>{formattedJoinedDate}</span>
+                </div>
+              )}
 
               <div className="flex items-center gap-3 mt-3">
                 <button
@@ -490,9 +530,8 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
                       <div
                         key={u.id}
                         onClick={() => {
-                          soundEffects.playSoftClick();
                           setIsSearchOpen(false);
-                          router.push(`/profile/${encodeURIComponent(u.username)}`);
+                          openUserProfile(u.username, u.id);
                         }}
                         className="flex items-center justify-between p-2.5 rounded-xl bg-[#0b1324] border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
                       >
@@ -556,7 +595,7 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
                 </div>
                 <div className="min-w-0 flex flex-col">
                   <span className="text-[20px] font-black text-white leading-tight truncate">
-                    Rank #{currentRank}
+                    {hasRank ? `Rank #${currentRank}` : "Unranked"}
                   </span>
                   <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
                     Current Compile Season
@@ -623,17 +662,14 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
               {activeConnections.length === 0 ? (
                 <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-2">
                   <span className="text-sm font-bold text-slate-500">
-                    No {activeTab} yet.
+                    {loading ? "Loading..." : activeTab === "following" ? "Not following anyone yet." : "No followers yet."}
                   </span>
                 </div>
               ) : (
                 activeConnections.map((item) => (
                   <div
                     key={item.id}
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      router.push(`/profile/${encodeURIComponent(item.username)}`);
-                    }}
+                    onClick={() => openUserProfile(item.username, item.id)}
                     className="h-16 p-4 flex items-center justify-between hover:bg-slate-800/40 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -661,6 +697,8 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
         </div>
       </div>
 
+      )}
+
       {isDevCardOpen && (
         <div
           className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-200"
@@ -671,9 +709,9 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528]/90">
-              <div className="h-7 px-3 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold inline-flex items-center gap-1.5">
-                <span>🟢</span>
-                <span>Open to Work &amp; Projects</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🪪</span>
+                <span className="text-sm font-black text-white">Dev Card</span>
               </div>
 
               <button
@@ -690,17 +728,17 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-6">
-              <div>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
-                    <AvatarRenderer config={effectiveAvatar} size={66} />
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
+                  <AvatarRenderer config={effectiveAvatar} size={66} />
+                </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <h3 className="text-[22px] sm:text-[24px] font-black text-white leading-tight truncate">
-                        {profileDisplayName}
-                      </h3>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h3 className="text-[22px] sm:text-[24px] font-black text-white leading-tight truncate">
+                      {profileDisplayName}
+                    </h3>
+                    {coderLevel && (
                       <span
                         className={`h-6 px-2.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${coderBadgeStyle}`}
                       >
@@ -709,201 +747,61 @@ export function ProfileView({ username, isOwnProfile, is_me }: ProfileViewProps)
                         </span>
                         <span>{coderLevel}</span>
                       </span>
-                    </div>
-
-                    <div className="text-[15px] font-bold text-cyan-400 mt-1">
-                      {coderLevel} Full-Stack Developer &amp; Debugger
-                    </div>
-
-                    <div className="text-xs font-bold text-slate-400 mt-0.5">
-                      @{profileHandle} • Season Rank #{currentRank}
-                    </div>
+                    )}
                   </div>
-                </div>
 
-                <p className="mt-4 text-sm text-slate-300 font-medium leading-relaxed">
-                  Passionate software engineer focused on building scalable modern web applications,
-                  hunting down complex runtime bugs, and mastering algorithmic problem-solving through
-                  daily hands-on coding challenges in Buggy.
+                  <div className="text-xs font-bold text-slate-400 mt-1">
+                    @{profileHandle}
+                    {hasRank ? ` • Season Rank #${currentRank}` : ""}
+                  </div>
+                  {formattedJoinedDate && (
+                    <div className="text-xs font-bold text-slate-500 mt-0.5">{formattedJoinedDate}</div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-base font-bold text-white mb-3">About</h4>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                  {isMe ? "You haven't added a bio yet." : "This coder hasn't added a bio yet."}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-                  <span>Verified Skills in Buggy</span>
-                </h4>
-
+                <h4 className="text-base font-bold text-white mb-3">Verified Stats in Buggy</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white">JavaScript (ES6+)</span>
-                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
-                        ✓
-                      </span>
-                    </div>
-                    <span className="text-sm font-black text-amber-400">
-                      {Math.min(98, Math.max(65, 70 + Math.floor(effectiveXp / 200)))}%
-                    </span>
+                    <span className="text-sm font-bold text-white">Total XP</span>
+                    <span className="text-sm font-black text-amber-400">{effectiveXp.toLocaleString()}</span>
                   </div>
-
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white">Python &amp; Logic</span>
-                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
-                        ✓
-                      </span>
-                    </div>
-                    <span className="text-sm font-black text-amber-400">
-                      {Math.min(95, Math.max(55, 60 + Math.floor(effectiveXp / 250)))}%
-                    </span>
+                    <span className="text-sm font-bold text-white">Day Streak</span>
+                    <span className="text-sm font-black text-amber-400">{effectiveStreak}</span>
                   </div>
-
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white">Bug Hunting</span>
-                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
-                        ✓
-                      </span>
-                    </div>
-                    <span className="text-sm font-black text-amber-400">Advanced</span>
+                    <span className="text-sm font-bold text-white">Season Rank</span>
+                    <span className="text-sm font-black text-amber-400">{hasRank ? `#${currentRank}` : "—"}</span>
                   </div>
-
                   <div className="h-[44px] px-3.5 rounded-xl bg-[#091224] border border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white">TypeScript</span>
-                      <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black inline-flex items-center justify-center">
-                        ✓
-                      </span>
-                    </div>
-                    <span className="text-sm font-black text-amber-400">84%</span>
+                    <span className="text-sm font-bold text-white">XP This Week</span>
+                    <span className="text-sm font-black text-amber-400">{effectiveSeasonXp.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h4 className="text-base font-bold text-white mb-3">
-                  Tech Stack &amp; Specialized Skills
-                </h4>
-
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    "React",
-                    "Next.js",
-                    "TypeScript",
-                    "JavaScript",
-                    "FastAPI",
-                    "Tailwind CSS",
-                    "Node.js",
-                    "Git & GitHub",
-                    "REST APIs",
-                  ].map((tech) => (
-                    <span
-                      key={tech}
-                      className="h-8 px-3 rounded-full bg-[#132342] border border-[#243f73] text-slate-200 text-[13px] font-bold inline-flex items-center"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                <h4 className="text-base font-bold text-white mb-3">Tech Stack &amp; Specialized Skills</h4>
+                <p className="text-sm text-slate-500 font-medium">No tech stack added yet.</p>
               </div>
 
               <div>
-                <h4 className="text-base font-bold text-white mb-3">
-                  Featured Projects &amp; Portfolio
-                </h4>
-
-                <div className="flex flex-col gap-3">
-                  <div className="min-h-[80px] p-3.5 rounded-2xl bg-[#091224] border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[15px] font-bold text-white truncate">
-                        Buggy Interactive Code Sandbox
-                      </div>
-                      <div className="text-xs font-bold text-slate-400 mt-1 line-clamp-1">
-                        Gamified debugging challenges, real-time AST execution, and streak tracking.
-                      </div>
-                    </div>
-
-                    <a
-                      href="https://github.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => soundEffects.playSoftClick()}
-                      className="h-8 px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border border-[#26447d] text-cyan-400 text-xs font-bold inline-flex items-center gap-1 shrink-0 transition-colors"
-                    >
-                      <span>View Link</span>
-                      <span>↗</span>
-                    </a>
-                  </div>
-
-                  <div className="min-h-[80px] p-3.5 rounded-2xl bg-[#091224] border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[15px] font-bold text-white truncate">
-                        Full-Stack Algorithm Visualizer
-                      </div>
-                      <div className="text-xs font-bold text-slate-400 mt-1 line-clamp-1">
-                        Interactive step-by-step visualization of graph, sorting, and dynamic programming.
-                      </div>
-                    </div>
-
-                    <a
-                      href="https://github.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => soundEffects.playSoftClick()}
-                      className="h-8 px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border border-[#26447d] text-cyan-400 text-xs font-bold inline-flex items-center gap-1 shrink-0 transition-colors"
-                    >
-                      <span>View Link</span>
-                      <span>↗</span>
-                    </a>
-                  </div>
-                </div>
+                <h4 className="text-base font-bold text-white mb-3">Featured Projects &amp; Portfolio</h4>
+                <p className="text-sm text-slate-500 font-medium">No projects added yet.</p>
               </div>
             </div>
 
-            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528]/95 shrink-0 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <a
-                href={`https://github.com/${profileHandle}`}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => soundEffects.playSoftClick()}
-                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-white text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
-              >
-                <span>GitHub</span>
-                <span>↗</span>
-              </a>
-
-              <a
-                href={`https://linkedin.com/in/${profileHandle}`}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => soundEffects.playSoftClick()}
-                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-cyan-300 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
-              >
-                <span>LinkedIn</span>
-                <span>↗</span>
-              </a>
-
-              <a
-                href={`https://${profileHandle}.dev`}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => soundEffects.playSoftClick()}
-                className="h-[44px] px-3 rounded-xl bg-[#132342] hover:bg-[#1a2f59] border-2 border-b-4 border-[#233b69] border-b-[#081121] text-amber-300 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
-              >
-                <span>Website</span>
-                <span>↗</span>
-              </a>
-
-              <a
-                href={`https://t.me/${profileHandle}`}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => soundEffects.playSoftClick()}
-                className="h-[44px] px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 border-2 border-b-4 border-cyan-300 border-b-cyan-700 text-slate-950 text-sm font-bold inline-flex items-center justify-center gap-1.5 transition-all active:translate-y-0.5"
-              >
-                <span>Telegram</span>
-                <span>↗</span>
-              </a>
+            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528]/95 shrink-0">
+              <p className="text-sm text-slate-500 font-bold text-center">No contact links added yet.</p>
             </div>
           </div>
         </div>

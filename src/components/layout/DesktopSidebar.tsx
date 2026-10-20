@@ -38,12 +38,8 @@ export function DesktopSidebar({
 
         <nav className="flex flex-col gap-1.5" aria-label="Main menu">
           {NAVIGATION_ITEMS.map((item) => {
-            const isLeaderboardActive =
-              pathname.startsWith("/leaderboard") ||
-              (pathname.startsWith("/profile/") && pathname !== "/profile");
-            const isProfileActive =
-              pathname === "/profile" ||
-              pathname === "/profile/avatar";
+            const isLeaderboardActive = pathname.startsWith("/leaderboard");
+            const isProfileActive = pathname.startsWith("/profile");
 
             const isActive =
               (pathname === "/store" && item.id === "store") ||

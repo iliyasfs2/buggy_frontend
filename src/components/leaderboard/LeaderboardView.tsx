@@ -14,219 +14,6 @@ import {
   type LeaderboardUserEntry,
 } from "@/services/progressApi";
 
-const FALLBACK_USERS: LeaderboardUserEntry[] = [
-  {
-    rank: 1,
-    id: "peer_1",
-    username: "Alex Rivera",
-    coder_title: "Algorithm Architect",
-    season_xp: 840,
-    streak: 14,
-    is_current_user: false,
-    avatar_config: {
-      skin_color: "#FCD34D",
-      hair_style: "short_wavy",
-      hair_color: "#1E293B",
-      eye_style: "round",
-      expression: "happy",
-      accessory: "yellow_glasses",
-      shirt_color: "#0284C7",
-      bg_color: "#0F172A",
-    },
-  },
-  {
-    rank: 2,
-    id: "peer_2",
-    username: "Sarah Chen",
-    coder_title: "Code Virtuoso",
-    season_xp: 720,
-    streak: 11,
-    is_current_user: false,
-    avatar_config: {
-      skin_color: "#FBBF24",
-      hair_style: "long_straight",
-      hair_color: "#0F172A",
-      eye_style: "cat",
-      expression: "confident",
-      accessory: "headband",
-      shirt_color: "#8B5CF6",
-      bg_color: "#18181B",
-    },
-  },
-  {
-    rank: 3,
-    id: "peer_3",
-    username: "Marcus Vance",
-    coder_title: "Bug Slayer",
-    season_xp: 610,
-    streak: 9,
-    is_current_user: false,
-    avatar_config: {
-      skin_color: "#FDE68A",
-      hair_style: "buzz",
-      hair_color: "#78350F",
-      eye_style: "focused",
-      expression: "smirk",
-      accessory: "none",
-      shirt_color: "#EF4444",
-      bg_color: "#111827",
-    },
-  },
-  {
-    rank: 4,
-    id: "peer_4",
-    username: "Elena Rostova",
-    coder_title: "Fullstack Ninja",
-    season_xp: 490,
-    streak: 8,
-    is_current_user: false,
-  },
-  {
-    rank: 5,
-    id: "peer_5",
-    username: "David Kim",
-    coder_title: "Fullstack Ninja",
-    season_xp: 410,
-    streak: 7,
-    is_current_user: false,
-  },
-  {
-    rank: 6,
-    id: "peer_6",
-    username: "Maya Patel",
-    coder_title: "Logic Maestro",
-    season_xp: 360,
-    streak: 6,
-    is_current_user: false,
-  },
-  {
-    rank: 7,
-    id: "peer_7",
-    username: "Liam O'Connor",
-    coder_title: "Logic Maestro",
-    season_xp: 320,
-    streak: 5,
-    is_current_user: false,
-  },
-  {
-    rank: 8,
-    id: "peer_8",
-    username: "Sofia Gomez",
-    coder_title: "Logic Maestro",
-    season_xp: 280,
-    streak: 5,
-    is_current_user: false,
-  },
-  {
-    rank: 9,
-    id: "current",
-    username: "You",
-    coder_title: "Logic Maestro",
-    season_xp: 265,
-    streak: 3,
-    is_current_user: true,
-  },
-  {
-    rank: 10,
-    id: "peer_9",
-    username: "Kenji Sato",
-    coder_title: "Logic Maestro",
-    season_xp: 250,
-    streak: 4,
-    is_current_user: false,
-  },
-  {
-    rank: 11,
-    id: "peer_10",
-    username: "Amina Diallo",
-    coder_title: "Syntax Sorcerer",
-    season_xp: 220,
-    streak: 4,
-    is_current_user: false,
-  },
-  {
-    rank: 12,
-    id: "peer_11",
-    username: "Lucas Meyer",
-    coder_title: "Syntax Sorcerer",
-    season_xp: 200,
-    streak: 3,
-    is_current_user: false,
-  },
-  {
-    rank: 13,
-    id: "peer_12",
-    username: "Chloe Martin",
-    coder_title: "Syntax Sorcerer",
-    season_xp: 180,
-    streak: 3,
-    is_current_user: false,
-  },
-  {
-    rank: 14,
-    id: "peer_13",
-    username: "Omar Farooq",
-    coder_title: "Syntax Sorcerer",
-    season_xp: 160,
-    streak: 3,
-    is_current_user: false,
-  },
-  {
-    rank: 15,
-    id: "peer_14",
-    username: "Zoe Bennett",
-    coder_title: "Syntax Sorcerer",
-    season_xp: 140,
-    streak: 2,
-    is_current_user: false,
-  },
-  {
-    rank: 16,
-    id: "peer_15",
-    username: "Vikram Singh",
-    coder_title: "Async Wizard",
-    season_xp: 130,
-    streak: 2,
-    is_current_user: false,
-  },
-  {
-    rank: 17,
-    id: "peer_16",
-    username: "Emma Watson",
-    coder_title: "Async Wizard",
-    season_xp: 120,
-    streak: 2,
-    is_current_user: false,
-  },
-  {
-    rank: 18,
-    id: "peer_17",
-    username: "Nils Lindholm",
-    coder_title: "Async Wizard",
-    season_xp: 110,
-    streak: 2,
-    is_current_user: false,
-  },
-  {
-    rank: 19,
-    id: "peer_18",
-    username: "Tanya Sharma",
-    coder_title: "Async Wizard",
-    season_xp: 100,
-    streak: 1,
-    is_current_user: false,
-  },
-  {
-    rank: 20,
-    id: "peer_19",
-    username: "Gabriel Silva",
-    coder_title: "Async Wizard",
-    season_xp: 90,
-    streak: 1,
-    is_current_user: false,
-  },
-];
-
 function getCountdownParts(seconds: number): { days: string; hours: string; minutes: string } {
   const safe = Math.max(0, seconds);
   const days = Math.floor(safe / 86400);
@@ -240,17 +27,22 @@ export function LeaderboardView() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [data, setData] = useState<LeaderboardResponse | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState<number>(6 * 86400 + 12 * 3600);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
 
   const loadData = async () => {
     try {
       const res = await fetchLeaderboardApi();
       setData(res);
+      setLoadError(false);
       if (res.season?.seconds_left !== undefined) {
         setSecondsLeft(res.season.seconds_left);
       }
     } catch {
-      setData(null);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -270,8 +62,7 @@ export function LeaderboardView() {
   const { days: countdownDays, hours: countdownHours, minutes: countdownMinutes } = getCountdownParts(secondsLeft);
 
   const top20List = useMemo(() => {
-    const list = data?.leaderboard && data.leaderboard.length > 0 ? data.leaderboard : FALLBACK_USERS;
-    return list.slice(0, 20);
+    return (data?.leaderboard ?? []).slice(0, 20);
   }, [data]);
 
   const isUserInTop20 = useMemo(() => {
@@ -308,7 +99,7 @@ export function LeaderboardView() {
         key={item.id}
         onClick={() => {
           soundEffects.playSoftClick();
-          router.push(`/profile/${encodeURIComponent(displayName)}`);
+          router.push(item.is_current_user ? "/profile" : `/profile/${encodeURIComponent(displayName)}?from=leaderboard`);
         }}
         className={`flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl border-2 border-b-4 transition-all duration-150 cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
           item.is_current_user
@@ -420,6 +211,20 @@ export function LeaderboardView() {
         </div>
 
         <div className="w-full flex flex-col gap-2.5 pt-4 pb-8">
+          {loading && top20List.length === 0 &&
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={`sk-${i}`} className="h-[60px] sm:h-[72px] rounded-2xl border-2 border-b-4 border-slate-800 bg-slate-900/50 animate-pulse" />
+            ))}
+          {!loading && loadError && top20List.length === 0 && (
+            <div className="py-10 text-center text-sm font-bold text-slate-400">
+              Could not load the leaderboard. Please try again.
+            </div>
+          )}
+          {!loading && !loadError && top20List.length === 0 && (
+            <div className="py-10 text-center text-sm font-bold text-slate-400">
+              No coders on the leaderboard yet.
+            </div>
+          )}
           {top20List.map(renderRow)}
           {outsideUserEntry && (
             <>
