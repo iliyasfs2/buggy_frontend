@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Volume2,
   VolumeX,
-  Flame,
   Trophy,
   LogOut,
   Check,
@@ -490,8 +489,8 @@ export function SettingsView() {
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3.5 min-w-0">
-          <div className="w-11 h-11 rounded-2xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
-            <Flame className="w-5 h-5 fill-orange-400" />
+          <div className="w-11 h-11 rounded-2xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+            <img src="/icons/streak.png" alt="Streak" className="w-6 h-6 object-contain" />
           </div>
           <span className="text-base font-black text-slate-100 truncate">
             Daily Streak Reminder

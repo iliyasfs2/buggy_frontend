@@ -594,54 +594,58 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             </div>
 
             <div className="mt-7">
-              <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-3">
+              <h2 className="text-sm sm:text-base font-black text-slate-300 uppercase tracking-wider mb-3.5">
                 Overview
               </h2>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80">
-                <div className="flex items-center gap-3.5 p-1">
-                  <span className="text-2xl sm:text-3xl select-none shrink-0">🔥</span>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
+                  <img
+                    src="/icons/streak.png"
+                    alt="Streak"
+                    className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
+                  />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {effectiveStreak} days
                     </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
                       Active Streak
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3.5 p-1">
+                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
                   <span className="text-2xl sm:text-3xl select-none shrink-0">💻</span>
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {completedNodesCount || 66}
                     </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
                       Lessons Finished
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3.5 p-1">
+                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
                   <span className="text-2xl sm:text-3xl select-none shrink-0">🏆</span>
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {hasRank ? `Rank #${currentRank}` : coderLevel || "Senior"}
                     </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
                       Season Standing
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3.5 p-1">
+                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
                   <span className="text-2xl sm:text-3xl select-none shrink-0">⚡</span>
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-base sm:text-lg font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
                       {effectiveXp.toLocaleString()} XP
                     </span>
-                    <span className="text-xs font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
                       Total XP
                     </span>
                   </div>
@@ -677,8 +681,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   >
                     <div className="relative w-14 h-14 rounded-full bg-slate-950 border-2 border-slate-700 group-hover:border-cyan-400 overflow-hidden transition-all flex items-center justify-center shadow-md">
                       <AvatarRenderer config={f.avatar_config || DEFAULT_AVATAR_CONFIG} size={48} />
-                      <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-700 text-[10px] font-black text-rose-400 flex items-center gap-0.5 shadow">
-                        <span>🔥</span>
+                      <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-700 text-[10px] font-black text-rose-400 flex items-center gap-1 shadow">
+                        <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain shrink-0" />
                         <span>{f.streak || 1}</span>
                       </div>
                     </div>

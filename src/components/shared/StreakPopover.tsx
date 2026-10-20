@@ -64,7 +64,7 @@ export function StreakPopover({
               </h3>
               <p className="text-[13px] font-medium text-slate-400">
                 {hasCompletedToday 
-                  ? "Today's streak is secured! 🔥" 
+                  ? "Today's streak is secured!" 
                   : "Complete a lesson today to keep your streak alive!"}
               </p>
             </div>

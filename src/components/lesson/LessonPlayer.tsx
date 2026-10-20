@@ -24,7 +24,6 @@ import {
   X,
   CheckCircle2,
   Zap,
-  Flame,
   Sparkles,
   ShieldCheck,
   Clock,
@@ -86,17 +85,19 @@ function AnimatedStreakCard({
           STREAK
         </span>
         {increased && (
-          <span className="text-[9px] font-black text-amber-400 bg-amber-500/20 px-1 rounded border border-amber-500/40">
-            +1 🔥
+          <span className="text-[9px] font-black text-amber-400 bg-amber-500/20 px-1 rounded border border-amber-500/40 inline-flex items-center gap-0.5">
+            +1 <img src="/icons/streak.png" alt="Streak" className="w-2.5 h-2.5 object-contain" />
           </span>
         )}
       </div>
       <div className="flex items-center gap-1.5 transition-all duration-500">
-        <Flame
-          className={`w-5 h-5 transition-all duration-500 ${
+        <img
+          src="/icons/streak.png"
+          alt="Streak"
+          className={`w-5 h-5 object-contain transition-all duration-500 ${
             streak > 0
-              ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_14px_rgba(249,115,22,0.8)]"
-              : "text-slate-400 fill-slate-400 grayscale opacity-40"
+              ? "drop-shadow-[0_0_14px_rgba(249,115,22,0.8)]"
+              : "grayscale opacity-40"
           }`}
         />
         <span className="text-xl font-black font-mono text-orange-400">
@@ -536,9 +537,9 @@ export function LessonPlayer({
                 <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-orange-500/20 via-amber-500/10 to-transparent pointer-events-none" />
 
                 <div className="w-24 h-24 rounded-3xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center relative shadow-inner">
-                  <Flame className="w-14 h-14 text-orange-400 fill-orange-400 drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300">
-                    +1 🔥
+                  <img src="/icons/streak.png" alt="Streak" className="w-14 h-14 object-contain drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300 inline-flex items-center gap-0.5">
+                    +1 <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain" />
                   </span>
                 </div>
 

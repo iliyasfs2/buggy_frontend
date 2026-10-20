@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { useState, useCallback, useEffect } from "react";
 import type { PathNode, Chapter } from "@/types/roadmap";
 import { MOCK_JAVASCRIPT_CHAPTERS } from "@/constants/roadmap";
-import { BookOpen, Flame } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { soundEffects } from "@/utils/soundEffects";
 import { ChapterSection } from "./ChapterSection";
@@ -221,9 +221,9 @@ export function PathView(): ReactElement {
               <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-orange-500/20 via-amber-500/10 to-transparent pointer-events-none" />
 
               <div className="w-24 h-24 rounded-3xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center relative shadow-inner">
-                <Flame className="w-14 h-14 text-orange-400 fill-orange-400 drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300">
-                  +1 🔥
+                <img src="/icons/streak.png" alt="Streak" className="w-14 h-14 object-contain drop-shadow-[0_0_25px_rgba(249,115,22,0.9)] animate-pulse" />
+                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-lg border border-orange-300 inline-flex items-center gap-0.5">
+                  +1 <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain" />
                 </span>
               </div>
 
