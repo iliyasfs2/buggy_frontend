@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
-  Calendar,
   Search,
   UserCheck,
   UserPlus,
@@ -472,17 +471,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col items-start gap-1">
+            <div className="mt-6 flex items-baseline gap-2.5 flex-wrap">
               <h1 className="font-black text-2xl sm:text-3xl text-white tracking-tight">
                 {profileDisplayName}
               </h1>
-
-              <div className="text-sm font-bold text-slate-300 font-mono flex items-center gap-2 mt-1">
-                <span>@{profileHandle}</span>
-                <span>•</span>
-                <Calendar className="w-4 h-4 text-slate-400" />
-                <span>{formattedJoinedDate || "Member 2026"}</span>
-              </div>
+              <span className="text-sm sm:text-base font-bold text-slate-400 font-mono">
+                @{profileHandle}
+              </span>
             </div>
 
             <div className="mt-4 flex items-center gap-4 sm:gap-6 flex-wrap select-none">
