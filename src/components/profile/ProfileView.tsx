@@ -549,9 +549,9 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsDevCardOpen(true);
                 }}
-                className="flex-1 h-[52px] px-5 rounded-2xl bg-gradient-to-r from-[#172554] via-[#1e1b4b] to-[#172554] hover:from-[#1e3a8a] hover:via-[#2e1065] hover:to-[#1e3a8a] border-2 border-b-4 border-amber-400/80 border-b-amber-600 text-amber-300 font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-amber-500/10 active:translate-y-0.5 transition-all cursor-pointer"
+                className="flex-1 h-[52px] px-5 rounded-2xl bg-gradient-to-r from-[#172554] via-[#1e3a8a] to-[#172554] hover:from-[#1e3a8a] hover:via-[#2563eb] hover:to-[#1e3a8a] border-2 border-b-4 border-blue-600 border-b-blue-800 text-white font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5 shadow-lg shadow-blue-950/50 active:translate-y-0.5 transition-all cursor-pointer"
               >
-                <span className="text-lg">🪪</span>
+                <img src="/icons/dev-card.png" alt="Dev Card" className="w-6 h-auto max-h-6 object-contain shrink-0 drop-shadow" />
                 <span>View Intro &amp; Skills (Dev Card)</span>
               </button>
 
@@ -991,7 +991,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           >
             <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528]/90">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🪪</span>
+                <img src="/icons/dev-card.png" alt="Dev Card" className="w-5 h-auto max-h-5 object-contain" />
                 <span className="text-sm font-black text-white">Dev Card</span>
               </div>
 
