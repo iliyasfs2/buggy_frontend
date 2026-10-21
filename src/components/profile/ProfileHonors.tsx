@@ -71,7 +71,7 @@ export function ProfileHonors({
       accentBg: "from-amber-500/20 to-orange-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/early-bird.png"
+          src="/badges/early-bird.png?v=3"
           alt="Early Bird"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -360,8 +360,8 @@ export function ProfileHonors({
   const previewAchievements = sortedAchievements.slice(0, 4);
 
   return (
-    <div className="w-full flex flex-col gap-12 sm:gap-14 select-none mt-2">
-      <div className="flex flex-col gap-6 sm:gap-7">
+    <div className="w-full flex flex-col gap-12 sm:gap-16 select-none mt-4">
+      <div className="flex flex-col gap-5 sm:gap-6">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
             Special Badges
@@ -381,7 +381,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2.5 sm:gap-4 justify-items-center">
+        <div className="grid grid-cols-4 gap-3 sm:gap-5 items-center justify-items-center py-1">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
             return (
@@ -391,35 +391,30 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
-                className="flex flex-col items-center cursor-pointer group"
+                className="flex flex-col items-center justify-center cursor-pointer group"
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[70px] h-[70px] sm:w-[76px] sm:h-[76px] rounded-full flex items-center justify-center relative transition-all group-hover:scale-105 ${
+                  className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
                     badge.id === "early_bird"
-                      ? ""
-                      : `border-4 ${
+                      ? "w-[115px] h-[115px] sm:w-[144px] sm:h-[144px]"
+                      : `w-[76px] h-[76px] sm:w-[86px] sm:h-[86px] border-4 ${
                           isUnlocked
-                            ? `${badge.ringColor} bg-[#0b1426] shadow-lg`
+                            ? `${badge.ringColor} bg-[#0b1426]`
                             : "border-slate-800 bg-slate-950/80 opacity-70"
                         }`
                   }`}
-                  style={{
-                    boxShadow: isUnlocked && badge.id !== "early_bird" ? `0 0 16px ${badge.glowColor}` : undefined,
-                  }}
                 >
                   {badge.id === "early_bird" ? (
                     <img
-                      src="/badges/early-bird.png"
+                      src="/badges/early-bird.png?v=3"
                       alt={badge.name}
-                      className={`w-[115px] h-[115px] sm:w-[130px] sm:h-[130px] max-w-none shrink-0 object-contain transition-all ${
-                        isUnlocked
-                          ? "drop-shadow-[0_0_16px_rgba(251,191,36,0.7)]"
-                          : "grayscale opacity-50"
+                      className={`w-[126px] h-[126px] sm:w-[154px] sm:h-[154px] max-w-none shrink-0 object-contain transition-all ${
+                        isUnlocked ? "" : "grayscale opacity-50"
                       }`}
                     />
                   ) : (
-                    badge.iconSvg(isUnlocked, 48)
+                    badge.iconSvg(isUnlocked, 52)
                   )}
                 </div>
               </div>
@@ -428,7 +423,7 @@ export function ProfileHonors({
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 sm:gap-7">
+      <div className="flex flex-col gap-5 sm:gap-6">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
             Achievements
@@ -448,7 +443,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2.5 sm:gap-4 justify-items-center">
+        <div className="grid grid-cols-4 gap-3 sm:gap-5 items-center justify-items-center py-1">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
             return (
@@ -458,17 +453,17 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
-                className="flex flex-col items-center cursor-pointer group"
+                className="flex flex-col items-center justify-center cursor-pointer group"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[72px] h-[80px] sm:w-[76px] sm:h-[84px] relative flex flex-col items-center justify-between pt-2 pb-1 transition-all group-hover:scale-105 ${
+                  className={`w-[76px] h-[84px] sm:w-[84px] sm:h-[92px] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
                     isUnlocked ? "opacity-100" : "opacity-65"
                   }`}
                 >
                   <svg
                     viewBox="0 0 76 84"
-                    className="absolute inset-0 w-full h-full pointer-events-none drop-shadow-md"
+                    className="absolute inset-0 w-full h-full pointer-events-none"
                   >
                     <defs>
                       <linearGradient id={`shield-grad-${ach.id}`} x1="0" y1="0" x2="0" y2="1">
@@ -485,10 +480,10 @@ export function ProfileHonors({
                   </svg>
 
                   <div className="relative z-10 mt-1">
-                    {ach.iconSvg(isUnlocked, 36)}
+                    {ach.iconSvg(isUnlocked, 38)}
                   </div>
 
-                  <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1 drop-shadow">
+                  <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1">
                     {ach.displayRecord}
                   </span>
                 </div>
@@ -549,7 +544,7 @@ export function ProfileHonors({
                       <div
                         className={`rounded-full flex items-center justify-center shrink-0 ${
                           badge.id === "early_bird"
-                            ? "w-20 h-20"
+                            ? "w-24 h-24"
                             : `w-14 h-14 border-2 ${
                                 isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
                               }`
@@ -557,10 +552,10 @@ export function ProfileHonors({
                       >
                         {badge.id === "early_bird" ? (
                           <img
-                            src="/badges/early-bird.png"
+                            src="/badges/early-bird.png?v=3"
                             alt={badge.name}
                             className={`w-full h-full object-contain ${
-                              isUnlocked ? "drop-shadow-sm" : "grayscale opacity-50"
+                              isUnlocked ? "" : "grayscale opacity-50"
                             }`}
                           />
                         ) : (
@@ -689,22 +684,19 @@ export function ProfileHonors({
 
             <div className="flex flex-col items-center text-center mt-4">
               <div
-                className={`flex items-center justify-center relative shadow-2xl mb-5 ${
+                className={`flex items-center justify-center relative mb-5 ${
                   selectedHonor.item.id === "early_bird"
-                    ? "w-[240px] h-[240px] sm:w-[280px] sm:h-[280px]"
+                    ? "w-[260px] h-[260px] sm:w-[300px] sm:h-[300px]"
                     : "w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800"
                 }`}
-                style={{
-                  boxShadow: `0 0 50px ${selectedHonor.item.glowColor}`,
-                }}
               >
                 {selectedHonor.item.id === "early_bird" ? (
                   <img
-                    src="/badges/early-bird.png"
+                    src="/badges/early-bird.png?v=3"
                     alt={selectedHonor.item.name}
-                    className={`w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] object-contain transition-all ${
+                    className={`w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] object-contain transition-all ${
                       selectedHonor.item.current >= selectedHonor.item.target
-                        ? "drop-shadow-[0_0_28px_rgba(251,191,36,0.7)]"
+                        ? ""
                         : "grayscale opacity-50"
                     }`}
                   />
