@@ -56,6 +56,13 @@ export function ProfileHonors({
     item: SpecialBadgeItem | AchievementItem;
   } | null>(null);
 
+  const customBadgeImages: Record<string, string> = {
+    early_bird: "/badges/early-bird.png?v=3",
+    night_owl: "/badges/night-owl.png?v=3",
+    sniper_coder: "/badges/sniper-coder.png?v=3",
+    speed_demon: "/badges/speed-demon.png?v=3",
+  };
+
   const specialBadges: SpecialBadgeItem[] = [
     {
       id: "early_bird",
@@ -91,19 +98,12 @@ export function ProfileHonors({
       glowColor: "rgba(168, 85, 247, 0.45)",
       accentBg: "from-purple-500/20 to-indigo-500/10",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="40" fill="#0b0f19" />
-          <path d="M30 35 C30 25 70 25 70 35 C70 58 60 74 50 74 C40 74 30 58 30 35 Z" fill="#312e81" />
-          <circle cx="40" cy="46" r="10" fill="#e0e7ff" />
-          <circle cx="60" cy="46" r="10" fill="#e0e7ff" />
-          <circle cx="40" cy="46" r="5" fill="#a855f7" />
-          <circle cx="60" cy="46" r="5" fill="#a855f7" />
-          <polygon points="50,56 46,62 54,62" fill="#f59e0b" />
-          <path d="M22 45 C22 28 32 18 50 18 C68 18 78 28 78 45" stroke="#ec4899" strokeWidth="4" fill="none" strokeLinecap="round" />
-          <rect x="18" y="42" width="8" height="16" rx="4" fill="#a855f7" />
-          <rect x="74" y="42" width="8" height="16" rx="4" fill="#a855f7" />
-          <rect x="36" y="70" width="28" height="16" rx="2" fill="#22d3ee" fillOpacity="0.8" />
-        </svg>
+        <img
+          src="/badges/night-owl.png?v=3"
+          alt="Night Owl"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -119,17 +119,12 @@ export function ProfileHonors({
       glowColor: "rgba(244, 63, 94, 0.45)",
       accentBg: "from-rose-500/20 to-red-500/10",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="40" fill="#4c0519" />
-          <circle cx="50" cy="50" r="32" stroke="#f43f5e" strokeWidth="3" fill="none" />
-          <circle cx="50" cy="50" r="22" stroke="#fda4af" strokeWidth="2" fill="none" />
-          <circle cx="50" cy="50" r="10" fill="#f43f5e" />
-          <circle cx="50" cy="50" r="4" fill="#ffffff" />
-          <line x1="50" y1="12" x2="50" y2="88" stroke="#f43f5e" strokeWidth="2.5" />
-          <line x1="12" y1="50" x2="88" y2="50" stroke="#f43f5e" strokeWidth="2.5" />
-          <path d="M50 50 L75 25" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" />
-          <polygon points="75,25 67,27 73,33" fill="#38bdf8" />
-        </svg>
+        <img
+          src="/badges/sniper-coder.png?v=3"
+          alt="Sniper Coder"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -145,18 +140,12 @@ export function ProfileHonors({
       glowColor: "rgba(34, 211, 238, 0.45)",
       accentBg: "from-cyan-500/20 to-blue-500/10",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="40" fill="#082f49" />
-          <g transform="translate(18, 14) rotate(25 32 32)">
-            <path d="M32 6 C24 16 20 30 20 44 L44 44 C44 30 40 16 32 6 Z" fill="#06b6d4" />
-            <circle cx="32" cy="24" r="5" fill="#e0f2fe" />
-            <path d="M20 34 L12 44 L20 44 Z" fill="#0284c7" />
-            <path d="M44 34 L52 44 L44 44 Z" fill="#0284c7" />
-            <path d="M24 44 Q32 58 40 44 Q36 50 32 60 Q28 50 24 44 Z" fill="#f97316" />
-            <path d="M28 44 Q32 52 36 44 Q34 48 32 54 Q30 48 28 44 Z" fill="#fde047" />
-          </g>
-          <text x="14" y="80" fill="#22d3ee" fontSize="10" fontFamily="monospace" fontWeight="bold">0101</text>
-        </svg>
+        <img
+          src="/badges/speed-demon.png?v=3"
+          alt="Speed Demon"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -384,6 +373,7 @@ export function ProfileHonors({
         <div className="grid grid-cols-4 gap-3 sm:gap-5 items-center justify-items-center py-1">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
+            const customImg = customBadgeImages[badge.id];
             return (
               <div
                 key={badge.id}
@@ -396,7 +386,7 @@ export function ProfileHonors({
               >
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
-                    badge.id === "early_bird"
+                    customImg
                       ? "w-[115px] h-[115px] sm:w-[144px] sm:h-[144px]"
                       : `w-[76px] h-[76px] sm:w-[86px] sm:h-[86px] border-4 ${
                           isUnlocked
@@ -405,9 +395,9 @@ export function ProfileHonors({
                         }`
                   }`}
                 >
-                  {badge.id === "early_bird" ? (
+                  {customImg ? (
                     <img
-                      src="/badges/early-bird.png?v=3"
+                      src={customImg}
                       alt={badge.name}
                       className={`w-[126px] h-[126px] sm:w-[154px] sm:h-[154px] max-w-none shrink-0 object-contain transition-all ${
                         isUnlocked ? "" : "grayscale opacity-50"
@@ -543,16 +533,16 @@ export function ProfileHonors({
                     >
                       <div
                         className={`rounded-full flex items-center justify-center shrink-0 ${
-                          badge.id === "early_bird"
+                          customBadgeImages[badge.id]
                             ? "w-24 h-24"
                             : `w-14 h-14 border-2 ${
                                 isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
                               }`
                         }`}
                       >
-                        {badge.id === "early_bird" ? (
+                        {customBadgeImages[badge.id] ? (
                           <img
-                            src="/badges/early-bird.png?v=3"
+                            src={customBadgeImages[badge.id]}
                             alt={badge.name}
                             className={`w-full h-full object-contain ${
                               isUnlocked ? "" : "grayscale opacity-50"
@@ -685,14 +675,14 @@ export function ProfileHonors({
             <div className="flex flex-col items-center text-center mt-4">
               <div
                 className={`flex items-center justify-center relative mb-5 ${
-                  selectedHonor.item.id === "early_bird"
+                  customBadgeImages[selectedHonor.item.id]
                     ? "w-[260px] h-[260px] sm:w-[300px] sm:h-[300px]"
                     : "w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800"
                 }`}
               >
-                {selectedHonor.item.id === "early_bird" ? (
+                {customBadgeImages[selectedHonor.item.id] ? (
                   <img
-                    src="/badges/early-bird.png?v=3"
+                    src={customBadgeImages[selectedHonor.item.id]}
                     alt={selectedHonor.item.name}
                     className={`w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] object-contain transition-all ${
                       selectedHonor.item.current >= selectedHonor.item.target
