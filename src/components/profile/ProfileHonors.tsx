@@ -63,7 +63,7 @@ export function ProfileHonors({
       enTitle: "Early Bird",
       desc: "Solve challenges across 5 separate days before 9:00 AM.",
       ruleDesc: "Complete at least one debug challenge before 9:00 AM on 5 distinct days.",
-      current: Math.min(5, Math.floor(streak / 2) + 1),
+      current: 5,
       target: 5,
       unit: "days",
       ringColor: "border-amber-400",
@@ -361,11 +361,10 @@ export function ProfileHonors({
 
   return (
     <div className="w-full flex flex-col gap-12 sm:gap-14 select-none mt-2">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-6 sm:gap-7">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Award className="w-4 h-4 text-amber-400" />
-            <span>Special Badges</span>
+          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
+            Special Badges
           </h2>
 
           <button
@@ -429,11 +428,10 @@ export function ProfileHonors({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-6 sm:gap-7">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Shield className="w-4 h-4 text-rose-400" />
-            <span>Achievements</span>
+          <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
+            Achievements
           </h2>
 
           <button
