@@ -360,7 +360,7 @@ export function ProfileHonors({
   const previewAchievements = sortedAchievements.slice(0, 4);
 
   return (
-    <div className="w-full flex flex-col gap-6 select-none mt-2">
+    <div className="w-full flex flex-col gap-12 sm:gap-14 select-none mt-2">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider flex items-center gap-2">
@@ -413,9 +413,9 @@ export function ProfileHonors({
                     <img
                       src="/badges/early-bird.png"
                       alt={badge.name}
-                      className={`w-full h-full object-contain transition-all ${
+                      className={`w-[115px] h-[115px] sm:w-[130px] sm:h-[130px] max-w-none shrink-0 object-contain transition-all ${
                         isUnlocked
-                          ? "drop-shadow-[0_0_12px_rgba(251,191,36,0.6)]"
+                          ? "drop-shadow-[0_0_16px_rgba(251,191,36,0.7)]"
                           : "grayscale opacity-50"
                       }`}
                     />
@@ -549,10 +549,10 @@ export function ProfileHonors({
                       className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
                     >
                       <div
-                        className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${
+                        className={`rounded-full flex items-center justify-center shrink-0 ${
                           badge.id === "early_bird"
-                            ? ""
-                            : `border-2 ${
+                            ? "w-20 h-20"
+                            : `w-14 h-14 border-2 ${
                                 isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
                               }`
                         }`}
@@ -691,10 +691,10 @@ export function ProfileHonors({
 
             <div className="flex flex-col items-center text-center mt-4">
               <div
-                className={`w-[150px] h-[150px] flex items-center justify-center relative shadow-2xl mb-5 ${
+                className={`flex items-center justify-center relative shadow-2xl mb-5 ${
                   selectedHonor.item.id === "early_bird"
-                    ? ""
-                    : "rounded-3xl bg-slate-950 border-2 border-slate-800"
+                    ? "w-[240px] h-[240px] sm:w-[280px] sm:h-[280px]"
+                    : "w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800"
                 }`}
                 style={{
                   boxShadow: `0 0 50px ${selectedHonor.item.glowColor}`,
@@ -704,9 +704,9 @@ export function ProfileHonors({
                   <img
                     src="/badges/early-bird.png"
                     alt={selectedHonor.item.name}
-                    className={`w-[150px] h-[150px] object-contain transition-all ${
+                    className={`w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] object-contain transition-all ${
                       selectedHonor.item.current >= selectedHonor.item.target
-                        ? "drop-shadow-[0_0_24px_rgba(251,191,36,0.7)]"
+                        ? "drop-shadow-[0_0_28px_rgba(251,191,36,0.7)]"
                         : "grayscale opacity-50"
                     }`}
                   />
