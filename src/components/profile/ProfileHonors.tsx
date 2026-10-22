@@ -57,10 +57,10 @@ export function ProfileHonors({
   } | null>(null);
 
   const customBadgeImages: Record<string, string> = {
-    early_bird: "/badges/early-bird.png?v=4",
-    night_owl: "/badges/night-owl.png?v=4",
-    sniper_coder: "/badges/sniper-coder.png?v=4",
-    speed_demon: "/badges/speed-demon.png?v=4",
+    early_bird: "/badges/early-bird.png?v=5",
+    night_owl: "/badges/night-owl.png?v=5",
+    sniper_coder: "/badges/sniper-coder.png?v=5",
+    speed_demon: "/badges/speed-demon.png?v=5",
   };
 
   const specialBadges: SpecialBadgeItem[] = [
@@ -78,7 +78,7 @@ export function ProfileHonors({
       accentBg: "from-amber-500/20 to-orange-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/early-bird.png?v=4"
+          src="/badges/early-bird.png?v=5"
           alt="Early Bird"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -99,7 +99,7 @@ export function ProfileHonors({
       accentBg: "from-purple-500/20 to-indigo-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/night-owl.png?v=4"
+          src="/badges/night-owl.png?v=5"
           alt="Night Owl"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -120,7 +120,7 @@ export function ProfileHonors({
       accentBg: "from-rose-500/20 to-red-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/sniper-coder.png?v=4"
+          src="/badges/sniper-coder.png?v=5"
           alt="Sniper Coder"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -141,7 +141,7 @@ export function ProfileHonors({
       accentBg: "from-cyan-500/20 to-blue-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/speed-demon.png?v=4"
+          src="/badges/speed-demon.png?v=5"
           alt="Speed Demon"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -370,7 +370,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-3 sm:gap-5 items-center justify-items-center py-1">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
             const customImg = customBadgeImages[badge.id];
@@ -381,14 +381,14 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
-                className="flex flex-col items-center justify-center cursor-pointer group"
+                className="flex flex-col items-center justify-center cursor-pointer group w-full"
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
                     customImg
-                      ? "w-[115px] h-[115px] sm:w-[144px] sm:h-[144px]"
-                      : `w-[76px] h-[76px] sm:w-[86px] sm:h-[86px] border-4 ${
+                      ? "w-[72px] h-[72px] sm:w-[110px] sm:h-[110px] md:w-[130px] md:h-[130px]"
+                      : `w-[68px] h-[68px] sm:w-[86px] sm:h-[86px] border-4 ${
                           isUnlocked
                             ? `${badge.ringColor} bg-[#0b1426]`
                             : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -399,12 +399,12 @@ export function ProfileHonors({
                     <img
                       src={customImg}
                       alt={badge.name}
-                      className={`w-[126px] h-[126px] sm:w-[154px] sm:h-[154px] max-w-none shrink-0 object-contain transition-all ${
+                      className={`w-full h-full object-contain transition-all ${
                         isUnlocked ? "" : "grayscale opacity-50"
                       }`}
                     />
                   ) : (
-                    badge.iconSvg(isUnlocked, 52)
+                    badge.iconSvg(isUnlocked, 48)
                   )}
                 </div>
               </div>
@@ -433,7 +433,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-3 sm:gap-5 items-center justify-items-center py-1">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
             return (
@@ -443,11 +443,11 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
-                className="flex flex-col items-center justify-center cursor-pointer group"
+                className="flex flex-col items-center justify-center cursor-pointer group w-full"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[76px] h-[84px] sm:w-[84px] sm:h-[92px] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
+                  className={`w-[68px] h-[76px] sm:w-[84px] sm:h-[92px] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
                     isUnlocked ? "opacity-100" : "opacity-65"
                   }`}
                 >
