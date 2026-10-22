@@ -57,10 +57,10 @@ export function ProfileHonors({
   } | null>(null);
 
   const customBadgeImages: Record<string, string> = {
-    early_bird: "/badges/early-bird.png?v=3",
-    night_owl: "/badges/night-owl.png?v=3",
-    sniper_coder: "/badges/sniper-coder.png?v=3",
-    speed_demon: "/badges/speed-demon.png?v=3",
+    early_bird: "/badges/early-bird.png?v=4",
+    night_owl: "/badges/night-owl.png?v=4",
+    sniper_coder: "/badges/sniper-coder.png?v=4",
+    speed_demon: "/badges/speed-demon.png?v=4",
   };
 
   const specialBadges: SpecialBadgeItem[] = [
@@ -78,7 +78,7 @@ export function ProfileHonors({
       accentBg: "from-amber-500/20 to-orange-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/early-bird.png?v=3"
+          src="/badges/early-bird.png?v=4"
           alt="Early Bird"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -99,7 +99,7 @@ export function ProfileHonors({
       accentBg: "from-purple-500/20 to-indigo-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/night-owl.png?v=3"
+          src="/badges/night-owl.png?v=4"
           alt="Night Owl"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -120,7 +120,7 @@ export function ProfileHonors({
       accentBg: "from-rose-500/20 to-red-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/sniper-coder.png?v=3"
+          src="/badges/sniper-coder.png?v=4"
           alt="Sniper Coder"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
@@ -141,7 +141,7 @@ export function ProfileHonors({
       accentBg: "from-cyan-500/20 to-blue-500/10",
       iconSvg: (isUnlocked, size = 44) => (
         <img
-          src="/badges/speed-demon.png?v=3"
+          src="/badges/speed-demon.png?v=4"
           alt="Speed Demon"
           style={{ width: size, height: size }}
           className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
