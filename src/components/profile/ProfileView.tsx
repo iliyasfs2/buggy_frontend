@@ -589,7 +589,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               }`}
             >
               <svg
-                viewBox="0 0 800 450"
+                viewBox="0 0 800 520"
                 className="w-full h-auto block sm:hidden select-none pointer-events-none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -635,14 +635,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 <rect x="615" y="48" width="22" height="22" rx="3" fill="#0f172a" stroke="#0ea5e9" strokeWidth="1.5" />
                 <circle cx="626" cy="59" r="3" fill="#22d3ee" />
 
-                <polygon points="0,260 800,260 800,450 0,450" fill="url(#roomFloorGradMobile)" />
+                <polygon points="0,260 800,260 800,520 0,520" fill="url(#roomFloorGradMobile)" />
                 <line x1="0" y1="260" x2="800" y2="260" stroke="#0284c7" strokeWidth="2" strokeOpacity="0.7" />
 
                 <g stroke="rgba(2, 132, 199, 0.25)" strokeWidth="1.5">
-                  <line x1="-50" y1="450" x2="200" y2="260" />
-                  <line x1="90" y1="450" x2="320" y2="260" />
-                  <line x1="710" y1="450" x2="480" y2="260" />
-                  <line x1="850" y1="450" x2="600" y2="260" />
+                  <line x1="-100" y1="520" x2="200" y2="260" />
+                  <line x1="80" y1="520" x2="320" y2="260" />
+                  <line x1="720" y1="520" x2="480" y2="260" />
+                  <line x1="900" y1="520" x2="600" y2="260" />
                 </g>
 
                 <g transform="translate(240, 285)">
@@ -715,7 +715,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </svg>
 
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[54%] sm:w-[50%] max-w-[400px] aspect-square flex items-center justify-center transition-transform duration-300 group-hover:scale-105 mb-11 sm:mb-4">
+                <div className="w-[56%] sm:w-[50%] max-w-[400px] aspect-square flex items-center justify-center transition-transform duration-300 group-hover:scale-105 mb-16 sm:mb-4">
                   <svg
                     viewBox="0 0 400 400"
                     className="w-full h-full select-none"
