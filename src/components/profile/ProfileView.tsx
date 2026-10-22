@@ -589,8 +589,71 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               }`}
             >
               <svg
+                viewBox="0 0 800 450"
+                className="w-full h-auto block sm:hidden select-none pointer-events-none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="roomWallGradMobile" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0f1f3d" />
+                    <stop offset="65%" stopColor="#0b152b" />
+                    <stop offset="100%" stopColor="#070c18" />
+                  </linearGradient>
+                  <linearGradient id="roomFloorGradMobile" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#070d1a" />
+                    <stop offset="100%" stopColor="#03060d" />
+                  </linearGradient>
+                  <linearGradient id="deskGradMobile" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1e293b" />
+                    <stop offset="100%" stopColor="#0f172a" />
+                  </linearGradient>
+                  <radialGradient id="cyberGlowMobile" cx="50%" cy="40%" r="50%">
+                    <stop offset="0%" stopColor="rgba(56, 189, 248, 0.25)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </radialGradient>
+                </defs>
+
+                <rect x="0" y="0" width="800" height="260" fill="url(#roomWallGradMobile)" />
+                <rect x="0" y="0" width="800" height="260" fill="url(#cyberGlowMobile)" />
+
+                <g stroke="rgba(30, 58, 110, 0.3)" strokeWidth="1">
+                  <line x1="0" y1="65" x2="800" y2="65" />
+                  <line x1="0" y1="130" x2="800" y2="130" />
+                  <line x1="0" y1="195" x2="800" y2="195" />
+                  <line x1="160" y1="0" x2="160" y2="260" />
+                  <line x1="320" y1="0" x2="320" y2="260" />
+                  <line x1="480" y1="0" x2="480" y2="260" />
+                  <line x1="640" y1="0" x2="640" y2="260" />
+                </g>
+
+                <rect x="70" y="70" width="130" height="8" rx="2" fill="#1e293b" />
+                <rect x="80" y="52" width="12" height="18" fill="#38bdf8" fillOpacity="0.8" rx="1" />
+                <rect x="94" y="46" width="10" height="24" fill="#a855f7" fillOpacity="0.8" rx="1" />
+                <rect x="106" y="56" width="14" height="14" fill="#34d399" fillOpacity="0.8" rx="1" />
+
+                <rect x="600" y="70" width="130" height="8" rx="2" fill="#1e293b" />
+                <rect x="615" y="48" width="22" height="22" rx="3" fill="#0f172a" stroke="#0ea5e9" strokeWidth="1.5" />
+                <circle cx="626" cy="59" r="3" fill="#22d3ee" />
+
+                <polygon points="0,260 800,260 800,450 0,450" fill="url(#roomFloorGradMobile)" />
+                <line x1="0" y1="260" x2="800" y2="260" stroke="#0284c7" strokeWidth="2" strokeOpacity="0.7" />
+
+                <g stroke="rgba(2, 132, 199, 0.25)" strokeWidth="1.5">
+                  <line x1="-50" y1="450" x2="200" y2="260" />
+                  <line x1="90" y1="450" x2="320" y2="260" />
+                  <line x1="710" y1="450" x2="480" y2="260" />
+                  <line x1="850" y1="450" x2="600" y2="260" />
+                </g>
+
+                <g transform="translate(240, 285)">
+                  <rect x="0" y="0" width="320" height="24" rx="6" fill="url(#deskGradMobile)" stroke="#334155" strokeWidth="2" />
+                  <rect x="110" y="6" width="100" height="4" rx="2" fill="#38bdf8" fillOpacity="0.7" />
+                </g>
+              </svg>
+
+              <svg
                 viewBox="0 0 800 360"
-                className="w-full h-auto block select-none pointer-events-none"
+                className="w-full h-auto hidden sm:block select-none pointer-events-none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <defs>
@@ -652,7 +715,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </svg>
 
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[50%] max-w-[400px] aspect-square flex items-center justify-center transition-transform duration-300 group-hover:scale-105 mb-2 sm:mb-4">
+                <div className="w-[54%] sm:w-[50%] max-w-[400px] aspect-square flex items-center justify-center transition-transform duration-300 group-hover:scale-105 mb-11 sm:mb-4">
                   <svg
                     viewBox="0 0 400 400"
                     className="w-full h-full select-none"

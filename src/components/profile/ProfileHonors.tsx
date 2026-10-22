@@ -370,7 +370,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
             const customImg = customBadgeImages[badge.id];
@@ -387,8 +387,8 @@ export function ProfileHonors({
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
                     customImg
-                      ? "w-[72px] h-[72px] sm:w-[110px] sm:h-[110px] md:w-[130px] md:h-[130px]"
-                      : `w-[68px] h-[68px] sm:w-[86px] sm:h-[86px] border-4 ${
+                      ? "w-full max-w-[82px] min-[390px]:max-w-[88px] min-[414px]:max-w-[94px] sm:max-w-[110px] md:max-w-[130px] aspect-square"
+                      : `w-full max-w-[72px] sm:max-w-[86px] aspect-square border-4 ${
                           isUnlocked
                             ? `${badge.ringColor} bg-[#0b1426]`
                             : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -433,7 +433,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-5 items-center justify-items-center py-1">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
             return (
@@ -447,7 +447,7 @@ export function ProfileHonors({
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
-                  className={`w-[68px] h-[76px] sm:w-[84px] sm:h-[92px] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
+                  className={`w-full max-w-[70px] min-[390px]:max-w-[76px] sm:max-w-[84px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
                     isUnlocked ? "opacity-100" : "opacity-65"
                   }`}
                 >
