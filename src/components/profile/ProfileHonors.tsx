@@ -74,96 +74,12 @@ export function ProfileHonors({
 
   const specialBadges: SpecialBadgeItem[] = [
     {
-      id: "early_bird",
-      name: "Early Bird",
-      enTitle: "Early Bird",
-      desc: "Solve challenges across 5 separate days before 9:00 AM.",
-      ruleDesc: "Complete at least one debug challenge before 9:00 AM on 5 distinct days.",
-      current: 5,
-      target: 5,
-      unit: "days",
-      ringColor: "border-amber-400",
-      glowColor: "rgba(251, 191, 36, 0.45)",
-      accentBg: "from-amber-500/20 to-orange-500/10",
-      iconSvg: (isUnlocked, size = 44) => (
-        <img
-          src="/badges/early-bird.png?v=5"
-          alt="Early Bird"
-          style={{ width: size, height: size }}
-          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
-        />
-      ),
-    },
-    {
-      id: "night_owl",
-      name: "Night Owl",
-      enTitle: "Night Owl",
-      desc: "Solve challenges across 5 separate nights between 12:00 AM and 4:00 AM.",
-      ruleDesc: "Solve debug challenges during late night hours (00:00 to 04:00) on 5 distinct days.",
-      current: Math.min(5, Math.floor(streak / 3)),
-      target: 5,
-      unit: "nights",
-      ringColor: "border-purple-500",
-      glowColor: "rgba(168, 85, 247, 0.45)",
-      accentBg: "from-purple-500/20 to-indigo-500/10",
-      iconSvg: (isUnlocked, size = 44) => (
-        <img
-          src="/badges/night-owl.png?v=5"
-          alt="Night Owl"
-          style={{ width: size, height: size }}
-          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
-        />
-      ),
-    },
-    {
-      id: "sniper_coder",
-      name: "Sniper Coder",
-      enTitle: "Sniper Coder",
-      desc: "Complete 5 consecutive challenges with 100% accuracy and zero errors.",
-      ruleDesc: "Pass 5 nodes in a row on your first attempt without any test errors.",
-      current: Math.min(5, Math.max(1, solvedMistakesCount > 0 ? 5 : 2)),
-      target: 5,
-      unit: "challenges",
-      ringColor: "border-rose-500",
-      glowColor: "rgba(244, 63, 94, 0.45)",
-      accentBg: "from-rose-500/20 to-red-500/10",
-      iconSvg: (isUnlocked, size = 44) => (
-        <img
-          src="/badges/sniper-coder.png?v=5"
-          alt="Sniper Coder"
-          style={{ width: size, height: size }}
-          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
-        />
-      ),
-    },
-    {
-      id: "speed_demon",
-      name: "Speed Demon",
-      enTitle: "Speed Demon",
-      desc: "Complete an entire challenge in under 60 seconds with rapid coding.",
-      ruleDesc: "Solve and pass any debug node or exercise in less than 60 seconds.",
-      current: 1,
-      target: 1,
-      unit: "challenges",
-      ringColor: "border-cyan-400",
-      glowColor: "rgba(34, 211, 238, 0.45)",
-      accentBg: "from-cyan-500/20 to-blue-500/10",
-      iconSvg: (isUnlocked, size = 44) => (
-        <img
-          src="/badges/speed-demon.png?v=5"
-          alt="Speed Demon"
-          style={{ width: size, height: size }}
-          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
-        />
-      ),
-    },
-    {
       id: "weekend_warrior",
       name: "Weekend Warrior",
       enTitle: "Weekend Warrior",
-      desc: "Maintain your streak across 4 consecutive weekends without missing a day.",
-      ruleDesc: "Keep your practice streak alive across 4 consecutive weekends.",
-      current: 4,
+      desc: "4 weekends streak",
+      ruleDesc: "Maintain your practice streak across 4 consecutive weekends.",
+      current: Math.min(4, Math.floor(streak / 7 * 2) || (streak >= 2 ? 1 : 0)),
       target: 4,
       unit: "weekends",
       ringColor: "border-emerald-400",
@@ -182,9 +98,9 @@ export function ProfileHonors({
       id: "season_champion",
       name: "Season Champion",
       enTitle: "Season Champion",
-      desc: "Finish in the Top 3 of a 10-day competitive leaderboard season.",
-      ruleDesc: "Reach podium ranks (1st, 2nd, or 3rd) at the conclusion of a 10-day season.",
-      current: 1,
+      desc: "Top 3 season rank",
+      ruleDesc: "Reach podium ranks (1st, 2nd, or 3rd) in a competitive season.",
+      current: currentRank > 0 && currentRank <= 3 ? 1 : 0,
       target: 1,
       unit: "podiums",
       ringColor: "border-yellow-300",
@@ -199,6 +115,90 @@ export function ProfileHonors({
         />
       ),
     },
+    {
+      id: "sniper_coder",
+      name: "Sniper Coder",
+      enTitle: "Sniper Coder",
+      desc: "5 flawless challenges",
+      ruleDesc: "Pass 5 challenges with 100% first-try accuracy.",
+      current: Math.min(5, Math.max(0, solvedMistakesCount > 0 ? 5 : 2)),
+      target: 5,
+      unit: "challenges",
+      ringColor: "border-rose-500",
+      glowColor: "rgba(244, 63, 94, 0.45)",
+      accentBg: "from-rose-500/20 to-red-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <img
+          src="/badges/sniper-coder.png?v=5"
+          alt="Sniper Coder"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
+      ),
+    },
+    {
+      id: "speed_demon",
+      name: "Speed Demon",
+      enTitle: "Speed Demon",
+      desc: "Challenge under 60s",
+      ruleDesc: "Complete any challenge in under 60 seconds.",
+      current: completedNodesCount >= 1 ? 1 : 0,
+      target: 1,
+      unit: "challenges",
+      ringColor: "border-cyan-400",
+      glowColor: "rgba(34, 211, 238, 0.45)",
+      accentBg: "from-cyan-500/20 to-blue-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <img
+          src="/badges/speed-demon.png?v=5"
+          alt="Speed Demon"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
+      ),
+    },
+    {
+      id: "early_bird",
+      name: "Early Bird",
+      enTitle: "Early Bird",
+      desc: "5 days before 9 AM",
+      ruleDesc: "Solve challenges before 9:00 AM on 5 distinct days.",
+      current: Math.min(5, Math.max(0, Math.floor(streak / 2))),
+      target: 5,
+      unit: "days",
+      ringColor: "border-amber-400",
+      glowColor: "rgba(251, 191, 36, 0.45)",
+      accentBg: "from-amber-500/20 to-orange-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <img
+          src="/badges/early-bird.png?v=5"
+          alt="Early Bird"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
+      ),
+    },
+    {
+      id: "night_owl",
+      name: "Night Owl",
+      enTitle: "Night Owl",
+      desc: "5 late night sessions",
+      ruleDesc: "Solve challenges between 12:00 AM and 4:00 AM on 5 nights.",
+      current: Math.min(5, Math.floor(streak / 3)),
+      target: 5,
+      unit: "nights",
+      ringColor: "border-purple-500",
+      glowColor: "rgba(168, 85, 247, 0.45)",
+      accentBg: "from-purple-500/20 to-indigo-500/10",
+      iconSvg: (isUnlocked, size = 44) => (
+        <img
+          src="/badges/night-owl.png?v=5"
+          alt="Night Owl"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
+      ),
+    },
   ];
 
   const achievements: AchievementItem[] = [
@@ -206,9 +206,9 @@ export function ProfileHonors({
       id: "wildfire",
       name: "Wildfire",
       enTitle: "Wildfire",
-      desc: "Reach a 30-day consecutive practice streak.",
-      ruleDesc: "Keep your daily learning flame burning for 30 consecutive days.",
-      current: Math.max(30, streak),
+      desc: "30-day streak",
+      ruleDesc: "Maintain a 30-day consecutive practice streak.",
+      current: streak,
       target: 30,
       displayRecord: "30",
       shieldGradient: "from-amber-600 via-orange-600 to-red-700",
@@ -226,9 +226,9 @@ export function ProfileHonors({
       id: "bug_hunter",
       name: "Bug Hunter",
       enTitle: "Bug Hunter",
-      desc: "Successfully debug and fix 50 coding challenges.",
-      ruleDesc: "Hunt down and resolve 50 syntax or logic bugs across learning nodes.",
-      current: 50,
+      desc: "50 bugs resolved",
+      ruleDesc: "Successfully resolve 50 coding challenges in the debug section.",
+      current: solvedMistakesCount,
       target: 50,
       displayRecord: "50",
       shieldGradient: "from-rose-600 via-red-600 to-rose-900",
@@ -246,9 +246,9 @@ export function ProfileHonors({
       id: "xp_legend",
       name: "XP Legend",
       enTitle: "XP Legend",
-      desc: "Accumulate over 12,500 total XP throughout your Buggy journey.",
-      ruleDesc: "Earn a total of 12,500 XP through lessons, challenges, and quizzes.",
-      current: Math.max(12500, totalXP),
+      desc: "12,500 Total XP",
+      ruleDesc: "Surpass 12,500 total XP earned across Buggy.",
+      current: totalXP,
       target: 12500,
       displayRecord: "12500",
       shieldGradient: "from-amber-500 via-yellow-500 to-amber-700",
@@ -266,9 +266,9 @@ export function ProfileHonors({
       id: "path_conqueror",
       name: "Path Conqueror",
       enTitle: "Path Conqueror",
-      desc: "Complete 15 learning path nodes across Buggy curricula.",
-      ruleDesc: "Master 15 full nodes on the interactive learning roadmap.",
-      current: Math.max(15, completedNodesCount),
+      desc: "15 roadmap nodes",
+      ruleDesc: "Complete 15 learning path nodes across Buggy curricula.",
+      current: completedNodesCount,
       target: 15,
       displayRecord: "15",
       shieldGradient: "from-blue-600 via-indigo-600 to-slate-900",
@@ -286,8 +286,8 @@ export function ProfileHonors({
       id: "chest_collector",
       name: "Chest Collector",
       enTitle: "Chest Collector",
-      desc: "Unlock 40 reward chests along learning tracks.",
-      ruleDesc: "Open 40 bonus chests throughout tracks and milestone chapters.",
+      desc: "40 chests opened",
+      ruleDesc: "Unlock 40 reward chests along learning tracks.",
       current: Math.min(40, completedNodesCount + 5),
       target: 40,
       displayRecord: "40",
@@ -307,8 +307,8 @@ export function ProfileHonors({
       id: "network_star",
       name: "Network Star",
       enTitle: "Network Star",
-      desc: "Connect with 10 fellow coders in your developer network.",
-      ruleDesc: "Follow and build connections to reach 10 active coder followers.",
+      desc: "10 coder followers",
+      ruleDesc: "Reach 10 developer followers in your network.",
       current: followersCount,
       target: 10,
       displayRecord: "10",
@@ -338,8 +338,8 @@ export function ProfileHonors({
     return bUnlocked - aUnlocked;
   });
 
-  const previewBadges = sortedBadges.slice(0, 4);
-  const previewAchievements = sortedAchievements.slice(0, 4);
+  const previewBadges = specialBadges.slice(0, 3);
+  const previewAchievements = achievements.slice(0, 3);
 
   return (
     <div className="w-full flex flex-col gap-6 sm:gap-8 select-none mt-0">
@@ -363,7 +363,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-1 sm:gap-3 md:gap-5 items-center justify-items-center py-0 -mx-1 sm:mx-0">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 items-start justify-items-center py-1 -mx-1 sm:mx-0">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
             const customImg = customBadgeImages[badge.id];
@@ -374,14 +374,14 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
-                className="flex flex-col items-center justify-center cursor-pointer group w-full"
+                className="flex flex-col items-center justify-start cursor-pointer group w-full"
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
                     customImg
-                      ? "w-full aspect-square max-w-[88px] min-[390px]:max-w-[96px] min-[420px]:max-w-[102px] sm:max-w-[115px] md:max-w-[130px]"
-                      : `w-full aspect-square max-w-[76px] sm:max-w-[86px] border-4 ${
+                      ? "w-full aspect-square max-w-[105px] min-[390px]:max-w-[115px] sm:max-w-[130px] md:max-w-[145px]"
+                      : `w-full aspect-square max-w-[90px] sm:max-w-[105px] border-4 ${
                           isUnlocked
                             ? `${badge.ringColor} bg-[#0b1426]`
                             : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -397,9 +397,12 @@ export function ProfileHonors({
                       }`}
                     />
                   ) : (
-                    badge.iconSvg(isUnlocked, 48)
+                    badge.iconSvg(isUnlocked, 52)
                   )}
                 </div>
+                <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                  {badge.name}
+                </span>
               </div>
             );
           })}
@@ -426,7 +429,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-1 sm:gap-3 md:gap-5 items-center justify-items-center py-0 -mx-1 sm:mx-0">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 items-start justify-items-center py-1 -mx-1 sm:mx-0">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
             const customImg = customAchievementImages[ach.id];
@@ -437,11 +440,11 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
-                className="flex flex-col items-center justify-center cursor-pointer group w-full"
+                className="flex flex-col items-center justify-start cursor-pointer group w-full"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 {customImg ? (
-                  <div className="w-full aspect-[84/100] max-w-[84px] min-[390px]:max-w-[92px] min-[420px]:max-w-[98px] sm:max-w-[110px] md:max-w-[125px] flex items-center justify-center transition-transform group-hover:scale-105">
+                  <div className="w-full aspect-[84/100] max-w-[100px] min-[390px]:max-w-[110px] sm:max-w-[125px] md:max-w-[140px] flex items-center justify-center transition-transform group-hover:scale-105">
                     <img
                       src={customImg}
                       alt={ach.name}
@@ -452,7 +455,7 @@ export function ProfileHonors({
                   </div>
                 ) : (
                   <div
-                    className={`w-full max-w-[76px] min-[390px]:max-w-[84px] sm:max-w-[86px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
+                    className={`w-full max-w-[90px] sm:max-w-[105px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
                       isUnlocked ? "opacity-100" : "opacity-65"
                     }`}
                   >
@@ -475,7 +478,7 @@ export function ProfileHonors({
                     </svg>
 
                     <div className="relative z-10 mt-1">
-                      {ach.iconSvg(isUnlocked, 38)}
+                      {ach.iconSvg(isUnlocked, 42)}
                     </div>
 
                     <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1">
@@ -483,6 +486,9 @@ export function ProfileHonors({
                     </span>
                   </div>
                 )}
+                <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                  {ach.name}
+                </span>
               </div>
             );
           })}
@@ -739,15 +745,18 @@ export function ProfileHonors({
                 )}
               </div>
 
-              <p className="text-sm text-slate-300 leading-relaxed font-medium px-2 mb-6 text-center">
+              <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-bold px-2 mb-6 text-center">
                 {selectedHonor.item.ruleDesc}
               </p>
 
               <div className="w-full p-4 rounded-2xl bg-[#091122] border border-slate-800 flex flex-col gap-2.5 mb-6">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-400">
-                  <span>Your Progress:</span>
+                <div className="flex items-center justify-between text-xs sm:text-sm font-black text-slate-300">
+                  <span>Progress</span>
                   <span className="font-mono text-amber-400 font-black">
-                    {selectedHonor.item.current.toLocaleString()} of {selectedHonor.item.target.toLocaleString()}
+                    {selectedHonor.item.current.toLocaleString()} / {selectedHonor.item.target.toLocaleString()} ({Math.min(
+                      100,
+                      Math.round((selectedHonor.item.current / selectedHonor.item.target) * 100)
+                    )}%)
                   </span>
                 </div>
 

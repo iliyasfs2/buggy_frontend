@@ -93,6 +93,8 @@ export interface UserProfileData {
   season_number?: number;
   season_days_left?: number;
   league?: string;
+  completed_nodes_count?: number;
+  solved_mistakes_count?: number;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";

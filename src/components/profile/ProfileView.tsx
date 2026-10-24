@@ -25,6 +25,7 @@ import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { soundEffects } from "@/utils/soundEffects";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useGameStore } from "@/store/useGameStore";
+import { useNavStore } from "@/store/useNavStore";
 import { DEFAULT_AVATAR_CONFIG, type AvatarConfig } from "@/services/authApi";
 import {
   fetchUserProfileApi,
@@ -134,8 +135,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const seasonXpStore = useGameStore((s) => s.season_xp);
   const activeCourse = useGameStore((s) => s.activeCourse);
   const switchCourse = useGameStore((s) => s.switchCourse);
-  const completedNodesCount = useGameStore((s) => s.completedNodesCount);
-  const mistakesCount = useGameStore((s) => s.mistakesCount);
+  const navCompletedNodesCount = useNavStore((s) => s.completedNodesCount);
+  const navMistakesCount = useNavStore((s) => s.mistakesCount);
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [followers, setFollowers] = useState<UserConnectionItem[]>([]);
@@ -404,6 +405,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const effectiveXp = profile?.total_xp ?? (isMe ? totalXP : 0);
   const effectiveStreak = profile?.streak ?? (isMe ? streakCount : 0);
   const effectiveSeasonXp = profile?.season_xp ?? (isMe ? seasonXpStore : 0);
+  const effectiveCompletedNodes = profile?.completed_nodes_count ?? (isMe ? navCompletedNodesCount : 0);
+  const effectiveSolvedMistakes = profile?.solved_mistakes_count ?? (isMe ? navMistakesCount : 0);
 
   const effectiveAvatar =
     (isMe
@@ -903,7 +906,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   )}
                   <div className="min-w-0 flex flex-col">
                     <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
-                      {completedNodesCount || 66}
+                      {effectiveCompletedNodes}
                     </span>
                     <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
                       Lessons Finished
@@ -1020,10 +1023,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               <ProfileHonors
                 streak={effectiveStreak}
                 totalXP={effectiveXp}
-                completedNodesCount={completedNodesCount}
+                completedNodesCount={effectiveCompletedNodes}
                 followersCount={followersCount}
                 currentRank={currentRank}
-                solvedMistakesCount={mistakesCount}
+                solvedMistakesCount={effectiveSolvedMistakes}
               />
             </div>
           </div>
