@@ -338,8 +338,8 @@ export function ProfileHonors({
     return bUnlocked - aUnlocked;
   });
 
-  const previewBadges = specialBadges.slice(0, 3);
-  const previewAchievements = achievements.slice(0, 3);
+  const previewBadges = specialBadges.slice(0, 4);
+  const previewAchievements = achievements.slice(0, 4);
 
   return (
     <div className="w-full flex flex-col gap-6 sm:gap-8 select-none mt-0">
@@ -363,7 +363,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 items-start justify-items-center py-1 -mx-1 sm:mx-0">
+        <div className="grid grid-cols-4 gap-1 sm:gap-3 md:gap-5 items-center justify-items-center py-0 -mx-1 sm:mx-0">
           {previewBadges.map((badge) => {
             const isUnlocked = badge.current >= badge.target;
             const customImg = customBadgeImages[badge.id];
@@ -374,14 +374,14 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
-                className="flex flex-col items-center justify-start cursor-pointer group w-full"
+                className="flex flex-col items-center justify-center cursor-pointer group w-full"
                 title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
                     customImg
-                      ? "w-full aspect-square max-w-[105px] min-[390px]:max-w-[115px] sm:max-w-[130px] md:max-w-[145px]"
-                      : `w-full aspect-square max-w-[90px] sm:max-w-[105px] border-4 ${
+                      ? "w-full aspect-square max-w-[88px] min-[390px]:max-w-[96px] min-[420px]:max-w-[102px] sm:max-w-[115px] md:max-w-[130px]"
+                      : `w-full aspect-square max-w-[76px] sm:max-w-[86px] border-4 ${
                           isUnlocked
                             ? `${badge.ringColor} bg-[#0b1426]`
                             : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -397,12 +397,9 @@ export function ProfileHonors({
                       }`}
                     />
                   ) : (
-                    badge.iconSvg(isUnlocked, 52)
+                    badge.iconSvg(isUnlocked, 48)
                   )}
                 </div>
-                <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
-                  {badge.name}
-                </span>
               </div>
             );
           })}
@@ -429,7 +426,7 @@ export function ProfileHonors({
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 items-start justify-items-center py-1 -mx-1 sm:mx-0">
+        <div className="grid grid-cols-4 gap-1 sm:gap-3 md:gap-5 items-center justify-items-center py-0 -mx-1 sm:mx-0">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
             const customImg = customAchievementImages[ach.id];
@@ -440,11 +437,11 @@ export function ProfileHonors({
                   soundEffects.playSoftClick();
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
-                className="flex flex-col items-center justify-start cursor-pointer group w-full"
+                className="flex flex-col items-center justify-center cursor-pointer group w-full"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
                 {customImg ? (
-                  <div className="w-full aspect-[84/100] max-w-[100px] min-[390px]:max-w-[110px] sm:max-w-[125px] md:max-w-[140px] flex items-center justify-center transition-transform group-hover:scale-105">
+                  <div className="w-full aspect-[84/100] max-w-[84px] min-[390px]:max-w-[92px] min-[420px]:max-w-[98px] sm:max-w-[110px] md:max-w-[125px] flex items-center justify-center transition-transform group-hover:scale-105">
                     <img
                       src={customImg}
                       alt={ach.name}
@@ -455,7 +452,7 @@ export function ProfileHonors({
                   </div>
                 ) : (
                   <div
-                    className={`w-full max-w-[90px] sm:max-w-[105px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
+                    className={`w-full max-w-[76px] min-[390px]:max-w-[84px] sm:max-w-[86px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
                       isUnlocked ? "opacity-100" : "opacity-65"
                     }`}
                   >
@@ -478,7 +475,7 @@ export function ProfileHonors({
                     </svg>
 
                     <div className="relative z-10 mt-1">
-                      {ach.iconSvg(isUnlocked, 42)}
+                      {ach.iconSvg(isUnlocked, 38)}
                     </div>
 
                     <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1">
@@ -486,9 +483,6 @@ export function ProfileHonors({
                     </span>
                   </div>
                 )}
-                <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
-                  {ach.name}
-                </span>
               </div>
             );
           })}
@@ -528,148 +522,117 @@ export function ProfileHonors({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5">
               {activeModal === "badges_all" ? (
-                specialBadges.map((badge) => {
-                  const isUnlocked = badge.current >= badge.target;
-                  const percent = Math.min(100, Math.round((badge.current / badge.target) * 100));
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
+                  {specialBadges.map((badge) => {
+                    const isUnlocked = badge.current >= badge.target;
+                    const customImg = customBadgeImages[badge.id];
+                    const percent = Math.min(100, Math.round((badge.current / badge.target) * 100));
 
-                  return (
-                    <div
-                      key={badge.id}
-                      onClick={() => {
-                        soundEffects.playSoftClick();
-                        setSelectedHonor({ type: "badge", item: badge });
-                      }}
-                      className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
-                    >
+                    return (
                       <div
-                        className={`rounded-full flex items-center justify-center shrink-0 ${
-                          customBadgeImages[badge.id]
-                            ? "w-24 h-24"
-                            : `w-14 h-14 border-2 ${
-                                isUnlocked ? `${badge.ringColor} bg-slate-950` : "border-slate-700 bg-slate-950 opacity-60"
-                              }`
-                        }`}
+                        key={badge.id}
+                        onClick={() => {
+                          soundEffects.playSoftClick();
+                          setSelectedHonor({ type: "badge", item: badge });
+                        }}
+                        className="w-full flex flex-col items-center justify-start p-2.5 sm:p-3 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
                       >
-                        {customBadgeImages[badge.id] ? (
-                          <img
-                            src={customBadgeImages[badge.id]}
-                            alt={badge.name}
-                            className={`w-full h-full object-contain ${
-                              isUnlocked ? "" : "grayscale opacity-50"
-                            }`}
-                          />
-                        ) : (
-                          badge.iconSvg(isUnlocked, 38)
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm sm:text-base font-black text-white truncate">
-                            {badge.name}
-                          </span>
-                          <span
-                            className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                              isUnlocked
-                                ? "bg-emerald-950 text-emerald-400 border border-emerald-500/50"
-                                : "bg-slate-900 text-slate-400 border border-slate-700"
-                            }`}
-                          >
-                            {isUnlocked ? "✓ Unlocked" : "🔒 In Progress"}
-                          </span>
+                        <div
+                          className={`rounded-full flex items-center justify-center relative transition-transform ${
+                            customImg
+                              ? "w-full aspect-square max-w-[84px] sm:max-w-[100px]"
+                              : `w-full aspect-square max-w-[72px] sm:max-w-[88px] border-4 ${
+                                  isUnlocked
+                                    ? `${badge.ringColor} bg-[#0b1426]`
+                                    : "border-slate-800 bg-slate-950/80 opacity-70"
+                                }`
+                          }`}
+                        >
+                          {customImg ? (
+                            <img
+                              src={customImg}
+                              alt={badge.name}
+                              className={`w-full h-full object-contain ${
+                                isUnlocked ? "" : "grayscale opacity-50"
+                              }`}
+                            />
+                          ) : (
+                            badge.iconSvg(isUnlocked, 44)
+                          )}
                         </div>
 
-                        <p className="text-xs text-slate-400 font-medium line-clamp-1">
-                          {badge.desc}
-                        </p>
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                          {badge.name}
+                        </span>
 
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <div className="flex-1 h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+                        <div className="w-full flex items-center gap-1.5 mt-2">
+                          <div className="flex-1 h-1.5 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
                             <div
-                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"
                               style={{ width: `${percent}%` }}
                             />
                           </div>
-                          <span className="text-[11px] font-mono font-bold text-slate-400 shrink-0">
-                            {badge.current} / {badge.target}
+                          <span className="text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                            {badge.current}/{badge.target}
                           </span>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               ) : (
-                achievements.map((ach) => {
-                  const isUnlocked = ach.current >= ach.target;
-                  const percent = Math.min(100, Math.round((ach.current / ach.target) * 100));
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
+                  {achievements.map((ach) => {
+                    const isUnlocked = ach.current >= ach.target;
+                    const customImg = customAchievementImages[ach.id];
+                    const percent = Math.min(100, Math.round((ach.current / ach.target) * 100));
 
-                  return (
-                    <div
-                      key={ach.id}
-                      onClick={() => {
-                        soundEffects.playSoftClick();
-                        setSelectedHonor({ type: "achievement", item: ach });
-                      }}
-                      className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
-                    >
-                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0">
-                        {customAchievementImages[ach.id] ? (
-                          <img
-                            src={customAchievementImages[ach.id]}
-                            alt={ach.name}
-                            className={`w-full h-full object-contain ${
-                              isUnlocked ? "" : "grayscale opacity-50"
-                            }`}
-                          />
-                        ) : (
-                          <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                            {ach.iconSvg(isUnlocked, 36)}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 truncate">
-                            <span className="text-sm sm:text-base font-black text-white truncate">
-                              {ach.name}
-                            </span>
-                            <span className="text-xs font-mono font-bold text-amber-400">
-                              (Goal: {ach.displayRecord})
-                            </span>
-                          </div>
-                          <span
-                            className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                              isUnlocked
-                                ? "bg-emerald-950 text-emerald-400 border border-emerald-500/50"
-                                : "bg-slate-900 text-slate-400 border border-slate-700"
-                            }`}
-                          >
-                            {isUnlocked ? "✓ Unlocked" : "🔒 In Progress"}
-                          </span>
+                    return (
+                      <div
+                        key={ach.id}
+                        onClick={() => {
+                          soundEffects.playSoftClick();
+                          setSelectedHonor({ type: "achievement", item: ach });
+                        }}
+                        className="w-full flex flex-col items-center justify-start p-2.5 sm:p-3 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        <div className="w-full aspect-[84/100] max-w-[80px] sm:max-w-[96px] flex items-center justify-center">
+                          {customImg ? (
+                            <img
+                              src={customImg}
+                              alt={ach.name}
+                              className={`w-full h-full object-contain ${
+                                isUnlocked ? "" : "grayscale opacity-50"
+                              }`}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              {ach.iconSvg(isUnlocked, 40)}
+                            </div>
+                          )}
                         </div>
 
-                        <p className="text-xs text-slate-400 font-medium line-clamp-1">
-                          {ach.desc}
-                        </p>
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                          {ach.name}
+                        </span>
 
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <div className="flex-1 h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+                        <div className="w-full flex items-center gap-1.5 mt-2">
+                          <div className="flex-1 h-1.5 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
                             <div
-                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"
                               style={{ width: `${percent}%` }}
                             />
                           </div>
-                          <span className="text-[11px] font-mono font-bold text-slate-400 shrink-0">
-                            {ach.current.toLocaleString()} / {ach.target.toLocaleString()}
+                          <span className="text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                            {ach.current.toLocaleString()}/{ach.target.toLocaleString()}
                           </span>
                         </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
