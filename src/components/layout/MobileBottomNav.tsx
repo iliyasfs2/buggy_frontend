@@ -84,12 +84,12 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
 
       <nav
         aria-label="Mobile Navigation"
-        className={`flex md:hidden fixed bottom-0 inset-x-0 z-40 h-[calc(4rem+env(safe-area-inset-bottom,0px))] pb-[env(safe-area-inset-bottom,0px)] bg-[#0b1329] border-t border-slate-800 items-stretch select-none px-2 ${className}`}
+        className={`flex md:hidden fixed bottom-0 inset-x-0 z-40 h-[calc(4rem+env(safe-area-inset-bottom,0px))] pb-[env(safe-area-inset-bottom,0px)] bg-[#101826] border-t-[3px] border-slate-700 items-stretch select-none px-2 ${className}`}
       >
         {isMoreOpen && (
           <div
             ref={popoverRef}
-            className="absolute bottom-full inset-x-0 w-full bg-[#0b1329] border-t-2 border-slate-700/80 rounded-t-3xl shadow-[0_-12px_32px_rgba(0,0,0,0.7)] p-3.5 flex flex-col z-50 animate-in slide-in-from-bottom-4 fade-in duration-200 select-none"
+            className="absolute bottom-full inset-x-0 w-full bg-[#101826] border-t-[3px] border-slate-700 rounded-t-3xl shadow-[0_-12px_32px_rgba(0,0,0,0.7)] p-3.5 flex flex-col z-50 animate-in slide-in-from-bottom-4 fade-in duration-200 select-none"
           >
             <div className="w-10 h-1 bg-slate-700 rounded-full mx-auto mb-2.5 opacity-70" />
 

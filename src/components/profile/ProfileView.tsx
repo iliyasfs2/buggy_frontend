@@ -548,7 +548,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const activeConnections = activeTab === "following" ? following : followers;
 
   return (
-    <div className="w-full min-h-screen px-0 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 sm:pr-8 lg:pr-10 pt-0 pb-32 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 select-none relative">
+    <div className="w-full min-h-screen px-0 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 sm:pr-8 lg:pr-10 pt-0 pb-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 select-none relative">
       <div className="w-full max-w-xl xl:max-w-2xl flex flex-col shrink-0">
         <div className="hidden md:flex lg:hidden justify-end w-full mb-4 px-4 sm:px-0">
           <DesktopMetricBar inline />
@@ -955,14 +955,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </div>
             </div>
 
-            <div className="mt-7">
-              <div className="flex items-center justify-between mb-3.5">
+            <div className="mt-6 sm:mt-8">
+              <div className="flex items-center justify-between mb-2.5 sm:mb-3">
                 <h2 className="text-sm sm:text-base font-black text-slate-300 uppercase tracking-wider">
                   Friend Streaks
                 </h2>
               </div>
 
-              <div className="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6 justify-items-center pt-2 pb-3 px-1">
+              <div className="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6 justify-items-center py-0.5 px-1">
                 {friendsForStreaks.map((f) => (
                   <div
                     key={f.id}
@@ -1016,7 +1016,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </div>
             </div>
 
-            <div className="mt-7">
+            <div className="mt-6 sm:mt-8">
               <ProfileHonors
                 streak={effectiveStreak}
                 totalXP={effectiveXp}

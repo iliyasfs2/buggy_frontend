@@ -349,8 +349,8 @@ export function ProfileHonors({
   const previewAchievements = sortedAchievements.slice(0, 4);
 
   return (
-    <div className="w-full flex flex-col gap-4 sm:gap-8 select-none mt-2 sm:mt-4">
-      <div className="flex flex-col gap-2 sm:gap-4">
+    <div className="w-full flex flex-col gap-6 sm:gap-8 select-none mt-0">
+      <div className="flex flex-col gap-2.5 sm:gap-3">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
             Special Badges
@@ -413,7 +413,7 @@ export function ProfileHonors({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 sm:gap-4">
+      <div className="flex flex-col gap-2.5 sm:gap-3">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm sm:text-base font-black text-slate-200 uppercase tracking-wider">
             Achievements
