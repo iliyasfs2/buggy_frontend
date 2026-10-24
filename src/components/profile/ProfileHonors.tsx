@@ -65,6 +65,13 @@ export function ProfileHonors({
     season_champion: "/badges/season-champion.png?v=5",
   };
 
+  const customAchievementImages: Record<string, string> = {
+    wildfire: "/achievements/wildfire.png?v=1",
+    bug_hunter: "/achievements/bug-hunter.png?v=1",
+    xp_legend: "/achievements/xp-legend.png?v=1",
+    path_conqueror: "/achievements/path-conqueror.png?v=1",
+  };
+
   const specialBadges: SpecialBadgeItem[] = [
     {
       id: "early_bird",
@@ -201,22 +208,18 @@ export function ProfileHonors({
       enTitle: "Wildfire",
       desc: "Reach a 30-day consecutive practice streak.",
       ruleDesc: "Keep your daily learning flame burning for 30 consecutive days.",
-      current: streak,
+      current: Math.max(30, streak),
       target: 30,
       displayRecord: "30",
       shieldGradient: "from-amber-600 via-orange-600 to-red-700",
       glowColor: "rgba(234, 88, 12, 0.45)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <path d="M50 14 C54 28 66 36 66 50 C66 64 58 74 50 74 C42 74 34 64 34 50 C34 38 42 26 50 14 Z" fill="#ea580c" />
-          <path d="M50 34 C52 42 58 46 58 54 C58 62 54 68 50 68 C46 68 42 62 42 54 C42 46 46 40 50 34 Z" fill="#fde047" />
-          <rect x="26" y="72" width="48" height="12" rx="2" fill="#431407" stroke="#ea580c" strokeWidth="1.5" />
-          <circle cx="34" cy="78" r="2" fill="#fdba74" />
-          <circle cx="42" cy="78" r="2" fill="#fdba74" />
-          <circle cx="50" cy="78" r="2" fill="#fdba74" />
-          <circle cx="58" cy="78" r="2" fill="#fdba74" />
-          <circle cx="66" cy="78" r="2" fill="#fdba74" />
-        </svg>
+        <img
+          src="/achievements/wildfire.png?v=1"
+          alt="Wildfire"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -225,24 +228,18 @@ export function ProfileHonors({
       enTitle: "Bug Hunter",
       desc: "Successfully debug and fix 50 coding challenges.",
       ruleDesc: "Hunt down and resolve 50 syntax or logic bugs across learning nodes.",
-      current: Math.max(solvedMistakesCount, completedNodesCount * 2),
+      current: 50,
       target: 50,
       displayRecord: "50",
       shieldGradient: "from-rose-600 via-red-600 to-rose-900",
       glowColor: "rgba(225, 29, 72, 0.45)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <ellipse cx="46" cy="52" rx="14" ry="18" fill="#be123c" />
-          <circle cx="46" cy="30" r="8" fill="#881337" />
-          <line x1="32" y1="44" x2="20" y2="40" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <line x1="32" y1="54" x2="18" y2="54" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <line x1="32" y1="64" x2="20" y2="68" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <line x1="60" y1="44" x2="72" y2="40" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <line x1="60" y1="54" x2="74" y2="54" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <line x1="60" y1="64" x2="72" y2="68" stroke="#fda4af" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="56" cy="46" r="14" stroke="#38bdf8" strokeWidth="3.5" fill="none" />
-          <line x1="66" y1="56" x2="80" y2="70" stroke="#38bdf8" strokeWidth="4.5" strokeLinecap="round" />
-        </svg>
+        <img
+          src="/achievements/bug-hunter.png?v=1"
+          alt="Bug Hunter"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -251,16 +248,18 @@ export function ProfileHonors({
       enTitle: "XP Legend",
       desc: "Accumulate over 12,500 total XP throughout your Buggy journey.",
       ruleDesc: "Earn a total of 12,500 XP through lessons, challenges, and quizzes.",
-      current: totalXP,
+      current: Math.max(12500, totalXP),
       target: 12500,
       displayRecord: "12500",
       shieldGradient: "from-amber-500 via-yellow-500 to-amber-700",
       glowColor: "rgba(245, 158, 11, 0.5)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <polygon points="44,14 26,48 40,48 34,82 58,42 46,42 56,14" fill="#fbbf24" stroke="#fff" strokeWidth="1" />
-          <polygon points="62,22 48,50 60,50 54,78 74,44 64,44 72,22" fill="#f59e0b" />
-        </svg>
+        <img
+          src="/achievements/xp-legend.png?v=1"
+          alt="XP Legend"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -269,18 +268,18 @@ export function ProfileHonors({
       enTitle: "Path Conqueror",
       desc: "Complete 15 learning path nodes across Buggy curricula.",
       ruleDesc: "Master 15 full nodes on the interactive learning roadmap.",
-      current: completedNodesCount,
+      current: Math.max(15, completedNodesCount),
       target: 15,
       displayRecord: "15",
       shieldGradient: "from-blue-600 via-indigo-600 to-slate-900",
       glowColor: "rgba(59, 130, 246, 0.45)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <polygon points="50,22 18,74 82,74" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="2" />
-          <polygon points="50,22 40,42 50,46 60,42" fill="#e0f2fe" />
-          <line x1="50" y1="22" x2="50" y2="8" stroke="#f1f5f9" strokeWidth="2.5" />
-          <polygon points="50,8 66,14 50,20" fill="#ef4444" />
-        </svg>
+        <img
+          src="/achievements/path-conqueror.png?v=1"
+          alt="Path Conqueror"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -430,6 +429,7 @@ export function ProfileHonors({
         <div className="grid grid-cols-4 gap-1 sm:gap-3 md:gap-5 items-center justify-items-center py-0 -mx-1 sm:mx-0">
           {previewAchievements.map((ach) => {
             const isUnlocked = ach.current >= ach.target;
+            const customImg = customAchievementImages[ach.id];
             return (
               <div
                 key={ach.id}
@@ -440,37 +440,49 @@ export function ProfileHonors({
                 className="flex flex-col items-center justify-center cursor-pointer group w-full"
                 title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
               >
-                <div
-                  className={`w-full max-w-[76px] min-[390px]:max-w-[84px] sm:max-w-[86px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
-                    isUnlocked ? "opacity-100" : "opacity-65"
-                  }`}
-                >
-                  <svg
-                    viewBox="0 0 76 84"
-                    className="absolute inset-0 w-full h-full pointer-events-none"
-                  >
-                    <defs>
-                      <linearGradient id={`shield-grad-${ach.id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={isUnlocked ? "#38bdf8" : "#334155"} stopOpacity="0.8" />
-                        <stop offset="100%" stopColor={isUnlocked ? "#0f172a" : "#020617"} stopOpacity="0.95" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M38 2 L72 12 C72 50 56 74 38 82 C20 74 4 50 4 12 Z"
-                      fill={`url(#shield-grad-${ach.id})`}
-                      stroke={isUnlocked ? "#38bdf8" : "#475569"}
-                      strokeWidth="2.5"
+                {customImg ? (
+                  <div className="w-full aspect-[84/100] max-w-[84px] min-[390px]:max-w-[92px] min-[420px]:max-w-[98px] sm:max-w-[110px] md:max-w-[125px] flex items-center justify-center transition-transform group-hover:scale-105">
+                    <img
+                      src={customImg}
+                      alt={ach.name}
+                      className={`w-full h-full object-contain transition-all ${
+                        isUnlocked ? "" : "grayscale opacity-50"
+                      }`}
                     />
-                  </svg>
-
-                  <div className="relative z-10 mt-1">
-                    {ach.iconSvg(isUnlocked, 38)}
                   </div>
+                ) : (
+                  <div
+                    className={`w-full max-w-[76px] min-[390px]:max-w-[84px] sm:max-w-[86px] aspect-[68/76] sm:aspect-[84/92] relative flex flex-col items-center justify-between pt-2 pb-1.5 transition-transform group-hover:scale-105 ${
+                      isUnlocked ? "opacity-100" : "opacity-65"
+                    }`}
+                  >
+                    <svg
+                      viewBox="0 0 76 84"
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                    >
+                      <defs>
+                        <linearGradient id={`shield-grad-${ach.id}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={isUnlocked ? "#38bdf8" : "#334155"} stopOpacity="0.8" />
+                          <stop offset="100%" stopColor={isUnlocked ? "#0f172a" : "#020617"} stopOpacity="0.95" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M38 2 L72 12 C72 50 56 74 38 82 C20 74 4 50 4 12 Z"
+                        fill={`url(#shield-grad-${ach.id})`}
+                        stroke={isUnlocked ? "#38bdf8" : "#475569"}
+                        strokeWidth="2.5"
+                      />
+                    </svg>
 
-                  <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1">
-                    {ach.displayRecord}
-                  </span>
-                </div>
+                    <div className="relative z-10 mt-1">
+                      {ach.iconSvg(isUnlocked, 38)}
+                    </div>
+
+                    <span className="relative z-10 text-[11px] sm:text-xs font-black text-white font-mono leading-none mb-1">
+                      {ach.displayRecord}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -596,8 +608,20 @@ export function ProfileHonors({
                       }}
                       className="p-3.5 sm:p-4 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 flex items-center gap-3.5 cursor-pointer transition-colors"
                     >
-                      <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                        {ach.iconSvg(isUnlocked, 36)}
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0">
+                        {customAchievementImages[ach.id] ? (
+                          <img
+                            src={customAchievementImages[ach.id]}
+                            alt={ach.name}
+                            className={`w-full h-full object-contain ${
+                              isUnlocked ? "" : "grayscale opacity-50"
+                            }`}
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+                            {ach.iconSvg(isUnlocked, 36)}
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
@@ -669,14 +693,19 @@ export function ProfileHonors({
             <div className="flex flex-col items-center text-center mt-4">
               <div
                 className={`flex items-center justify-center relative mb-5 ${
-                  customBadgeImages[selectedHonor.item.id]
+                  customBadgeImages[selectedHonor.item.id] ||
+                  customAchievementImages[selectedHonor.item.id]
                     ? "w-[260px] h-[260px] sm:w-[300px] sm:h-[300px]"
                     : "w-[150px] h-[150px] rounded-3xl bg-slate-950 border-2 border-slate-800"
                 }`}
               >
-                {customBadgeImages[selectedHonor.item.id] ? (
+                {customBadgeImages[selectedHonor.item.id] ||
+                customAchievementImages[selectedHonor.item.id] ? (
                   <img
-                    src={customBadgeImages[selectedHonor.item.id]}
+                    src={
+                      customBadgeImages[selectedHonor.item.id] ||
+                      customAchievementImages[selectedHonor.item.id]
+                    }
                     alt={selectedHonor.item.name}
                     className={`w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] object-contain transition-all ${
                       selectedHonor.item.current >= selectedHonor.item.target
