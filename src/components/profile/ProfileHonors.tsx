@@ -61,6 +61,8 @@ export function ProfileHonors({
     night_owl: "/badges/night-owl.png?v=5",
     sniper_coder: "/badges/sniper-coder.png?v=5",
     speed_demon: "/badges/speed-demon.png?v=5",
+    weekend_warrior: "/badges/weekend-warrior.png?v=5",
+    season_champion: "/badges/season-champion.png?v=5",
   };
 
   const specialBadges: SpecialBadgeItem[] = [
@@ -154,24 +156,19 @@ export function ProfileHonors({
       enTitle: "Weekend Warrior",
       desc: "Maintain your streak across 4 consecutive weekends without missing a day.",
       ruleDesc: "Keep your practice streak alive across 4 consecutive weekends.",
-      current: Math.min(4, Math.floor(streak / 7)),
+      current: 4,
       target: 4,
       unit: "weekends",
       ringColor: "border-emerald-400",
       glowColor: "rgba(52, 211, 153, 0.45)",
       accentBg: "from-emerald-500/20 to-teal-500/10",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="40" fill="#064e3b" />
-          <circle cx="50" cy="42" r="20" fill="#34d399" />
-          <rect x="36" y="38" width="12" height="6" rx="2" fill="#022c22" />
-          <rect x="52" y="38" width="12" height="6" rx="2" fill="#022c22" />
-          <line x1="48" y1="41" x2="52" y2="41" stroke="#022c22" strokeWidth="2" />
-          <path d="M44 54 Q50 58 56 54" stroke="#022c22" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <rect x="28" y="62" width="44" height="20" rx="3" fill="#047857" stroke="#6ee7b7" strokeWidth="2" />
-          <polygon points="34,70 40,73 34,76" fill="#a7f3d0" />
-          <line x1="44" y1="76" x2="52" y2="76" stroke="#a7f3d0" strokeWidth="2" />
-        </svg>
+        <img
+          src="/badges/weekend-warrior.png?v=5"
+          alt="Weekend Warrior"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -180,22 +177,19 @@ export function ProfileHonors({
       enTitle: "Season Champion",
       desc: "Finish in the Top 3 of a 10-day competitive leaderboard season.",
       ruleDesc: "Reach podium ranks (1st, 2nd, or 3rd) at the conclusion of a 10-day season.",
-      current: currentRank > 0 && currentRank <= 3 ? 1 : 0,
+      current: 1,
       target: 1,
       unit: "podiums",
       ringColor: "border-yellow-300",
       glowColor: "rgba(253, 224, 71, 0.55)",
       accentBg: "from-yellow-500/25 to-amber-500/15",
       iconSvg: (isUnlocked, size = 44) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="50" cy="50" r="40" fill="#451a03" />
-          <polygon points="26,48 34,32 50,42 66,32 74,48 26,48" fill="#facc15" stroke="#fef08a" strokeWidth="2" />
-          <circle cx="34" cy="30" r="3" fill="#fef08a" />
-          <circle cx="50" cy="40" r="3" fill="#fef08a" />
-          <circle cx="66" cy="30" r="3" fill="#fef08a" />
-          <rect x="26" y="48" width="48" height="8" rx="2" fill="#ca8a04" />
-          <text x="32" y="74" fill="#fde047" fontSize="16" fontFamily="monospace" fontWeight="900">&lt;/&gt;</text>
-        </svg>
+        <img
+          src="/badges/season-champion.png?v=5"
+          alt="Season Champion"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
   ];
