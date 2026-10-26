@@ -548,6 +548,19 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
     return list.slice(0, 5);
   }, [isMe, selectedStreakUserIds, following, followers]);
 
+  const streakBuddiesCandidates = useMemo(() => {
+    const userMap = new Map<string, UserConnectionItem>();
+    for (const f of following) {
+      userMap.set(String(f.id), f);
+    }
+    for (const f of followers) {
+      if (!userMap.has(String(f.id))) {
+        userMap.set(String(f.id), f);
+      }
+    }
+    return Array.from(userMap.values());
+  }, [following, followers]);
+
   const activeConnections = activeTab === "following" ? following : followers;
 
   return (
@@ -1804,15 +1817,12 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
             className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[580px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/streak.png" alt="Streak" className="w-5 h-5 object-contain" />
                 <h3 className="text-base sm:text-lg font-black text-white">
                   Choose Streak Buddies
                 </h3>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 border border-slate-700">
-                  {selectedStreakUserIds.length}/5
-                </span>
               </div>
               <button
                 type="button"
@@ -1820,54 +1830,40 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsStreakPickerOpen(false);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" strokeWidth={3} />
               </button>
             </div>
 
-            <div className="p-3 border-b border-slate-800/70 bg-[#081020]/50 shrink-0">
+            <div className="px-4 py-2 bg-[#081020]/50 shrink-0">
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={2.75} />
                 <input
                   type="text"
                   value={streakPickerSearch}
                   onChange={(e) => setStreakPickerSearch(e.target.value)}
                   placeholder="Search among coders you follow..."
-                  className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                  className="w-full h-11 pl-10 pr-3.5 rounded-2xl bg-slate-900/90 border-2 border-slate-700 text-sm font-bold text-white placeholder-slate-400 placeholder:font-bold focus:outline-none focus:border-cyan-400 transition-colors"
                 />
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
-              {following.length === 0 ? (
-                <div className="py-10 px-4 text-center flex flex-col items-center gap-3">
+              {streakBuddiesCandidates.filter((u) => {
+                if (!streakPickerSearch.trim()) return true;
+                return u.username.toLowerCase().includes(streakPickerSearch.trim().toLowerCase());
+              }).length === 0 ? (
+                <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center">
-                    <UserPlus className="w-6 h-6 text-slate-500" />
+                    <UserPlus className="w-6 h-6 text-slate-400" strokeWidth={2.5} />
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-slate-300">
-                      You are not following anyone yet
-                    </span>
-                    <span className="text-xs text-slate-500 max-w-xs">
-                      Follow other coders first, then pick up to 5 friends to form shared daily debug streaks!
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setIsStreakPickerOpen(false);
-                      setIsSearchOpen(true);
-                    }}
-                    className="mt-2 h-10 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-cyan-950/40"
-                  >
-                    <Search className="w-3.5 h-3.5" />
-                    <span>Find Coders to Follow</span>
-                  </button>
+                  <span className="text-sm font-bold text-slate-400">
+                    No friends found
+                  </span>
                 </div>
               ) : (
-                following
+                streakBuddiesCandidates
                   .filter((u) => {
                     if (!streakPickerSearch.trim()) return true;
                     return u.username.toLowerCase().includes(streakPickerSearch.trim().toLowerCase());
@@ -1886,10 +1882,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                             <AvatarRenderer config={u.avatar_config || DEFAULT_AVATAR_CONFIG} size={40} />
                           </div>
                           <div className="min-w-0 flex flex-col">
-                            <span className="text-sm font-bold text-white leading-tight truncate">
+                            <span className="text-sm font-bold text-white leading-tight">
                               {u.username}
                             </span>
-                            <span className="text-xs font-bold text-slate-400 truncate mt-0.5 flex items-center gap-1">
+                            <span className="text-xs font-bold text-slate-400 mt-0.5 flex items-center gap-1">
                               <img src="/icons/streak.png" alt="Streak" className="w-3 h-3 object-contain shrink-0" />
                               <span className="font-mono text-amber-400">{u.streak || 5} days</span>
                             </span>
