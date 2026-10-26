@@ -1810,14 +1810,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isStreakPickerOpen && isMe && (
         <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0c162c] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsStreakPickerOpen(false)}
         >
           <div
-            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[580px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-xl md:h-[650px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0c162c] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0c162c] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <img src="/icons/streak.png" alt="Streak" className="w-5 h-5 object-contain" />
                 <h3 className="text-base sm:text-lg font-black text-white">
@@ -1836,7 +1836,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </button>
             </div>
 
-            <div className="px-4 py-2 bg-[#081020]/50 shrink-0">
+            <div className="px-4 py-2 bg-[#0c162c] shrink-0">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={2.75} />
                 <input
@@ -1844,21 +1844,19 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   value={streakPickerSearch}
                   onChange={(e) => setStreakPickerSearch(e.target.value)}
                   placeholder="Search among coders you follow..."
-                  className="w-full h-11 pl-10 pr-3.5 rounded-2xl bg-slate-900/90 border-2 border-slate-700 text-sm font-bold text-white placeholder-slate-400 placeholder:font-bold focus:outline-none focus:border-cyan-400 transition-colors"
+                  className="w-full h-12 pl-10 pr-3.5 rounded-2xl bg-slate-900/90 border-[3px] border-slate-700 text-sm font-bold text-white placeholder-slate-400 placeholder:font-bold focus:outline-none focus:border-cyan-400 transition-colors"
                 />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 bg-[#0c162c] flex flex-col">
               {streakBuddiesCandidates.filter((u) => {
                 if (!streakPickerSearch.trim()) return true;
                 return u.username.toLowerCase().includes(streakPickerSearch.trim().toLowerCase());
               }).length === 0 ? (
-                <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center">
-                    <UserPlus className="w-6 h-6 text-slate-400" strokeWidth={2.5} />
-                  </div>
-                  <span className="text-sm font-bold text-slate-400">
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4 my-auto">
+                  <UserPlus className="w-16 h-16 text-slate-400" strokeWidth={2.2} />
+                  <span className="text-base font-bold text-slate-400">
                     No friends found
                   </span>
                 </div>
