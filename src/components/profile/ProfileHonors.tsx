@@ -522,9 +522,9 @@ export function ProfileHonors({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+            <div className="flex-1 overflow-y-auto px-2 py-3.5 sm:p-5">
               {activeModal === "badges_all" ? (
-                <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
+                <div className="grid grid-cols-3 gap-1.5 min-[380px]:gap-2.5 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
                   {specialBadges.map((badge) => {
                     const isUnlocked = badge.current >= badge.target;
                     const customImg = customBadgeImages[badge.id];
@@ -536,13 +536,13 @@ export function ProfileHonors({
                           soundEffects.playSoftClick();
                           setSelectedHonor({ type: "badge", item: badge });
                         }}
-                        className="w-full flex flex-col items-center justify-start py-2 px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
+                        className="w-full flex flex-col items-center justify-start py-1.5 px-0.5 sm:py-2 sm:px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
                       >
                         <div
                           className={`rounded-full flex items-center justify-center relative transition-transform ${
                             customImg
-                              ? "w-full aspect-square max-w-[105px] min-[390px]:max-w-[115px] sm:max-w-[130px] md:max-w-[145px]"
-                              : `w-full aspect-square max-w-[90px] sm:max-w-[105px] border-4 ${
+                              ? "w-full aspect-square max-w-[115px] min-[360px]:max-w-[125px] min-[390px]:max-w-[135px] sm:max-w-[145px] md:max-w-[160px]"
+                              : `w-full aspect-square max-w-[96px] sm:max-w-[115px] border-4 ${
                                   isUnlocked
                                     ? `${badge.ringColor} bg-[#0b1426]`
                                     : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -558,11 +558,11 @@ export function ProfileHonors({
                               }`}
                             />
                           ) : (
-                            badge.iconSvg(isUnlocked, 54)
+                            badge.iconSvg(isUnlocked, 60)
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2.5 truncate w-full px-1">
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 sm:mt-2.5 truncate w-full px-0.5">
                           {badge.name}
                         </span>
                       </div>
@@ -570,7 +570,7 @@ export function ProfileHonors({
                   })}
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
+                <div className="grid grid-cols-3 gap-1.5 min-[380px]:gap-2.5 sm:gap-4 md:gap-5 items-start justify-items-center py-2">
                   {achievements.map((ach) => {
                     const isUnlocked = ach.current >= ach.target;
                     const customImg = customAchievementImages[ach.id];
@@ -582,9 +582,9 @@ export function ProfileHonors({
                           soundEffects.playSoftClick();
                           setSelectedHonor({ type: "achievement", item: ach });
                         }}
-                        className="w-full flex flex-col items-center justify-start py-2 px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
+                        className="w-full flex flex-col items-center justify-start py-1.5 px-0.5 sm:py-2 sm:px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
                       >
-                        <div className="w-full aspect-[84/100] max-w-[100px] min-[390px]:max-w-[110px] sm:max-w-[125px] md:max-w-[140px] flex items-center justify-center">
+                        <div className="w-full aspect-[84/100] max-w-[112px] min-[360px]:max-w-[122px] min-[390px]:max-w-[132px] sm:max-w-[142px] md:max-w-[155px] flex items-center justify-center">
                           {customImg ? (
                             <img
                               src={customImg}
@@ -595,12 +595,12 @@ export function ProfileHonors({
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              {ach.iconSvg(isUnlocked, 48)}
+                              {ach.iconSvg(isUnlocked, 54)}
                             </div>
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2.5 truncate w-full px-1">
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 sm:mt-2.5 truncate w-full px-0.5">
                           {ach.name}
                         </span>
                       </div>
