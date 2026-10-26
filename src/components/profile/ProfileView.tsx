@@ -875,24 +875,24 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 Overview
               </h2>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
+                <div className="p-3 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-2.5 sm:gap-3.5 shadow-md">
                   <img
                     src="/icons/streak.png"
                     alt="Streak"
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
-                      {effectiveStreak} days
+                    <span className="text-base sm:text-xl font-black text-white leading-tight whitespace-nowrap">
+                      {effectiveStreak} Days
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
-                      Active Streak
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                      Streak
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
+                <div className="p-3 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-2.5 sm:gap-3.5 shadow-md">
                   {currentCourse.iconSrc ? (
                     <img
                       src={currentCourse.iconSrc}
@@ -905,11 +905,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     </span>
                   )}
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
+                    <span className="text-base sm:text-xl font-black text-white leading-tight whitespace-nowrap">
                       {effectiveCompletedNodes}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
-                      Lessons Finished
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                      Lessons
                     </span>
                   </div>
                 </div>
@@ -919,7 +919,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     soundEffects.playSoftClick();
                     router.push("/leaderboard");
                   }}
-                  className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md cursor-pointer hover:border-blue-500 hover:border-b-blue-600 transition-all group"
+                  className="p-3 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-2.5 sm:gap-3.5 shadow-md cursor-pointer hover:border-blue-500 hover:border-b-blue-600 transition-all group"
                   title="View 10-Day Season Leaderboard"
                 >
                   <img
@@ -928,30 +928,27 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow group-hover:scale-105 transition-transform"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
-                      {hasRank ? `Rank #${currentRank}` : coderLevel || "Unranked"}
+                    <span className="text-base sm:text-xl font-black text-white leading-tight whitespace-nowrap">
+                      {hasRank ? `Rank #${currentRank}` : "Unranked"}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 flex flex-wrap items-center gap-1 break-words">
-                      <span>Season {profile?.season_number || 1}</span>
-                      <span className="text-cyan-400 font-mono text-[11px] sm:text-xs">
-                        • {coderLevel ? coderLevel : leagueName}
-                      </span>
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                      Season Rank
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-3 sm:gap-3.5 shadow-md">
+                <div className="p-3 sm:p-4 rounded-2xl border-2 border-b-4 border-slate-700 border-b-slate-800 bg-[#0d182e]/80 flex items-center gap-2.5 sm:gap-3.5 shadow-md">
                   <img
                     src="/icons/lightning.png"
                     alt="Total XP"
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
+                    <span className="text-base sm:text-xl font-black text-white leading-tight whitespace-nowrap">
                       {effectiveXp.toLocaleString()} XP
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
-                      Total XP • {effectiveSeasonXp.toLocaleString()} Season
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                      Total XP
                     </span>
                   </div>
                 </div>
