@@ -528,7 +528,6 @@ export function ProfileHonors({
                   {specialBadges.map((badge) => {
                     const isUnlocked = badge.current >= badge.target;
                     const customImg = customBadgeImages[badge.id];
-                    const percent = Math.min(100, Math.round((badge.current / badge.target) * 100));
 
                     return (
                       <div
@@ -537,13 +536,13 @@ export function ProfileHonors({
                           soundEffects.playSoftClick();
                           setSelectedHonor({ type: "badge", item: badge });
                         }}
-                        className="w-full flex flex-col items-center justify-start p-2.5 sm:p-3 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        className="w-full flex flex-col items-center justify-start py-2 px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
                       >
                         <div
                           className={`rounded-full flex items-center justify-center relative transition-transform ${
                             customImg
-                              ? "w-full aspect-square max-w-[84px] sm:max-w-[100px]"
-                              : `w-full aspect-square max-w-[72px] sm:max-w-[88px] border-4 ${
+                              ? "w-full aspect-square max-w-[105px] min-[390px]:max-w-[115px] sm:max-w-[130px] md:max-w-[145px]"
+                              : `w-full aspect-square max-w-[90px] sm:max-w-[105px] border-4 ${
                                   isUnlocked
                                     ? `${badge.ringColor} bg-[#0b1426]`
                                     : "border-slate-800 bg-slate-950/80 opacity-70"
@@ -559,25 +558,13 @@ export function ProfileHonors({
                               }`}
                             />
                           ) : (
-                            badge.iconSvg(isUnlocked, 44)
+                            badge.iconSvg(isUnlocked, 54)
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2.5 truncate w-full px-1">
                           {badge.name}
                         </span>
-
-                        <div className="w-full flex items-center gap-1.5 mt-2">
-                          <div className="flex-1 h-1.5 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
-                            <div
-                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"
-                              style={{ width: `${percent}%` }}
-                            />
-                          </div>
-                          <span className="text-[10px] font-mono font-bold text-slate-400 shrink-0">
-                            {badge.current}/{badge.target}
-                          </span>
-                        </div>
                       </div>
                     );
                   })}
@@ -587,7 +574,6 @@ export function ProfileHonors({
                   {achievements.map((ach) => {
                     const isUnlocked = ach.current >= ach.target;
                     const customImg = customAchievementImages[ach.id];
-                    const percent = Math.min(100, Math.round((ach.current / ach.target) * 100));
 
                     return (
                       <div
@@ -596,9 +582,9 @@ export function ProfileHonors({
                           soundEffects.playSoftClick();
                           setSelectedHonor({ type: "achievement", item: ach });
                         }}
-                        className="w-full flex flex-col items-center justify-start p-2.5 sm:p-3 rounded-2xl bg-[#0b1426] border border-slate-800 hover:border-slate-700 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        className="w-full flex flex-col items-center justify-start py-2 px-1 rounded-2xl hover:bg-slate-800/30 cursor-pointer transition-all hover:scale-[1.04] active:scale-[0.98]"
                       >
-                        <div className="w-full aspect-[84/100] max-w-[80px] sm:max-w-[96px] flex items-center justify-center">
+                        <div className="w-full aspect-[84/100] max-w-[100px] min-[390px]:max-w-[110px] sm:max-w-[125px] md:max-w-[140px] flex items-center justify-center">
                           {customImg ? (
                             <img
                               src={customImg}
@@ -609,26 +595,14 @@ export function ProfileHonors({
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              {ach.iconSvg(isUnlocked, 40)}
+                              {ach.iconSvg(isUnlocked, 48)}
                             </div>
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 truncate w-full px-1">
+                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2.5 truncate w-full px-1">
                           {ach.name}
                         </span>
-
-                        <div className="w-full flex items-center gap-1.5 mt-2">
-                          <div className="flex-1 h-1.5 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
-                            <div
-                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"
-                              style={{ width: `${percent}%` }}
-                            />
-                          </div>
-                          <span className="text-[10px] font-mono font-bold text-slate-400 shrink-0">
-                            {ach.current.toLocaleString()}/{ach.target.toLocaleString()}
-                          </span>
-                        </div>
                       </div>
                     );
                   })}
