@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, ChevronRight, Lock, Check } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 import { soundEffects } from "@/utils/soundEffects";
 
 export interface SpecialBadgeItem {
@@ -375,7 +375,7 @@ export function ProfileHonors({
                   setSelectedHonor({ type: "badge", item: badge });
                 }}
                 className="flex flex-col items-center justify-center cursor-pointer group w-full"
-                title={`${badge.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
+                title={badge.name}
               >
                 <div
                   className={`rounded-full flex items-center justify-center relative transition-transform group-hover:scale-105 ${
@@ -438,7 +438,7 @@ export function ProfileHonors({
                   setSelectedHonor({ type: "achievement", item: ach });
                 }}
                 className="flex flex-col items-center justify-center cursor-pointer group w-full"
-                title={`${ach.name} • ${isUnlocked ? "Unlocked" : "In Progress"}`}
+                title={ach.name}
               >
                 {customImg ? (
                   <div className="w-full aspect-[84/100] max-w-[84px] min-[390px]:max-w-[92px] min-[420px]:max-w-[98px] sm:max-w-[110px] md:max-w-[125px] flex items-center justify-center transition-transform group-hover:scale-105">
@@ -657,23 +657,9 @@ export function ProfileHonors({
                 )}
               </div>
 
-              <h3 className="text-2xl font-black text-white leading-tight mb-2">
+              <h3 className="text-2xl font-black text-white leading-tight mb-3">
                 {selectedHonor.item.name}
               </h3>
-
-              <div className="mb-4">
-                {selectedHonor.item.current >= selectedHonor.item.target ? (
-                  <span className="h-7 px-3.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/50 text-xs font-black inline-flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5" />
-                    <span>✓ Unlocked</span>
-                  </span>
-                ) : (
-                  <span className="h-7 px-3.5 rounded-full bg-amber-950/70 text-amber-400 border border-amber-500/50 text-xs font-black inline-flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>🔒 In Progress</span>
-                  </span>
-                )}
-              </div>
 
               <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-bold px-2 mb-6 text-center">
                 {selectedHonor.item.ruleDesc}
