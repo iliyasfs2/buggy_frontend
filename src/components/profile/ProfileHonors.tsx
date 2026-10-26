@@ -555,7 +555,7 @@ export function ProfileHonors({
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 sm:mt-2.5 truncate w-full px-0.5">
+                        <span className="text-[11px] min-[360px]:text-xs sm:text-sm font-black text-white text-center mt-1.5 sm:mt-2 leading-tight break-words hyphens-auto w-full px-0.5 max-w-full">
                           {badge.name}
                         </span>
                       </div>
@@ -593,7 +593,7 @@ export function ProfileHonors({
                           )}
                         </div>
 
-                        <span className="text-xs sm:text-sm font-black text-white text-center mt-2 sm:mt-2.5 truncate w-full px-0.5">
+                        <span className="text-[11px] min-[360px]:text-xs sm:text-sm font-black text-white text-center mt-1.5 sm:mt-2 leading-tight break-words hyphens-auto w-full px-0.5 max-w-full">
                           {ach.name}
                         </span>
                       </div>

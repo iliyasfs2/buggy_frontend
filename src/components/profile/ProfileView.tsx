@@ -883,10 +883,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
                       {effectiveStreak} days
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
                       Active Streak
                     </span>
                   </div>
@@ -905,10 +905,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     </span>
                   )}
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
                       {effectiveCompletedNodes}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
                       Lessons Finished
                     </span>
                   </div>
@@ -928,10 +928,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow group-hover:scale-105 transition-transform"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
                       {hasRank ? `Rank #${currentRank}` : coderLevel || "Unranked"}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate flex items-center gap-1">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 flex flex-wrap items-center gap-1 break-words">
                       <span>Season {profile?.season_number || 1}</span>
                       <span className="text-cyan-400 font-mono text-[11px] sm:text-xs">
                         • {coderLevel ? coderLevel : leagueName}
@@ -947,10 +947,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                     className="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0 drop-shadow"
                   />
                   <div className="min-w-0 flex flex-col">
-                    <span className="text-lg sm:text-xl font-black text-white leading-tight truncate">
+                    <span className="text-lg sm:text-xl font-black text-white leading-tight break-words">
                       {effectiveXp.toLocaleString()} XP
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5 break-words">
                       Total XP • {effectiveSeasonXp.toLocaleString()} Season
                     </span>
                   </div>
