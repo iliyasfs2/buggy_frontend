@@ -1237,17 +1237,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isSearchOpen && (
         <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0c162c] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsSearchOpen(false)}
         >
           <div
-            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[540px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-xl md:h-[650px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0c162c] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0c162c] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-black text-white">Find Coders</span>
+                <Search className="w-4 h-4 text-cyan-400" strokeWidth={2.5} />
+                <span className="text-base sm:text-lg font-black text-white">Find Coders</span>
               </div>
 
               <button
@@ -1256,29 +1256,32 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsSearchOpen(false);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" strokeWidth={3} />
               </button>
             </div>
 
-            <div className="p-3 border-b border-slate-800/70 bg-[#081020]/50 shrink-0">
+            <div className="px-4 py-2 bg-[#0c162c] shrink-0">
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={2.75} />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by username or title..."
-                  className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                  className="w-full h-12 pl-10 pr-3.5 rounded-2xl bg-slate-900/90 border-[3px] border-slate-700 text-sm font-bold text-white placeholder-slate-400 placeholder:font-bold focus:outline-none focus:border-cyan-400 transition-colors"
                 />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 bg-[#0c162c] flex flex-col">
               {filteredSearchUsers.length === 0 ? (
-                <div className="py-12 px-4 text-center text-sm font-bold text-slate-500">
-                  {directoryUsers.length === 0 ? "Loading coders..." : "No matching coders found."}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4 my-auto">
+                  <Search className="w-16 h-16 text-slate-400" strokeWidth={2.2} />
+                  <span className="text-base font-bold text-slate-400">
+                    {directoryUsers.length === 0 ? "Loading coders..." : "No matching coders found"}
+                  </span>
                 </div>
               ) : (
                 filteredSearchUsers.map((u) => (
