@@ -34,6 +34,7 @@ import {
   followUserApi,
   unfollowUserApi,
   switchCourseApi,
+  updateDevCardApi,
   type UserProfileData,
   type UserConnectionItem,
   type LeaderboardUserEntry,
@@ -235,6 +236,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       } catch {
       }
     }
+    updateDevCardApi(updated)
+      .then(() => {
+        setDirectoryUsers((prev) =>
+          prev.map((u) =>
+            u.id === `user_${currentUser?.id}` || u.username === currentUser?.username
+              ? { ...u, coder_title: updated.specialtyTitle }
+              : u
+          )
+        );
+      })
+      .catch(() => {});
   };
 
   const targetIdentifier = useMemo(() => {
@@ -267,6 +279,22 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       .then(([profData, connData]) => {
         if (!active) return;
         setProfile(profData);
+        if (profData?.dev_card && typeof profData.dev_card === "object" && Object.keys(profData.dev_card).length > 0) {
+          setDevCardData((prev) => {
+            const next = { ...prev, ...profData.dev_card };
+            if (profData.coder_title) {
+              next.specialtyTitle = profData.coder_title;
+            }
+            setEditDevCardForm(next);
+            return next;
+          });
+        } else if (profData?.coder_title) {
+          setDevCardData((prev) => {
+            const next = { ...prev, specialtyTitle: profData.coder_title! };
+            setEditDevCardForm(next);
+            return next;
+          });
+        }
         setFollowers(connData.followers || []);
         setFollowing(connData.following || []);
         setLoading(false);

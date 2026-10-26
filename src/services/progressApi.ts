@@ -95,6 +95,8 @@ export interface UserProfileData {
   league?: string;
   completed_nodes_count?: number;
   solved_mistakes_count?: number;
+  coder_title?: string;
+  dev_card?: Record<string, any>;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -292,5 +294,15 @@ export const fetchUserConnectionsApi = async (userId: string): Promise<UserConne
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch user connections");
+  return res.json();
+};
+
+export const updateDevCardApi = async (data: Record<string, any>): Promise<any> => {
+  const res = await fetch(`${API_BASE_URL}/api/user/dev-card`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to update dev card");
   return res.json();
 };
