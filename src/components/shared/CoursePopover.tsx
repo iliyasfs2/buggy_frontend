@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Lock, Code2, Terminal, Plus, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { switchCourseApi } from "@/services/progressApi";
 import { useNavStore } from "@/store/useNavStore";
+import { COURSES } from "@/constants/courses";
 
 export interface CoursePopoverProps {
   activeCourse: string;
@@ -12,14 +13,9 @@ export interface CoursePopoverProps {
   onClose: () => void;
 }
 
-const COURSES = [
-  { id: "javascript", title: "JavaScript", icon: Code2, color: "text-amber-400 bg-amber-400/10", progress: 45, locked: false },
-  { id: "python", title: "Python", icon: Terminal, color: "text-sky-400 bg-sky-400/10", progress: 0, locked: false },
-  { id: "react", title: "React", icon: Code2, color: "text-indigo-400 bg-indigo-400/10", progress: 0, locked: true },
-];
-
 export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverProps) {
   const switchCourse = useNavStore((state) => state.switchCourse);
+  const completedNodesCount = useNavStore((state) => state.completedNodesCount);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,8 +24,8 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
-  const handleSwitch = async (courseId: string, locked: boolean) => {
-    if (locked || courseId === activeCourse) return;
+  const handleSwitch = async (courseId: string) => {
+    if (courseId === activeCourse) return;
     setLoadingId(courseId);
     try {
       await switchCourseApi(courseId);
@@ -56,24 +52,24 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
           >
             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">Your Courses</h3>
             
-            <div className="flex flex-col gap-2 mb-4">
+            <div className="flex flex-col gap-2">
               {COURSES.map((course) => {
                 const isActive = activeCourse === course.id;
                 const Icon = course.icon;
+                const totalNodes = course.chapters.reduce((sum, ch) => sum + (ch.nodes?.length || 0), 0);
+                const progress = totalNodes > 0 ? Math.min(100, Math.round((completedNodesCount / totalNodes) * 100)) : 0;
                 
                 return (
                   <div
                     key={course.id}
-                    onClick={() => handleSwitch(course.id, course.locked)}
+                    onClick={() => handleSwitch(course.id)}
                     className={`relative flex items-center p-3 rounded-2xl border transition-all ${
                       isActive 
                         ? "bg-slate-800 border-slate-600 shadow-sm" 
-                        : course.locked
-                          ? "bg-slate-900/50 border-slate-800/50 opacity-50 cursor-not-allowed"
-                          : "bg-slate-900 border-slate-800 hover:bg-slate-800 cursor-pointer active:scale-95"
+                        : "bg-slate-900 border-slate-800 hover:bg-slate-800 cursor-pointer active:scale-95"
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mr-3 ${course.color}`}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mr-3 text-amber-400 bg-amber-400/10">
                       <Icon className="w-5 h-5" />
                     </div>
                     
@@ -81,17 +77,14 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-slate-100 truncate pr-2">{course.title}</span>
                         {isActive && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
-                        {course.locked && <Lock className="w-4 h-4 text-slate-500 shrink-0" />}
                       </div>
                       
-                      {!course.locked && (
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-slate-950 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${course.progress}%` }} />
-                          </div>
-                          <span className="text-[10px] font-bold text-slate-400">{course.progress}%</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                          <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
-                      )}
+                        <span className="text-[10px] font-bold text-slate-400">{progress}%</span>
+                      </div>
                     </div>
                     
                     {loadingId === course.id && (
@@ -103,11 +96,6 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
                 );
               })}
             </div>
-
-            <button className="w-full py-3 rounded-xl border-2 border-dashed border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 hover:bg-slate-800 transition-all font-bold text-sm flex items-center justify-center gap-2">
-              <Plus className="w-4 h-4" />
-              Add New Course
-            </button>
           </motion.div>
         </>
       )}

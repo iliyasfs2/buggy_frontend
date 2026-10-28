@@ -9,6 +9,7 @@ import {
   selectBatteryCount
 } from "@/store/useNavStore";
 import { StatBadge, BuggyLogo } from "@/components/shared";
+import { getCourseConfig } from "@/constants/courses";
 
 export interface MobileHeaderProps {
   className?: string;
@@ -19,6 +20,7 @@ export function MobileHeader({ className = "" }: MobileHeaderProps): ReactElemen
   const byteBalance = useNavStore(selectByteBalance);
   const batteryCount = useNavStore(selectBatteryCount);
   const activeCourse = useNavStore((state) => state.activeCourse);
+  const currentCourse = getCourseConfig(activeCourse);
 
   return (
     <header
@@ -41,7 +43,7 @@ export function MobileHeader({ className = "" }: MobileHeaderProps): ReactElemen
 
       <div className="flex items-center justify-end gap-2 min-[400px]:gap-3 min-w-0 relative">
         <Link href="/courses" className="shrink-0 flex items-center">
-          <StatBadge variant="js" value={activeCourse === "javascript" ? "JS" : activeCourse === "python" ? "PY" : "React"} compact />
+          <StatBadge variant={currentCourse.badgeVariant} value={currentCourse.shortLabel} compact />
         </Link>
         
         <Link href="/streak" className="shrink-0 flex items-center">
