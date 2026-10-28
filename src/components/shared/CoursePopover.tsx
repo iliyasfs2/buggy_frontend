@@ -48,7 +48,7 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-14 sm:top-16 right-0 z-[70] w-[300px] bg-slate-900 border border-slate-700/60 border-b-4 border-slate-950 rounded-3xl p-4 shadow-[0_15px_40px_-10px_rgba(251,191,36,0.15)] flex flex-col origin-top-right"
+            className="absolute top-14 sm:top-16 right-0 z-[70] w-[300px] bg-[#0c162c] border-2 border-b-4 border-slate-700 border-b-slate-800 rounded-3xl p-4 shadow-2xl flex flex-col origin-top-right"
           >
             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">Your Courses</h3>
             
@@ -65,8 +65,8 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
                     onClick={() => handleSwitch(course.id)}
                     className={`relative flex items-center p-3 rounded-2xl border transition-all ${
                       isActive 
-                        ? "bg-slate-800 border-slate-600 shadow-sm" 
-                        : "bg-slate-900 border-slate-800 hover:bg-slate-800 cursor-pointer active:scale-95"
+                        ? "bg-slate-900 border-amber-400/80 shadow-md shadow-amber-500/10" 
+                        : "bg-[#081020]/60 border-slate-800 hover:bg-slate-800/60 cursor-pointer active:scale-95"
                     }`}
                   >
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mr-3 text-amber-400 bg-amber-400/10">

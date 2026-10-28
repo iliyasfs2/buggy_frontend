@@ -1032,14 +1032,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isCoursesModalOpen && (
         <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0c162c] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsCoursesModalOpen(false)}
         >
           <div
-            className="w-full min-h-screen md:min-h-0 md:max-w-md md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-xl md:h-[650px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0c162c] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0c162c] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 {currentCourse.iconSrc ? (
                   <img src={currentCourse.iconSrc} alt="Course" className="w-5 h-5 object-contain" />
@@ -1057,13 +1057,13 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsCoursesModalOpen(false);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" strokeWidth={3} />
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
+            <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1 bg-[#0c162c] overflow-y-auto">
               <span className="text-xs font-bold text-slate-400">
                 Programming tracks and learning paths:
               </span>
@@ -1124,14 +1124,14 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
 
       {isFriendsModalOpen && (
         <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#0c162c] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
           onClick={() => setIsFriendsModalOpen(false)}
         >
           <div
-            className="w-full min-h-screen md:min-h-0 md:max-w-md md:h-[540px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="w-full min-h-screen md:min-h-0 md:max-w-xl md:h-[650px] md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0c162c] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-[#0b1528] shrink-0 sticky top-0 z-10">
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-[#0c162c] shrink-0 sticky top-0 z-10">
               <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                 <button
                   type="button"
@@ -1169,17 +1169,18 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   soundEffects.playSoftClick();
                   setIsFriendsModalOpen(false);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" strokeWidth={3} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2">
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 bg-[#0c162c] flex flex-col">
               {activeConnections.length === 0 ? (
-                <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-2">
-                  <span className="text-sm font-bold text-slate-500">
-                    {loading ? "Loading..." : activeTab === "following" ? "Not following anyone yet." : "No followers yet."}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4 my-auto">
+                  <UserPlus className="w-16 h-16 text-slate-400" strokeWidth={2.2} />
+                  <span className="text-base font-bold text-slate-400">
+                    {loading ? "Loading..." : activeTab === "following" ? "Not following anyone yet" : "No followers yet"}
                   </span>
                 </div>
               ) : (
@@ -1201,7 +1202,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                           {item.username}
                         </span>
                         <span className="text-xs font-bold text-slate-400 truncate mt-0.5">
-                          @{item.username.toLowerCase().replace(/\s+/g, "_")}
+                          {item.rank_title || `@${item.username.toLowerCase().replace(/\s+/g, "_")}`}
                         </span>
                       </div>
                     </div>
