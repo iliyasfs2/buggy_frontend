@@ -70,6 +70,8 @@ export function ProfileHonors({
     bug_hunter: "/achievements/bug-hunter.png?v=1",
     xp_legend: "/achievements/xp-legend.png?v=1",
     path_conqueror: "/achievements/path-conqueror.png?v=1",
+    chest_collector: "/achievements/chest-collector.png?v=1",
+    network_star: "/achievements/network-star.png?v=1",
   };
 
   const specialBadges: SpecialBadgeItem[] = [
@@ -294,13 +296,12 @@ export function ProfileHonors({
       shieldGradient: "from-purple-600 via-fuchsia-600 to-indigo-900",
       glowColor: "rgba(168, 85, 247, 0.45)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <path d="M22 42 C22 34 34 30 50 30 C66 30 78 34 78 42 Z" fill="#ca8a04" stroke="#fef08a" strokeWidth="2" />
-          <rect x="22" y="42" width="56" height="32" rx="3" fill="#7e22ce" stroke="#fef08a" strokeWidth="2" />
-          <rect x="46" y="44" width="8" height="14" rx="2" fill="#facc15" />
-          <circle cx="50" cy="50" r="2" fill="#0f172a" />
-          <line x1="22" y1="52" x2="78" y2="52" stroke="#facc15" strokeWidth="2" />
-        </svg>
+        <img
+          src="/achievements/chest-collector.png?v=1"
+          alt="Chest Collector"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
     {
@@ -315,13 +316,12 @@ export function ProfileHonors({
       shieldGradient: "from-cyan-600 via-teal-600 to-slate-900",
       glowColor: "rgba(20, 184, 166, 0.45)",
       iconSvg: (isUnlocked, size = 36) => (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={isUnlocked ? "" : "grayscale opacity-50"}>
-          <circle cx="34" cy="38" r="10" fill="#2dd4bf" />
-          <circle cx="66" cy="38" r="10" fill="#38bdf8" />
-          <path d="M22 64 C22 52 46 52 46 64" fill="#14b8a6" />
-          <path d="M54 64 C54 52 78 52 78 64" fill="#0284c7" />
-          <path d="M42 66 L50 72 L58 66" stroke="#fef08a" strokeWidth="3" strokeLinecap="round" fill="none" />
-        </svg>
+        <img
+          src="/achievements/network-star.png?v=1"
+          alt="Network Star"
+          style={{ width: size, height: size }}
+          className={`object-contain transition-all ${isUnlocked ? "" : "grayscale opacity-50"}`}
+        />
       ),
     },
   ];
