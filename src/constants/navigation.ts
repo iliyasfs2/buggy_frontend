@@ -28,7 +28,7 @@ export const NAVIGATION_ITEMS: readonly NavItemConfig[] = [
   },
   {
     id: "setup",
-    label: "Setup",
+    label: "Dev Hup",
     icon: SetupIcon
   },
   {
@@ -61,7 +61,7 @@ export const MOBILE_NAVIGATION_ITEMS: readonly NavItemConfig[] = [
   },
   {
     id: "setup",
-    label: "Setup",
+    label: "Dev Hup",
     icon: SetupIcon
   },
   {
