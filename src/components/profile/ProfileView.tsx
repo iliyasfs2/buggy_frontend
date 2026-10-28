@@ -1068,7 +1068,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 Programming tracks and learning paths:
               </span>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col gap-3">
                 {COURSES.map((c) => {
                   const isActive = (profile?.active_course || activeCourse || "javascript").toLowerCase() === c.id;
                   return (
@@ -1085,7 +1085,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                           }
                         }
                       }}
-                      className={`p-3.5 rounded-2xl border-2 border-b-4 flex flex-col items-center gap-2 transition-all ${
+                      className={`p-4 rounded-2xl border-2 border-b-4 flex items-center gap-4 transition-all ${
                         isActive
                           ? "bg-slate-900/90 border-amber-400 border-b-amber-600 shadow-lg shadow-amber-500/10"
                           : isMe
@@ -1093,26 +1093,17 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                           : "bg-slate-950/80 border-slate-700 border-b-slate-800 opacity-75"
                       }`}
                     >
-                      <div className="w-12 h-12 rounded-2xl bg-[#091122] border border-slate-800 flex items-center justify-center text-2xl shadow-inner">
+                      <div className="w-12 h-12 rounded-2xl bg-[#091122] border border-slate-800 flex items-center justify-center shrink-0 shadow-inner">
                         {c.iconSrc ? (
-                          <img src={c.iconSrc} alt={c.title} className="w-8 h-8 object-contain" />
+                          <img src={c.iconSrc} alt={c.title} className="w-7 h-7 object-contain" />
                         ) : (
                           <span>{c.fallbackEmoji}</span>
                         )}
                       </div>
 
-                      <div className="flex flex-col items-center text-center">
-                        <span className="text-xs font-black text-white">{c.title}</span>
-                        <span
-                          className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full mt-1 ${
-                            isActive
-                              ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
-                              : "bg-slate-800 text-slate-400"
-                          }`}
-                        >
-                          {isActive ? "Active" : c.badge}
-                        </span>
-                      </div>
+                      <span className="text-base sm:text-lg font-black text-white">
+                        Lesson {Math.max(1, effectiveCompletedNodes + 1)}
+                      </span>
                     </div>
                   );
                 })}

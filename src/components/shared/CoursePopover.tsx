@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
 import { switchCourseApi } from "@/services/progressApi";
 import { useNavStore } from "@/store/useNavStore";
 import { COURSES } from "@/constants/courses";
@@ -56,8 +55,6 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
               {COURSES.map((course) => {
                 const isActive = activeCourse === course.id;
                 const Icon = course.icon;
-                const totalNodes = course.chapters.reduce((sum, ch) => sum + (ch.nodes?.length || 0), 0);
-                const progress = totalNodes > 0 ? Math.min(100, Math.round((completedNodesCount / totalNodes) * 100)) : 0;
                 
                 return (
                   <div
@@ -70,21 +67,17 @@ export function CoursePopover({ activeCourse, isOpen, onClose }: CoursePopoverPr
                     }`}
                   >
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mr-3 text-amber-400 bg-amber-400/10">
-                      <Icon className="w-5 h-5" />
+                      {course.iconSrc ? (
+                        <img src={course.iconSrc} alt={course.title} className="w-6 h-6 object-contain" />
+                      ) : (
+                        <Icon className="w-5 h-5" />
+                      )}
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-slate-100 truncate pr-2">{course.title}</span>
-                        {isActive && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1.5 bg-slate-950 rounded-full overflow-hidden">
-                          <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${progress}%` }} />
-                        </div>
-                        <span className="text-[10px] font-bold text-slate-400">{progress}%</span>
-                      </div>
+                      <span className="font-black text-white text-base">
+                        Lesson {Math.max(1, completedNodesCount + 1)}
+                      </span>
                     </div>
                     
                     {loadingId === course.id && (

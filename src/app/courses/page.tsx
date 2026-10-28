@@ -63,23 +63,19 @@ export default function CoursesPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center border text-amber-400 bg-amber-400/10 border-amber-500/30">
-                  <Icon className="w-7 h-7" />
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center border text-amber-400 bg-amber-400/10 border-amber-500/30 shrink-0">
+                  {course.iconSrc ? (
+                    <img src={course.iconSrc} alt={course.title} className="w-8 h-8 object-contain" />
+                  ) : (
+                    <Icon className="w-7 h-7" />
+                  )}
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-slate-100">{course.title}</h3>
-                  <p className="text-sm font-medium text-slate-400">
-                    {`${progress}% Completed`}
-                  </p>
+                  <span className="text-xl font-black text-white">
+                    Lesson {Math.max(1, completedNodesCount + 1)}
+                  </span>
                 </div>
-              </div>
-
-              <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full rounded-full ${isActive ? "bg-emerald-500" : "bg-amber-500"}`} 
-                  style={{ width: `${progress}%` }}
-                />
               </div>
               
               {loadingId === course.id && (
