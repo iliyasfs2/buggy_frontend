@@ -1063,11 +1063,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1 bg-[#0c162c] overflow-y-auto">
-              <span className="text-xs font-bold text-slate-400">
-                Programming tracks and learning paths:
-              </span>
-
+            <div className="p-5 sm:p-6 flex flex-col gap-3 flex-1 bg-[#0c162c] overflow-y-auto">
               <div className="flex flex-col gap-3">
                 {COURSES.map((c) => {
                   const isActive = (profile?.active_course || activeCourse || "javascript").toLowerCase() === c.id;
@@ -1085,7 +1081,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                           }
                         }
                       }}
-                      className={`p-4 rounded-2xl border-2 border-b-4 flex items-center gap-4 transition-all ${
+                      className={`p-4 rounded-2xl border-2 border-b-4 flex items-center justify-between transition-all ${
                         isActive
                           ? "bg-slate-900/90 border-amber-400 border-b-amber-600 shadow-lg shadow-amber-500/10"
                           : isMe
@@ -1093,17 +1089,20 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                           : "bg-slate-950/80 border-slate-700 border-b-slate-800 opacity-75"
                       }`}
                     >
-                      <div className="w-12 h-12 rounded-2xl bg-[#091122] border border-slate-800 flex items-center justify-center shrink-0 shadow-inner">
+                      <div className="shrink-0 flex items-center justify-center">
                         {c.iconSrc ? (
-                          <img src={c.iconSrc} alt={c.title} className="w-7 h-7 object-contain" />
+                          <img src={c.iconSrc} alt={c.title} className="w-14 h-14 object-contain" />
                         ) : (
-                          <span>{c.fallbackEmoji}</span>
+                          <span className="text-3xl">{c.fallbackEmoji}</span>
                         )}
                       </div>
 
-                      <span className="text-base sm:text-lg font-black text-white">
-                        Lesson {Math.max(1, effectiveCompletedNodes + 1)}
-                      </span>
+                      <div className="flex flex-col items-end text-right">
+                        <span className="text-lg sm:text-xl font-black text-white">{c.title}</span>
+                        <span className="text-xs sm:text-sm font-bold text-amber-400 mt-0.5">
+                          Lesson {Math.max(1, effectiveCompletedNodes + 1)}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}

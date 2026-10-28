@@ -63,16 +63,19 @@ export default function CoursesPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center border text-amber-400 bg-amber-400/10 border-amber-500/30 shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="shrink-0 flex items-center justify-center">
                   {course.iconSrc ? (
-                    <img src={course.iconSrc} alt={course.title} className="w-8 h-8 object-contain" />
+                    <img src={course.iconSrc} alt={course.title} className="w-16 h-16 object-contain" />
                   ) : (
-                    <Icon className="w-7 h-7" />
+                    <Icon className="w-12 h-12 text-amber-400" />
                   )}
                 </div>
-                <div>
-                  <span className="text-xl font-black text-white">
+                <div className="flex flex-col items-end text-right">
+                  <span className="text-2xl font-black text-white">
+                    {course.title}
+                  </span>
+                  <span className="text-sm font-bold text-amber-400 mt-1">
                     Lesson {Math.max(1, completedNodesCount + 1)}
                   </span>
                 </div>

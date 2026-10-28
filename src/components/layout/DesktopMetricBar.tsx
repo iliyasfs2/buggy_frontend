@@ -10,6 +10,7 @@ import {
 } from "@/store/useGameStore";
 import { StatBadge, StreakPopover, BatteryPopover, BytePopover, CoursePopover } from "@/components/shared";
 import { getCourseConfig } from "@/constants/courses";
+import { useNavStore } from "@/store/useNavStore";
 
 export interface DesktopMetricBarProps {
   className?: string;
@@ -26,7 +27,7 @@ export function DesktopMetricBar({ className = "", inline = true }: DesktopMetri
   const hasCompletedToday = useGameStore(selectHasCompletedToday);
   const byteBalance = useGameStore(selectByteBalance);
   const batteryCount = useGameStore(selectBattery);
-  const activeCourse = useGameStore((state) => state.activeCourse);
+  const activeCourse = useNavStore((state) => state.activeCourse);
   const currentCourse = getCourseConfig(activeCourse);
   const buyStoreItem = useGameStore((state) => state.buyStoreItem);
 
