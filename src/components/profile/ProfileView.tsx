@@ -39,33 +39,7 @@ import {
   type UserConnectionItem,
   type LeaderboardUserEntry,
 } from "@/services/progressApi";
-
-const ALL_COURSES = [
-  {
-    id: "javascript",
-    title: "JavaScript",
-    code: "JS",
-    iconSrc: "/icons/js-badge.png",
-    fallbackEmoji: "⚡",
-    badge: "Active",
-  },
-  {
-    id: "python",
-    title: "Python",
-    code: "PY",
-    iconSrc: null,
-    fallbackEmoji: "🐍",
-    badge: "Available",
-  },
-  {
-    id: "react",
-    title: "React",
-    code: "React",
-    iconSrc: null,
-    fallbackEmoji: "⚛️",
-    badge: "Available",
-  },
-] as const;
+import { COURSES, getCourseConfig } from "@/constants/courses";
 
 export interface DevCardDataState {
   specialtyTitle: string;
@@ -492,29 +466,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const followersCount = followers.length;
 
   const currentCourse = useMemo(() => {
-    const raw = (profile?.active_course || activeCourse || "javascript").toLowerCase();
-    if (raw === "python") {
-      return {
-        title: "Python",
-        code: "PY",
-        iconSrc: null,
-        fallbackEmoji: "🐍",
-      };
-    }
-    if (raw === "react") {
-      return {
-        title: "React",
-        code: "React",
-        iconSrc: null,
-        fallbackEmoji: "⚛️",
-      };
-    }
-    return {
-      title: "JavaScript",
-      code: "JS",
-      iconSrc: "/icons/js-badge.png",
-      fallbackEmoji: "⚡",
-    };
+    return getCourseConfig(profile?.active_course || activeCourse);
   }, [profile?.active_course, activeCourse]);
 
   const filteredSearchUsers = useMemo(() => {
@@ -820,9 +772,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                   ) : (
                     <span className="text-xl select-none">{currentCourse.fallbackEmoji}</span>
                   )}
-                  <span className="text-sm sm:text-base font-black text-white font-mono">
-                    +2
-                  </span>
+                  {COURSES.length > 1 && (
+                    <span className="text-sm sm:text-base font-black text-white font-mono">
+                      +{COURSES.length - 1}
+                    </span>
+                  )}
                 </button>
 
               <button
@@ -1114,8 +1068,8 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
                 Programming tracks and learning paths:
               </span>
 
-              <div className="grid grid-cols-3 gap-3">
-                {ALL_COURSES.map((c) => {
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {COURSES.map((c) => {
                   const isActive = (profile?.active_course || activeCourse || "javascript").toLowerCase() === c.id;
                   return (
                     <div
