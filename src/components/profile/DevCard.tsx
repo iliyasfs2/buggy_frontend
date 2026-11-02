@@ -52,6 +52,7 @@ export interface DevCardProps {
     email?: string;
   };
   isMe?: boolean;
+  editButtonText?: string;
   onEditInDevHub?: () => void;
   onShareCard?: () => void;
   className?: string;
@@ -93,6 +94,7 @@ export function DevCard({
     email: "coder@buggy.dev",
   },
   isMe = true,
+  editButtonText = "Edit in Dev Hub",
   onEditInDevHub,
   onShareCard,
   className = "",
@@ -384,7 +386,7 @@ export function DevCard({
                 className="flex-1 h-11 px-4 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
               >
                 <Edit3 className="w-4 h-4" />
-                <span>Edit in Dev Hub</span>
+                <span>{editButtonText}</span>
               </button>
 
               <button

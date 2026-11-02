@@ -52,6 +52,7 @@ export default function SetupDevHubPage() {
 
   const [activeTab, setActiveTab] = useState<"card" | "setup" | "projects">("card");
   const [formData, setFormData] = useState<DevCardFormState>(DEFAULT_FORM);
+  const [isEditing, setIsEditing] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -95,9 +96,11 @@ export default function SetupDevHubPage() {
       localStorage.setItem(storageKey, JSON.stringify(formData));
       await updateDevCardApi(formData);
       setSaveSuccess(true);
+      setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 2500);
     } catch {
       setSaveSuccess(true);
+      setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 2500);
     } finally {
       setIsSaving(false);
@@ -216,192 +219,218 @@ export default function SetupDevHubPage() {
         </div>
 
         {activeTab === "card" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-6 flex flex-col gap-4">
-              <div className="w-full flex justify-center">
-                <div className="w-full max-w-[540px]">
-                  <DevCard
-                    cardRef={cardContainerRef}
-                    displayName={currentUser?.username || "Iliya Mehri"}
-                    username={currentUser?.username || "iliya"}
-                    avatarConfig={currentUser?.avatar_config || currentUser?.avatar}
-                    specialtyTitle={formData.specialtyTitle}
-                    collabStatus={formData.collabStatus}
-                    bio={formData.bio}
-                    isSuper={isSuper}
-                    streakCount={streakCount || 42}
-                    bugsHunted={completedNodesCount ? completedNodesCount * 3 : 128}
-                    accuracy={accuracyScore}
-                    masteryPercent={masteryScore}
-                    techStack={formData.techStack}
-                    socialLinks={{
-                      githubUrl: formData.githubUrl,
-                      linkedinUrl: formData.linkedinUrl,
-                      websiteUrl: formData.websiteUrl,
-                      telegramUrl: formData.telegramUrl,
-                      email: formData.email,
-                    }}
-                    isMe={true}
-                    onShareCard={handleCopyLink}
-                  />
-                </div>
+          <div className="w-full max-w-[560px] mx-auto flex flex-col gap-4">
+            {saveSuccess && (
+              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-emerald-400 font-black text-xs animate-in fade-in duration-200">
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4" />
+                  Card changes saved successfully!
+                </span>
               </div>
+            )}
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleExportPng}
-                  disabled={isExporting}
-                  className="flex-1 h-11 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:translate-y-0.5 border-2 border-b-4 border-slate-700 border-b-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
-                >
-                  <Download className="w-4 h-4 text-amber-400" />
-                  <span>{isExporting ? "Exporting..." : "Export PNG"}</span>
-                </button>
+            {!isEditing ? (
+              <>
+                <DevCard
+                  cardRef={cardContainerRef}
+                  displayName={currentUser?.username || "Iliya Mehri"}
+                  username={currentUser?.username || "iliya"}
+                  avatarConfig={currentUser?.avatar_config || currentUser?.avatar}
+                  specialtyTitle={formData.specialtyTitle}
+                  collabStatus={formData.collabStatus}
+                  bio={formData.bio}
+                  isSuper={isSuper}
+                  streakCount={streakCount || 42}
+                  bugsHunted={completedNodesCount ? completedNodesCount * 3 : 128}
+                  accuracy={accuracyScore}
+                  masteryPercent={masteryScore}
+                  techStack={formData.techStack}
+                  socialLinks={{
+                    githubUrl: formData.githubUrl,
+                    linkedinUrl: formData.linkedinUrl,
+                    websiteUrl: formData.websiteUrl,
+                    telegramUrl: formData.telegramUrl,
+                    email: formData.email,
+                  }}
+                  isMe={true}
+                  editButtonText="Edit Card"
+                  onEditInDevHub={() => {
+                    soundEffects.playSoftClick();
+                    setIsEditing(true);
+                  }}
+                  onShareCard={handleCopyLink}
+                />
 
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="flex-1 h-11 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:translate-y-0.5 border-2 border-b-4 border-slate-700 border-b-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
-                >
-                  {shareCopied ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400">Link Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Share2 className="w-4 h-4 text-sky-400" />
-                      <span>Share Link</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 bg-[#0f172a] rounded-3xl border-2 border-slate-700 p-5 sm:p-6 shadow-2xl flex flex-col gap-4">
-              <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
-                <h2 className="text-lg font-black text-white tracking-wide">Edit Card</h2>
-                {saveSuccess && (
-                  <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1">
-                    <Check className="w-3.5 h-3.5" />
-                    Saved!
-                  </span>
-                )}
-              </div>
-
-              <form onSubmit={handleSave} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Title</label>
-                  <input
-                    type="text"
-                    value={formData.specialtyTitle}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
-                    placeholder="e.g. Full-Stack Developer"
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Status</label>
-                  <select
-                    value={formData.collabStatus}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, collabStatus: e.target.value }))}
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-                  >
-                    <option value="Open to Work">🟢 Open to Work</option>
-                    <option value="Looking for Teammate">🟣 Looking for Teammate</option>
-                    <option value="Learning & Coding">🟡 Learning & Coding</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Bio</label>
-                  <textarea
-                    rows={2}
-                    value={formData.bio}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
-                    placeholder="Building interactive web apps with React & FastAPI."
-                    className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Tech Stack</label>
-                  <input
-                    type="text"
-                    value={formData.techStack.join(", ")}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        techStack: e.target.value
-                          .split(",")
-                          .map((s) => s.trim())
-                          .filter(Boolean),
-                      }))
-                    }
-                    placeholder="JavaScript, React, TypeScript, Python, FastAPI"
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">GitHub</label>
-                    <input
-                      type="text"
-                      value={formData.githubUrl}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, githubUrl: e.target.value }))}
-                      placeholder="https://github.com/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">LinkedIn</label>
-                    <input
-                      type="text"
-                      value={formData.linkedinUrl}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
-                      placeholder="https://linkedin.com/in/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Telegram / Web</label>
-                    <input
-                      type="text"
-                      value={formData.telegramUrl}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, telegramUrl: e.target.value }))}
-                      placeholder="https://t.me/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Email</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                      placeholder="coder@example.com"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2">
+                <div className="flex items-center gap-3">
                   <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="w-full h-12 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all cursor-pointer"
+                    type="button"
+                    onClick={handleExportPng}
+                    disabled={isExporting}
+                    className="flex-1 h-11 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:translate-y-0.5 border-2 border-b-4 border-slate-700 border-b-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                   >
-                    <Save className="w-4 h-4" />
-                    <span>{isSaving ? "Saving..." : "Save Changes"}</span>
+                    <Download className="w-4 h-4 text-amber-400" />
+                    <span>{isExporting ? "Exporting..." : "Export PNG"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="flex-1 h-11 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:translate-y-0.5 border-2 border-b-4 border-slate-700 border-b-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  >
+                    {shareCopied ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-400" />
+                        <span className="text-emerald-400">Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-4 h-4 text-sky-400" />
+                        <span>Share Link</span>
+                      </>
+                    )}
                   </button>
                 </div>
-              </form>
-            </div>
+              </>
+            ) : (
+              <div className="bg-[#0f172a] rounded-3xl border-2 border-slate-700 p-5 sm:p-6 shadow-2xl flex flex-col gap-4 animate-in fade-in duration-200">
+                <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
+                  <h2 className="text-lg font-black text-white tracking-wide">Edit Dev Card</h2>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playSoftClick();
+                      setIsEditing(false);
+                    }}
+                    className="text-xs font-black text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                <form onSubmit={handleSave} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Title</label>
+                    <input
+                      type="text"
+                      value={formData.specialtyTitle}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
+                      placeholder="e.g. Full-Stack Developer"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Status</label>
+                    <select
+                      value={formData.collabStatus}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, collabStatus: e.target.value }))}
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+                    >
+                      <option value="Open to Work">🟢 Open to Work</option>
+                      <option value="Looking for Teammate">🟣 Looking for Teammate</option>
+                      <option value="Learning & Coding">🟡 Learning & Coding</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Bio</label>
+                    <textarea
+                      rows={2}
+                      value={formData.bio}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
+                      placeholder="Building interactive web apps with React & FastAPI."
+                      className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Tech Stack</label>
+                    <input
+                      type="text"
+                      value={formData.techStack.join(", ")}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          techStack: e.target.value
+                            .split(",")
+                            .map((s) => s.trim())
+                            .filter(Boolean),
+                        }))
+                      }
+                      placeholder="JavaScript, React, TypeScript, Python, FastAPI"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">GitHub</label>
+                      <input
+                        type="text"
+                        value={formData.githubUrl}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, githubUrl: e.target.value }))}
+                        placeholder="https://github.com/username"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">LinkedIn</label>
+                      <input
+                        type="text"
+                        value={formData.linkedinUrl}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
+                        placeholder="https://linkedin.com/in/username"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Telegram / Web</label>
+                      <input
+                        type="text"
+                        value={formData.telegramUrl}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, telegramUrl: e.target.value }))}
+                        placeholder="https://t.me/username"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Email</label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                        placeholder="coder@example.com"
+                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playSoftClick();
+                        setIsEditing(false);
+                      }}
+                      className="flex-1 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-slate-300 font-black text-sm uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSaving}
+                      className="flex-1 h-12 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all cursor-pointer"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>{isSaving ? "Saving..." : "Save Changes"}</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
         )}
 
