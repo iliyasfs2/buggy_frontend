@@ -6,3 +6,7 @@ export { AvatarCustomizer } from "./AvatarCustomizer";
 export { AvatarCustomizerModal } from "./AvatarCustomizerModal";
 export { StatisticsGrid } from "./StatisticsGrid";
 export { AchievementsList } from "./AchievementsList";
+export { DevCard } from "./DevCard";
+export type { DevCardProps, DevProjectItem } from "./DevCard";
+export { DevCardModal } from "./DevCardModal";
+export type { DevCardModalProps } from "./DevCardModal";

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { AvatarCustomizerModal } from "@/components/profile/AvatarCustomizerModal";
+import { DevCardModal } from "@/components/profile/DevCardModal";
 import { ProfileHonors } from "@/components/profile/ProfileHonors";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { soundEffects } from "@/utils/soundEffects";
@@ -53,10 +54,10 @@ export interface DevCardDataState {
 }
 
 const DEFAULT_DEV_CARD_DATA: DevCardDataState = {
-  specialtyTitle: "Full-Stack Developer & Debug Engineer",
-  collabStatus: "🟢 Open to Work & Projects",
-  bio: "Passionate about scalable architectures, solving complex algorithmic challenges, and continuous learning on Buggy.",
-  techStack: ["React", "Next.js", "FastAPI", "TypeScript", "Tailwind CSS", "Docker", "PostgreSQL", "Python"],
+  specialtyTitle: "Full-Stack Developer",
+  collabStatus: "Open to Work",
+  bio: "Building interactive web apps with React & FastAPI.",
+  techStack: ["JavaScript", "React", "TypeScript", "Python", "FastAPI"],
   githubUrl: "https://github.com",
   linkedinUrl: "https://linkedin.com",
   websiteUrl: "https://buggy.dev",
@@ -1291,353 +1292,33 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         </div>
       )}
 
-      {isDevCardOpen && (
-        <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#0f172a] md:bg-black/60 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 animate-in fade-in duration-200"
-          onClick={() => setIsDevCardOpen(false)}
-        >
-          <div
-            className="w-full min-h-screen md:min-h-0 md:w-[640px] md:max-w-[640px] md:max-h-[88vh] rounded-none md:rounded-3xl border-0 md:border-2 md:border-b-4 border-slate-700 border-b-slate-800 bg-[#0f172a] md:bg-gradient-to-b md:from-[#101d38] md:via-[#0c162c] md:to-[#091020] flex flex-col overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-800/90 flex items-center justify-between gap-3 shrink-0 bg-[#0b1528] sticky top-0 z-10">
-              <div className="flex items-center gap-2">
-                <img src="/icons/dev-card.png" alt="Dev Card" className="w-5 h-auto max-h-5 object-contain" />
-                <span className="text-base font-black text-white">Developer Card (Dev Card)</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                {isMe && !isEditingDevCard && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setEditDevCardForm(devCardData);
-                      setIsEditingDevCard(true);
-                    }}
-                    className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 hover:text-cyan-300 text-xs font-black inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                    <span>Edit Card</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setIsDevCardOpen(false);
-                    setIsEditingDevCard(false);
-                  }}
-                  className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-6">
-              {isEditingDevCard ? (
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">Developer Specialty Title:</label>
-                    <input
-                      type="text"
-                      value={editDevCardForm.specialtyTitle}
-                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
-                      placeholder="e.g. Full-Stack Developer & Debug Engineer"
-                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">Collaboration &amp; Project Status:</label>
-                    <select
-                      value={editDevCardForm.collabStatus}
-                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, collabStatus: e.target.value }))}
-                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
-                    >
-                      <option value="🟢 Open to Work & Projects">🟢 Open to Work &amp; Projects</option>
-                      <option value="🟡 Exploring New Opportunities">🟡 Exploring New Opportunities</option>
-                      <option value="🔴 Busy with Current Projects">🔴 Busy with Current Projects</option>
-                      <option value="💼 Available for Mentorship & Consulting">💼 Available for Mentorship &amp; Consulting</option>
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">Short Bio (max 2 lines):</label>
-                    <textarea
-                      rows={2}
-                      value={editDevCardForm.bio}
-                      onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, bio: e.target.value }))}
-                      placeholder="Write about your coding passions and current goals..."
-                      className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">Tech Stack &amp; Tools (comma separated):</label>
-                    <input
-                      type="text"
-                      value={editDevCardForm.techStack.join(", ")}
-                      onChange={(e) =>
-                        setEditDevCardForm((prev) => ({
-                          ...prev,
-                          techStack: e.target.value
-                            .split(",")
-                            .map((s) => s.trim())
-                            .filter(Boolean),
-                        }))
-                      }
-                      placeholder="React, Next.js, FastAPI, Docker, TypeScript"
-                      className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">GitHub Link:</label>
-                      <input
-                        type="text"
-                        value={editDevCardForm.githubUrl}
-                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, githubUrl: e.target.value }))}
-                        placeholder="https://github.com/..."
-                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">LinkedIn Link:</label>
-                      <input
-                        type="text"
-                        value={editDevCardForm.linkedinUrl}
-                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
-                        placeholder="https://linkedin.com/in/..."
-                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">Website / Portfolio Link:</label>
-                      <input
-                        type="text"
-                        value={editDevCardForm.websiteUrl}
-                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, websiteUrl: e.target.value }))}
-                        placeholder="https://mysite.dev"
-                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-400">Work Email:</label>
-                      <input
-                        type="email"
-                        value={editDevCardForm.email}
-                        onChange={(e) => setEditDevCardForm((prev) => ({ ...prev, email: e.target.value }))}
-                        placeholder="coder@example.com"
-                        className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end gap-2 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsEditingDevCard(false)}
-                      className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs transition-colors cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSaveDevCard(editDevCardForm)}
-                      className="h-10 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all shadow-md shadow-cyan-950/40 cursor-pointer"
-                    >
-                      <Check className="w-4 h-4" />
-                      <span>Save Changes</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-2xl bg-[#091326] border border-slate-800/80">
-                    <div className="w-20 h-20 rounded-2xl bg-slate-950 border-2 border-cyan-400/50 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10">
-                      <AvatarRenderer config={effectiveAvatar} size={74} />
-                    </div>
-
-                    <div className="flex-1 min-w-0 text-center sm:text-left">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
-                        <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-                          <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
-                            {profileDisplayName}
-                          </h3>
-                        </div>
-
-                        <span className="text-xs font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-full self-center sm:self-auto shrink-0 shadow-sm">
-                          {devCardData.collabStatus}
-                        </span>
-                      </div>
-
-                      <div className="text-sm font-black text-cyan-300 mt-1">
-                        {devCardData.specialtyTitle}
-                      </div>
-
-                      <div className="text-xs font-bold text-slate-400 mt-0.5">
-                        @{profileHandle}
-                        {hasRank ? ` • Season Rank #${currentRank}` : ""}
-                        {formattedJoinedDate ? ` • ${formattedJoinedDate}` : ""}
-                      </div>
-
-                      <p className="text-xs text-slate-300 leading-relaxed font-medium mt-3 bg-[#060c18] p-2.5 rounded-xl border border-slate-800/70">
-                        {devCardData.bio}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-black text-white flex items-center gap-1.5">
-                        <ShieldCheck className="w-4 h-4 text-amber-400" />
-                        <span>Section 1: Verified Skills in Buggy</span>
-                      </h4>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {VERIFIED_BUGGY_SKILLS.map((skill) => (
-                        <div
-                          key={skill.name}
-                          className="p-3 rounded-2xl bg-[#091326] border border-slate-800 flex flex-col gap-2 shadow-sm"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-black text-white">{skill.name}</span>
-                            <span className="text-[10px] font-black text-amber-400 bg-amber-950/80 border border-amber-500/50 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                              <ShieldCheck className="w-2.5 h-2.5" />
-                              <span>{skill.badge}</span>
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 rounded-full"
-                                style={{ width: `${skill.percent}%` }}
-                              />
-                            </div>
-                            <span className="text-xs font-mono font-black text-amber-400 shrink-0">
-                              {skill.percent}%
-                            </span>
-                          </div>
-                          <span className="text-[10px] text-slate-500 font-medium">{skill.desc}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-                      <span>🛠️</span>
-                      <span>Section 2: Tech Stack &amp; Tools</span>
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {devCardData.techStack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1.5 rounded-xl bg-[#09152b] hover:bg-[#0d2042] border border-cyan-500/30 text-cyan-300 hover:text-white text-xs font-black shadow-sm transition-colors cursor-default"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-                      <span>🚀</span>
-                      <span>Section 3: Featured Projects &amp; Portfolio</span>
-                    </h4>
-
-                    <div className="space-y-2.5">
-                      {FEATURED_DEV_PROJECTS.map((proj) => (
-                        <div
-                          key={proj.id}
-                          className="p-3.5 rounded-2xl bg-[#091326] border border-slate-800 hover:border-slate-700 flex flex-col gap-2 transition-colors"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-black text-white">{proj.title}</span>
-                              <span className="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-800">
-                                {proj.tech}
-                              </span>
-                            </div>
-
-                            <a
-                              href={proj.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-xs font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
-                            >
-                              <span>View</span>
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                          </div>
-
-                          <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                            {proj.desc}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="px-5 sm:px-6 py-4 border-t border-slate-800/90 bg-[#0b1528] shrink-0">
-              <div className="flex items-center justify-between flex-wrap gap-2.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-slate-400">Contact &amp; Social:</span>
-                  <a
-                    href={devCardData.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                    title="GitHub"
-                  >
-                    <Github className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={devCardData.linkedinUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                    title="LinkedIn"
-                  >
-                    <Linkedin className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={devCardData.websiteUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                    title="Website"
-                  >
-                    <Globe className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={`mailto:${devCardData.email}`}
-                    className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                    title="Email"
-                  >
-                    <Mail className="w-4 h-4" />
-                  </a>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-slate-500">
-                    ID: {profile?.id || currentUser?.id || "buggy-coder"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <DevCardModal
+        isOpen={isDevCardOpen}
+        onClose={() => setIsDevCardOpen(false)}
+        displayName={profileDisplayName}
+        username={profileHandle}
+        avatarConfig={effectiveAvatar}
+        specialtyTitle={devCardData.specialtyTitle || profile?.rank_title || "Full-Stack Developer"}
+        collabStatus={devCardData.collabStatus || "Open to Work"}
+        bio={devCardData.bio || "Building interactive web apps with React & FastAPI."}
+        isSuper={Boolean((profile as any)?.is_super || (currentUser as any)?.is_super || (devCardData as any)?.is_super)}
+        streakCount={effectiveStreak}
+        bugsHunted={profile?.solved_mistakes_count ?? profile?.completed_nodes_count ?? effectiveCompletedNodes ?? 128}
+        accuracy={Math.max(80, Math.min(100, Math.round(100 - (navMistakesCount / Math.max(1, effectiveCompletedNodes)) * 10))) || 89}
+        masteryPercent={Math.min(100, Math.max(20, Math.round((effectiveCompletedNodes / 20) * 100))) || 85}
+        techStack={devCardData.techStack && devCardData.techStack.length > 0 ? devCardData.techStack : ["JavaScript", "React", "TypeScript", "Python", "FastAPI"]}
+        socialLinks={{
+          githubUrl: devCardData.githubUrl,
+          linkedinUrl: devCardData.linkedinUrl,
+          websiteUrl: devCardData.websiteUrl,
+          email: devCardData.email,
+        }}
+        isMe={isMe}
+        onEditInDevHub={() => {
+          setIsDevCardOpen(false);
+          router.push("/setup");
+        }}
+      />
 
       {selectedStreakFriend && (
         <div
