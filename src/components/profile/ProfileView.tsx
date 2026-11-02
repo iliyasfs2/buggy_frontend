@@ -50,6 +50,7 @@ export interface DevCardDataState {
   githubUrl: string;
   linkedinUrl: string;
   websiteUrl: string;
+  telegramUrl?: string;
   email: string;
 }
 
@@ -140,6 +141,12 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   } | null>(null);
   const [pokedFriends, setPokedFriends] = useState<Record<string, boolean>>({});
   const [pokeToast, setPokeToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams?.get("card") === "open") {
+      setIsDevCardOpen(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1311,6 +1318,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
           githubUrl: devCardData.githubUrl,
           linkedinUrl: devCardData.linkedinUrl,
           websiteUrl: devCardData.websiteUrl,
+          telegramUrl: devCardData.telegramUrl,
           email: devCardData.email,
         }}
         isMe={isMe}
