@@ -200,9 +200,6 @@ export function DevCard({
             <CheckCircle2 className="w-3.5 h-3.5 text-sky-400" />
             VERIFIED BY BUGGY
           </span>
-          <span className="text-[10px] font-bold text-slate-400">
-            Live Telemetry
-          </span>
         </div>
 
         <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
@@ -211,8 +208,8 @@ export function DevCard({
               <Flame className="w-4 h-4 fill-amber-400" />
               {streakCount}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">
-              Active Streak
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+              Streak
             </span>
           </div>
 
@@ -221,8 +218,8 @@ export function DevCard({
               <Bug className="w-4 h-4" />
               {bugsHunted}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">
-              Bugs Hunted
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+              Bugs Fixed
             </span>
           </div>
 
@@ -231,8 +228,8 @@ export function DevCard({
               <Target className="w-4 h-4" />
               {accuracy}%
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">
-              Clean Accuracy
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+              Accuracy
             </span>
           </div>
         </div>
@@ -318,7 +315,7 @@ export function DevCard({
 
       <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-400">Socials:</span>
+          <span className="text-xs font-black text-slate-500">@{username}</span>
           <div className="flex items-center gap-2">
             {socialLinks.githubUrl && (
               <a

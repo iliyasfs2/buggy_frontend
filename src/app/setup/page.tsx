@@ -14,11 +14,9 @@ import {
   Share2,
   Check,
   Save,
-  Sparkles,
   Layers,
   Wrench,
-  FolderGit2,
-  AlertCircle
+  FolderGit2
 } from "lucide-react";
 import { toPng } from "html-to-image";
 
@@ -78,7 +76,7 @@ export default function SetupDevHubPage() {
           if (res?.dev_card && typeof res.dev_card === "object" && Object.keys(res.dev_card).length > 0) {
             setFormData((prev) => ({ ...prev, ...res.dev_card }));
           }
-          if ((res as any)?.is_super) {
+          if ((res as any)?.is_super || (currentUser as any)?.is_super) {
             setIsSuper(true);
           }
         })
@@ -153,12 +151,7 @@ export default function SetupDevHubPage() {
             <div className="w-12 h-12 rounded-2xl bg-slate-900 border-2 border-slate-700 flex items-center justify-center p-2 shadow-inner">
               <img src="/icons/setup.png" alt="Dev Hub" className="w-7 h-7 object-contain" />
             </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white">Dev Hub</h1>
-              <p className="text-xs sm:text-sm font-semibold text-slate-400">
-                Your developer identity, battle station, and career hub.
-              </p>
-            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Dev Hub</h1>
           </div>
 
           <div className="hidden md:flex items-center">
@@ -180,7 +173,7 @@ export default function SetupDevHubPage() {
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Developer Card</span>
+            <span>Dev Card</span>
           </button>
 
           <button
@@ -196,7 +189,7 @@ export default function SetupDevHubPage() {
             }`}
           >
             <Wrench className="w-4 h-4" />
-            <span>Workstation & Gear</span>
+            <span>Workstation</span>
             <span className="text-[9px] font-black uppercase bg-slate-800 text-amber-400 border border-amber-400/30 px-1.5 py-0.2 rounded-full">
               Soon
             </span>
@@ -215,7 +208,7 @@ export default function SetupDevHubPage() {
             }`}
           >
             <FolderGit2 className="w-4 h-4" />
-            <span>Portfolio Projects</span>
+            <span>Projects</span>
             <span className="text-[9px] font-black uppercase bg-slate-800 text-sky-400 border border-sky-400/30 px-1.5 py-0.2 rounded-full">
               Soon
             </span>
@@ -225,30 +218,6 @@ export default function SetupDevHubPage() {
         {activeTab === "card" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-6 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  Live Card Preview
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playSoftClick();
-                      setIsSuper((prev) => !prev);
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
-                      isSuper
-                        ? "bg-purple-900/60 border-purple-400 text-purple-200"
-                        : "bg-slate-900 border-slate-700 text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    ⚡ Super Mode: {isSuper ? "ON" : "OFF"}
-                  </button>
-                </div>
-              </div>
-
               <div className="w-full flex justify-center">
                 <div className="w-full max-w-[540px]">
                   <DevCard
@@ -278,7 +247,7 @@ export default function SetupDevHubPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleExportPng}
@@ -286,7 +255,7 @@ export default function SetupDevHubPage() {
                   className="flex-1 h-11 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:translate-y-0.5 border-2 border-b-4 border-slate-700 border-b-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
                   <Download className="w-4 h-4 text-amber-400" />
-                  <span>{isExporting ? "Exporting..." : "Export as Image (PNG)"}</span>
+                  <span>{isExporting ? "Exporting..." : "Export PNG"}</span>
                 </button>
 
                 <button
@@ -302,7 +271,7 @@ export default function SetupDevHubPage() {
                   ) : (
                     <>
                       <Share2 className="w-4 h-4 text-sky-400" />
-                      <span>Share Card Link</span>
+                      <span>Share Link</span>
                     </>
                   )}
                 </button>
@@ -311,14 +280,9 @@ export default function SetupDevHubPage() {
 
             <div className="lg:col-span-6 bg-[#0f172a] rounded-3xl border-2 border-slate-700 p-5 sm:p-6 shadow-2xl flex flex-col gap-4">
               <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-black text-white">Customize Dev Card</h2>
-                  <p className="text-xs text-slate-400 font-semibold">
-                    Changes here immediately reflect on your public profile card.
-                  </p>
-                </div>
+                <h2 className="text-lg font-black text-white tracking-wide">Edit Card</h2>
                 {saveSuccess && (
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1">
                     <Check className="w-3.5 h-3.5" />
                     Saved!
                   </span>
@@ -327,42 +291,42 @@ export default function SetupDevHubPage() {
 
               <form onSubmit={handleSave} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Job / Specialty Title</label>
+                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Title</label>
                   <input
                     type="text"
                     value={formData.specialtyTitle}
                     onChange={(e) => setFormData((prev) => ({ ...prev, specialtyTitle: e.target.value }))}
                     placeholder="e.g. Full-Stack Developer"
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Collaboration Status</label>
+                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Status</label>
                   <select
                     value={formData.collabStatus}
                     onChange={(e) => setFormData((prev) => ({ ...prev, collabStatus: e.target.value }))}
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer"
                   >
-                    <option value="Open to Work">🟢 Open to Work (Ready for opportunities)</option>
-                    <option value="Looking for Teammate">🟣 Looking for Teammate (Seeking partners)</option>
-                    <option value="Learning & Coding">🟡 Learning & Coding (Upskilling)</option>
+                    <option value="Open to Work">🟢 Open to Work</option>
+                    <option value="Looking for Teammate">🟣 Looking for Teammate</option>
+                    <option value="Learning & Coding">🟡 Learning & Coding</option>
                   </select>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Short Bio (max 2 lines)</label>
+                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Bio</label>
                   <textarea
                     rows={2}
                     value={formData.bio}
                     onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
                     placeholder="Building interactive web apps with React & FastAPI."
-                    className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+                    className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Tech Stack (comma separated)</label>
+                  <label className="text-xs font-black text-slate-300 uppercase tracking-wide">Tech Stack</label>
                   <input
                     type="text"
                     value={formData.techStack.join(", ")}
@@ -376,64 +340,64 @@ export default function SetupDevHubPage() {
                       }))
                     }
                     placeholder="JavaScript, React, TypeScript, Python, FastAPI"
-                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    className="w-full h-11 px-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold text-slate-400">GitHub Profile URL</label>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">GitHub</label>
                     <input
                       type="text"
                       value={formData.githubUrl}
                       onChange={(e) => setFormData((prev) => ({ ...prev, githubUrl: e.target.value }))}
                       placeholder="https://github.com/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold text-slate-400">LinkedIn Profile URL</label>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">LinkedIn</label>
                     <input
                       type="text"
                       value={formData.linkedinUrl}
                       onChange={(e) => setFormData((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
                       placeholder="https://linkedin.com/in/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold text-slate-400">Telegram / Website</label>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Telegram / Web</label>
                     <input
                       type="text"
                       value={formData.telegramUrl}
                       onChange={(e) => setFormData((prev) => ({ ...prev, telegramUrl: e.target.value }))}
                       placeholder="https://t.me/username"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold text-slate-400">Public Contact Email</label>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Email</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       placeholder="coder@example.com"
-                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
 
-                <div className="pt-3">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="w-full h-12 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all cursor-pointer"
+                    className="w-full h-12 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all cursor-pointer"
                   >
                     <Save className="w-4 h-4" />
-                    <span>{isSaving ? "Saving..." : "Save Card Changes"}</span>
+                    <span>{isSaving ? "Saving..." : "Save Changes"}</span>
                   </button>
                 </div>
               </form>
@@ -447,10 +411,10 @@ export default function SetupDevHubPage() {
               {activeTab === "setup" ? "⚡" : "💼"}
             </div>
             <h2 className="text-xl font-black text-white">
-              {activeTab === "setup" ? "Workstation & Battlestation Gear" : "Developer Portfolio Projects"}
+              {activeTab === "setup" ? "Workstation Gear" : "Portfolio Projects"}
             </h2>
-            <p className="text-sm font-semibold text-slate-400 max-w-md">
-              This module is being integrated into Dev Hub. In the meantime, customize and share your verified Dev Card!
+            <p className="text-sm font-black text-slate-400 max-w-md">
+              Coming Soon
             </p>
           </div>
         )}
