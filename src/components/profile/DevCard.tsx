@@ -16,7 +16,10 @@ import {
   Sparkles,
   Download,
   X,
-  MessageCircle
+  MessageCircle,
+  Briefcase,
+  Users,
+  Code2
 } from "lucide-react";
 import { toPng } from "html-to-image";
 import type { AvatarConfig } from "@/services/authApi";
@@ -133,30 +136,42 @@ export function DevCard({
     if (raw.includes("team") || raw.includes("looking")) {
       return {
         label: "Looking for Teammate",
+        tag: "CO-OP",
+        icon: <Users className="w-4 h-4 text-purple-300" />,
         dotColor: "bg-purple-400",
         pingColor: "bg-purple-400",
-        pillBg: "bg-purple-500/15",
-        border: "border-purple-500/40",
-        text: "text-purple-300",
+        barBg: "bg-gradient-to-r from-purple-500/20 via-fuchsia-500/10 to-slate-900/90",
+        iconBox: "bg-purple-500/20 border-purple-400/40",
+        tagStyle: "bg-purple-500/20 border-purple-400/40 text-purple-200",
+        border: "border-purple-500/40 shadow-[0_0_20px_rgba(168,85,247,0.12)]",
+        text: "text-purple-100",
       };
     }
     if (raw.includes("learn") || raw.includes("coding")) {
       return {
         label: "Learning & Coding",
+        tag: "FOCUSED",
+        icon: <Code2 className="w-4 h-4 text-amber-300" />,
         dotColor: "bg-amber-400",
         pingColor: "bg-amber-400",
-        pillBg: "bg-amber-500/15",
-        border: "border-amber-500/40",
-        text: "text-amber-300",
+        barBg: "bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-slate-900/90",
+        iconBox: "bg-amber-500/20 border-amber-400/40",
+        tagStyle: "bg-amber-500/20 border-amber-400/40 text-amber-200",
+        border: "border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.12)]",
+        text: "text-amber-100",
       };
     }
     return {
       label: "Open to Work",
+      tag: "AVAILABLE",
+      icon: <Briefcase className="w-4 h-4 text-emerald-300" />,
       dotColor: "bg-emerald-400",
       pingColor: "bg-emerald-400",
-      pillBg: "bg-emerald-500/15",
-      border: "border-emerald-500/40",
-      text: "text-emerald-400",
+      barBg: "bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-slate-900/90",
+      iconBox: "bg-emerald-500/20 border-emerald-400/40",
+      tagStyle: "bg-emerald-500/20 border-emerald-400/40 text-emerald-200",
+      border: "border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.14)]",
+      text: "text-emerald-50",
     };
   };
 
@@ -328,15 +343,30 @@ export function DevCard({
 
           <div className="shrink-0">
             <div
-              className={`h-9 sm:h-10 inline-flex items-center gap-2.5 px-4 rounded-xl text-xs sm:text-sm font-black border ${statusMeta.pillBg} ${statusMeta.border} ${statusMeta.text} shadow-sm`}
+              className={`w-full h-11 px-3 rounded-2xl border flex items-center justify-between gap-2 ${statusMeta.barBg} ${statusMeta.border}`}
             >
-              <span className="relative flex h-2.5 w-2.5 shrink-0">
-                <span
-                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusMeta.pingColor}`}
-                />
-                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusMeta.dotColor}`} />
-              </span>
-              <span>{statusMeta.label}</span>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className={`w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 ${statusMeta.iconBox}`}
+                >
+                  {statusMeta.icon}
+                </div>
+                <span className={`text-xs sm:text-sm font-black truncate ${statusMeta.text}`}>
+                  {statusMeta.label}
+                </span>
+              </div>
+
+              <div
+                className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wider uppercase inline-flex items-center gap-1.5 shrink-0 ${statusMeta.tagStyle}`}
+              >
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusMeta.pingColor}`}
+                  />
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${statusMeta.dotColor}`} />
+                </span>
+                <span>{statusMeta.tag}</span>
+              </div>
             </div>
           </div>
 
@@ -360,64 +390,60 @@ export function DevCard({
             </div>
           </div>
 
-          <div className="pt-3 border-t-2 border-slate-800/80 flex items-center justify-between gap-2 shrink-0 min-h-[44px]">
-            <span className="text-sm sm:text-base font-black text-slate-400 truncate pr-2">
-              @{username}
-            </span>
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {socialLinks.githubUrl && (
-                <a
-                  href={socialLinks.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                  title="GitHub"
-                >
-                  <Github className="w-4 h-4 sm:w-5 sm:h-5" />
-                </a>
-              )}
-              {socialLinks.linkedinUrl && (
-                <a
-                  href={socialLinks.linkedinUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                  title="LinkedIn"
-                >
-                  <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
-                </a>
-              )}
-              {socialLinks.telegramUrl ? (
-                <a
-                  href={socialLinks.telegramUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                  title="Telegram"
-                >
-                  <Send className="w-4 h-4" />
-                </a>
-              ) : socialLinks.websiteUrl ? (
-                <a
-                  href={socialLinks.websiteUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                  title="Website"
-                >
-                  <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
-                </a>
-              ) : null}
-              {socialLinks.email && (
-                <a
-                  href={`mailto:${socialLinks.email}`}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                  title="Email"
-                >
-                  <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-                </a>
-              )}
-            </div>
+          <div className="pt-3 border-t-2 border-slate-800/80 flex items-center justify-start gap-1.5 sm:gap-2 shrink-0 min-h-[48px]">
+            {socialLinks.githubUrl && (
+              <a
+                href={socialLinks.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors shrink-0"
+                title="GitHub"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+            )}
+            {socialLinks.linkedinUrl && (
+              <a
+                href={socialLinks.linkedinUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors shrink-0"
+                title="LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+            )}
+            {socialLinks.telegramUrl && (
+              <a
+                href={socialLinks.telegramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors shrink-0"
+                title="Telegram"
+              >
+                <Send className="w-4 h-4" />
+              </a>
+            )}
+            {socialLinks.websiteUrl && (
+              <a
+                href={socialLinks.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors shrink-0"
+                title="Website"
+              >
+                <Globe className="w-4 h-4" />
+              </a>
+            )}
+            {socialLinks.email && (
+              <a
+                href={`mailto:${socialLinks.email}`}
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors shrink-0"
+                title="Email"
+              >
+                <Mail className="w-4 h-4" />
+              </a>
+            )}
           </div>
         </div>
 

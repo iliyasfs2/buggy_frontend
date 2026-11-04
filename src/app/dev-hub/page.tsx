@@ -25,7 +25,10 @@ import {
   ShieldCheck,
   Sparkles,
   Link2,
-  Trash2
+  Trash2,
+  Briefcase,
+  Users,
+  Code2
 } from "lucide-react";
 
 interface DevCardFormState {
@@ -75,26 +78,35 @@ const STATUS_OPTIONS = [
   {
     value: "Open to Work",
     shortLabel: "Open",
-    fullLabel: "Open to Work",
+    fullLabel: "Open",
+    icon: <Briefcase className="w-3.5 h-3.5 shrink-0" />,
     dot: "bg-emerald-400",
-    activeClass: "bg-emerald-500/15 border-emerald-400/60 text-emerald-300 shadow-sm",
-    idleClass: "bg-slate-900/80 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700",
+    activeClass:
+      "bg-gradient-to-r from-emerald-500/25 to-teal-500/15 border border-emerald-400/50 text-emerald-200 shadow-sm",
+    idleClass:
+      "border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/80",
   },
   {
     value: "Looking for Teammate",
-    shortLabel: "Teammate",
+    shortLabel: "Co-op",
     fullLabel: "Teammate",
+    icon: <Users className="w-3.5 h-3.5 shrink-0" />,
     dot: "bg-purple-400",
-    activeClass: "bg-purple-500/15 border-purple-400/60 text-purple-300 shadow-sm",
-    idleClass: "bg-slate-900/80 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700",
+    activeClass:
+      "bg-gradient-to-r from-purple-500/25 to-fuchsia-500/15 border border-purple-400/50 text-purple-200 shadow-sm",
+    idleClass:
+      "border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/80",
   },
   {
     value: "Learning & Coding",
-    shortLabel: "Learning",
+    shortLabel: "Focus",
     fullLabel: "Learning",
+    icon: <Code2 className="w-3.5 h-3.5 shrink-0" />,
     dot: "bg-amber-400",
-    activeClass: "bg-amber-500/15 border-amber-400/60 text-amber-300 shadow-sm",
-    idleClass: "bg-slate-900/80 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700",
+    activeClass:
+      "bg-gradient-to-r from-amber-500/25 to-orange-500/15 border border-amber-400/50 text-amber-200 shadow-sm",
+    idleClass:
+      "border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/80",
   },
 ];
 
@@ -400,7 +412,7 @@ export default function DevHubPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 shrink-0">
+          <div className="w-full h-11 p-1 rounded-2xl bg-slate-950/90 border border-slate-800 grid grid-cols-3 gap-1 shrink-0">
             {STATUS_OPTIONS.map((opt) => {
               const active =
                 draftData.collabStatus.toLowerCase() === opt.value.toLowerCase();
@@ -412,20 +424,16 @@ export default function DevHubPage() {
                     soundEffects.playSoftClick();
                     setDraftData((prev) => ({ ...prev, collabStatus: opt.value }));
                   }}
-                  className={`h-9 sm:h-10 px-2 rounded-xl border text-[11px] sm:text-xs font-black inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
+                  className={`h-full px-2 rounded-xl text-[11px] sm:text-xs font-black inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
                     active ? opt.activeClass : opt.idleClass
                   }`}
                 >
-                  <span className="relative flex h-2 w-2 shrink-0">
-                    {active && (
-                      <span
-                        className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${opt.dot}`}
-                      />
-                    )}
-                    <span className={`relative inline-flex rounded-full h-2 w-2 ${opt.dot}`} />
-                  </span>
+                  {opt.icon}
                   <span className="truncate sm:hidden">{opt.shortLabel}</span>
                   <span className="truncate hidden sm:inline">{opt.fullLabel}</span>
+                  {active && (
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${opt.dot}`} />
+                  )}
                 </button>
               );
             })}
@@ -498,8 +506,8 @@ export default function DevHubPage() {
             </div>
           </div>
 
-          <div className="pt-3 border-t-2 border-slate-800/80 flex flex-col sm:flex-row sm:items-center gap-2 shrink-0 min-h-[44px]">
-            <div className="grid grid-cols-5 sm:flex items-center gap-1.5 shrink-0">
+          <div className="pt-3 border-t-2 border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-start gap-2 shrink-0 min-h-[48px]">
+            <div className="flex items-center justify-start gap-1.5 sm:gap-2 shrink-0">
               {SOCIAL_TABS.map((tab) => {
                 const isSelected = activeSocialKey === tab.key;
                 const hasValue = Boolean((draftData[tab.key] || "").trim());
@@ -512,10 +520,10 @@ export default function DevHubPage() {
                       setActiveSocialKey(tab.key);
                     }}
                     title={tab.label}
-                    className={`relative h-9 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                    className={`relative w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer shrink-0 ${
                       isSelected
                         ? "bg-blue-600/25 border-blue-400 text-blue-300 shadow-sm"
-                        : "bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+                        : "bg-slate-800 border-slate-700 text-slate-200 hover:text-white hover:bg-slate-700"
                     }`}
                   >
                     {tab.icon}
@@ -527,7 +535,7 @@ export default function DevHubPage() {
               })}
             </div>
 
-            <div className="flex-1 min-w-0 flex items-center gap-1.5 h-9 sm:h-8 px-2.5 rounded-xl bg-slate-900 border border-slate-700 focus-within:border-blue-400 transition-colors">
+            <div className="flex-1 min-w-0 flex items-center gap-1.5 h-9 px-2.5 rounded-xl bg-slate-900 border border-slate-700 focus-within:border-blue-400 transition-colors">
               <input
                 type={activeSocialKey === "email" ? "email" : "text"}
                 value={draftData[activeSocialKey]}
