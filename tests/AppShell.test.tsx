@@ -94,7 +94,7 @@ describe("MobileBottomNav", () => {
 
   it("renders all bottom navigation items", () => {
     render(<MobileBottomNav />);
-    expect(screen.getByRole("button", { name: /setup/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /dev hub/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /debug/i })).toBeInTheDocument();
   });
 

@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
-  ShieldCheck,
   ExternalLink,
   Github,
   Linkedin,
@@ -23,7 +22,9 @@ import {
 } from "lucide-react";
 import { toPng } from "html-to-image";
 import type { AvatarConfig } from "@/services/authApi";
+import type { CourseMasteryItem } from "@/services/progressApi";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
+import { CourseMasterySection } from "@/components/profile/CourseMasterySection";
 import { soundEffects } from "@/utils/soundEffects";
 
 export interface DevProjectItem {
@@ -45,6 +46,7 @@ export interface DevCardProps {
   bugsHunted?: number;
   accuracy?: number;
   masteryPercent?: number;
+  coursesMastery?: CourseMasteryItem[];
   techStack?: string[];
   projects?: DevProjectItem[];
   socialLinks?: {
@@ -70,10 +72,11 @@ export function DevCard({
   collabStatus = "Open to Work",
   bio = "Building interactive web apps with React & FastAPI.",
   isSuper = false,
-  streakCount = 42,
-  bugsHunted = 128,
-  accuracy = 89,
-  masteryPercent = 85,
+  streakCount = 0,
+  bugsHunted = 0,
+  accuracy = 0,
+  masteryPercent = 0,
+  coursesMastery,
   techStack = ["JavaScript", "React", "TypeScript", "Python", "FastAPI"],
   projects = [
     {
@@ -492,31 +495,10 @@ export function DevCard({
             </div>
           </div>
 
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-900/85 border border-slate-800 flex flex-col gap-2 shadow-sm shrink-0">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-2">
-                <img
-                  src="/icons/js-badge.png"
-                  alt="JS"
-                  className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
-                />
-                <span className="text-xs sm:text-base font-black text-white">
-                  JavaScript • {masteryPercent}% Mastery
-                </span>
-              </div>
-              <span className="text-[10px] sm:text-xs font-black text-amber-400 bg-amber-400/15 border border-amber-400/40 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Verified ✓
-              </span>
-            </div>
-
-            <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                style={{ width: `${Math.min(100, Math.max(10, masteryPercent))}%` }}
-              />
-            </div>
-          </div>
+          <CourseMasterySection
+            courses={coursesMastery}
+            fallbackMasteryPercent={masteryPercent}
+          />
 
           <div className="flex-1 flex flex-col gap-2 min-h-0">
             <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase shrink-0">

@@ -190,25 +190,6 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   const [devCardData, setDevCardData] = useState<DevCardDataState>(DEFAULT_DEV_CARD_DATA);
   const [editDevCardForm, setEditDevCardForm] = useState<DevCardDataState>(DEFAULT_DEV_CARD_DATA);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const devCardStorageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
-    try {
-      const stored = localStorage.getItem(devCardStorageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed && typeof parsed === "object") {
-          setDevCardData((prev) => {
-            const next = { ...prev, ...parsed };
-            setEditDevCardForm(next);
-            return next;
-          });
-        }
-      }
-    } catch {
-    }
-  }, [currentUser?.id, currentUser?.username]);
-
   const handleSaveDevCard = (updated: DevCardDataState) => {
     soundEffects.playSoftClick();
     setDevCardData(updated);
@@ -252,6 +233,25 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
   }, [isOwnProfile, is_me, username, profile?.is_me, currentUser?.username, targetIdentifier]);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !isMe) return;
+    const devCardStorageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
+    try {
+      const stored = localStorage.getItem(devCardStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") {
+          setDevCardData((prev) => {
+            const next = { ...prev, ...parsed };
+            setEditDevCardForm(next);
+            return next;
+          });
+        }
+      }
+    } catch {
+    }
+  }, [currentUser?.id, currentUser?.username, isMe]);
+
+  useEffect(() => {
     let active = true;
     setLoading(true);
     setNotFound(false);
@@ -264,20 +264,22 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         if (!active) return;
         setProfile(profData);
         if (profData?.dev_card && typeof profData.dev_card === "object" && Object.keys(profData.dev_card).length > 0) {
-          setDevCardData((prev) => {
-            const next = { ...prev, ...profData.dev_card };
-            if (profData.coder_title) {
-              next.specialtyTitle = profData.coder_title;
-            }
-            setEditDevCardForm(next);
-            return next;
-          });
-        } else if (profData?.coder_title) {
-          setDevCardData((prev) => {
-            const next = { ...prev, specialtyTitle: profData.coder_title! };
-            setEditDevCardForm(next);
-            return next;
-          });
+          const next = {
+            ...DEFAULT_DEV_CARD_DATA,
+            ...profData.dev_card,
+            specialtyTitle:
+              profData.dev_card.specialtyTitle || profData.coder_title || DEFAULT_DEV_CARD_DATA.specialtyTitle,
+          };
+          setDevCardData(next);
+          setEditDevCardForm(next);
+        } else {
+          const fallbackBase = profData?.is_me ? devCardData : DEFAULT_DEV_CARD_DATA;
+          const next = {
+            ...fallbackBase,
+            specialtyTitle: profData?.coder_title || fallbackBase.specialtyTitle,
+          };
+          setDevCardData(next);
+          setEditDevCardForm(next);
         }
         setFollowers(connData.followers || []);
         setFollowing(connData.following || []);
@@ -1312,9 +1314,10 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         bio={devCardData.bio || "Building interactive web apps with React & FastAPI."}
         isSuper={Boolean((profile as any)?.is_super || (currentUser as any)?.is_super || (devCardData as any)?.is_super)}
         streakCount={effectiveStreak}
-        bugsHunted={profile?.solved_mistakes_count ?? profile?.completed_nodes_count ?? effectiveCompletedNodes ?? 128}
-        accuracy={Math.max(80, Math.min(100, Math.round(100 - (navMistakesCount / Math.max(1, effectiveCompletedNodes)) * 10))) || 89}
-        masteryPercent={Math.min(100, Math.max(20, Math.round((effectiveCompletedNodes / 20) * 100))) || 85}
+        bugsHunted={profile?.bugs_fixed ?? effectiveSolvedMistakes + effectiveCompletedNodes}
+        accuracy={profile?.accuracy ?? 0}
+        masteryPercent={profile?.mastery_percent ?? 0}
+        coursesMastery={profile?.courses_mastery}
         techStack={devCardData.techStack && devCardData.techStack.length > 0 ? devCardData.techStack : ["JavaScript", "React", "TypeScript", "Python", "FastAPI"]}
         projects={devCardData.projects}
         socialLinks={{

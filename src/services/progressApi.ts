@@ -9,6 +9,27 @@ export interface Quest {
   claimed: boolean;
 }
 
+export interface CourseMasteryItem {
+  id: string;
+  title: string;
+  shortLabel?: string;
+  completedNodes?: number;
+  totalNodes?: number;
+  percent: number;
+  isCompleted?: boolean;
+}
+
+export interface DevCardStats {
+  streak: number;
+  bugs_fixed: number;
+  accuracy: number;
+  mastery_percent: number;
+  completed_nodes_count: number;
+  solved_mistakes_count: number;
+  pending_mistakes_count: number;
+  courses_mastery: CourseMasteryItem[];
+}
+
 export interface ProgressData {
   totalXP: number;
   season_xp?: number;
@@ -17,6 +38,11 @@ export interface ProgressData {
   max_battery?: number;
   seconds_until_next_refill?: number;
   unresolved_mistakes_count?: number;
+  solved_mistakes_count?: number;
+  bugs_fixed?: number;
+  accuracy?: number;
+  mastery_percent?: number;
+  courses_mastery?: CourseMasteryItem[];
   battery_recharge_at?: number | null;
   bytes: number;
   streak_freeze?: number;
@@ -95,6 +121,10 @@ export interface UserProfileData {
   league?: string;
   completed_nodes_count?: number;
   solved_mistakes_count?: number;
+  bugs_fixed?: number;
+  accuracy?: number;
+  mastery_percent?: number;
+  courses_mastery?: CourseMasteryItem[];
   coder_title?: string;
   dev_card?: Record<string, any>;
 }
@@ -294,6 +324,24 @@ export const fetchUserConnectionsApi = async (userId: string): Promise<UserConne
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch user connections");
+  return res.json();
+};
+
+export interface DevCardApiResponse {
+  is_authenticated?: boolean;
+  username?: string;
+  avatar_config?: AvatarConfig;
+  coder_title?: string;
+  dev_card: Record<string, any>;
+  stats: DevCardStats;
+  courses_mastery: CourseMasteryItem[];
+}
+
+export const fetchDevCardApi = async (): Promise<DevCardApiResponse> => {
+  const res = await fetch(`${API_BASE_URL}/api/user/dev-card`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch dev card");
   return res.json();
 };
 

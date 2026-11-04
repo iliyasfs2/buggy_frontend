@@ -4,10 +4,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DevCard, type DevProjectItem } from "@/components/profile/DevCard";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
+import { CourseMasterySection } from "@/components/profile/CourseMasterySection";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useGameStore } from "@/store/useGameStore";
 import { useNavStore } from "@/store/useNavStore";
-import { updateDevCardApi, fetchUserProfileApi } from "@/services/progressApi";
+import {
+  fetchDevCardApi,
+  fetchUserProgress,
+  updateDevCardApi,
+  type DevCardStats,
+} from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import {
   Check,
@@ -22,13 +27,13 @@ import {
   Send,
   Globe,
   Mail,
-  ShieldCheck,
   Sparkles,
   Link2,
   Trash2,
   Briefcase,
   Users,
-  Code2
+  Code2,
+  AlertCircle
 } from "lucide-react";
 
 interface DevCardFormState {
@@ -159,38 +164,58 @@ function cloneCardState(state: DevCardFormState): DevCardFormState {
 }
 
 export default function DevHubPage() {
-  const { user: currentUser } = useAuthStore();
-  const streakCount = useGameStore((s) => s.streakCount);
-  const completedNodesCount = useNavStore((s) => s.completedNodesCount);
-  const mistakesCount = useNavStore((s) => s.mistakesCount);
+  const { user: currentUser, setUser } = useAuthStore();
+  const navStreak = useNavStore((s) => s.streakCount);
+  const syncNav = useNavStore((s) => s.syncNav);
 
   const [activeTab, setActiveTab] = useState<"card" | "setup" | "projects">("card");
   const [formData, setFormData] = useState<DevCardFormState>(DEFAULT_FORM);
   const [draftData, setDraftData] = useState<DevCardFormState>(DEFAULT_FORM);
+  const [serverUsername, setServerUsername] = useState<string>("");
+  const [liveStats, setLiveStats] = useState<DevCardStats>({
+    streak: 0,
+    bugs_fixed: 0,
+    accuracy: 0,
+    mastery_percent: 0,
+    completed_nodes_count: 0,
+    solved_mistakes_count: 0,
+    pending_mistakes_count: 0,
+    courses_mastery: [
+      {
+        id: "javascript",
+        title: "JavaScript",
+        shortLabel: "JS",
+        percent: 0,
+        isCompleted: false,
+      },
+    ],
+  });
+  const [hasLoadedStats, setHasLoadedStats] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [activeSocialKey, setActiveSocialKey] = useState<SocialKey>("githubUrl");
   const [techInput, setTechInput] = useState("");
   const [isSuper, setIsSuper] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
     const storageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
-    let merged: DevCardFormState = cloneCardState(DEFAULT_FORM);
 
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed && typeof parsed === "object") {
-          merged = {
-            ...merged,
+          const cached: DevCardFormState = {
+            ...cloneCardState(DEFAULT_FORM),
             ...parsed,
-            techStack: Array.isArray(parsed.techStack) ? parsed.techStack : merged.techStack,
-            projects: Array.isArray(parsed.projects) && parsed.projects.length > 0 ? parsed.projects : merged.projects,
+            techStack: Array.isArray(parsed.techStack) ? parsed.techStack : DEFAULT_FORM.techStack,
+            projects: Array.isArray(parsed.projects) ? parsed.projects : DEFAULT_FORM.projects,
           };
-          setFormData(cloneCardState(merged));
-          setDraftData(cloneCardState(merged));
+          setFormData(cloneCardState(cached));
+          setDraftData(cloneCardState(cached));
         }
       }
     } catch {}
@@ -203,35 +228,69 @@ export default function DevHubPage() {
       }
     }
 
-    if (currentUser?.id) {
-      fetchUserProfileApi(String(currentUser.id))
-        .then((res) => {
-          if (res?.dev_card && typeof res.dev_card === "object" && Object.keys(res.dev_card).length > 0) {
-            const apiCard = res.dev_card as Partial<DevCardFormState>;
-            setFormData((prev) => {
-              const next: DevCardFormState = {
-                ...prev,
-                ...apiCard,
-                techStack: Array.isArray(apiCard.techStack) ? apiCard.techStack : prev.techStack,
-                projects:
-                  Array.isArray(apiCard.projects) && apiCard.projects.length > 0
-                    ? apiCard.projects
-                    : prev.projects,
-              };
-              setDraftData((currDraft) => (isEditing ? currDraft : cloneCardState(next)));
-              return next;
-            });
-          }
-          if ((res as any)?.is_super || (currentUser as any)?.is_super) {
-            setIsSuper(true);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [currentUser]);
+    fetchUserProgress()
+      .then((prog) => {
+        if (!active) return;
+        syncNav(prog);
+      })
+      .catch(() => {});
+
+    fetchDevCardApi()
+      .then((res) => {
+        if (!active) return;
+        if (res.username) {
+          setServerUsername(res.username);
+        }
+        if (res.stats) {
+          setLiveStats({
+            ...res.stats,
+            courses_mastery:
+              Array.isArray(res.courses_mastery) && res.courses_mastery.length > 0
+                ? res.courses_mastery
+                : res.stats.courses_mastery || [],
+          });
+          setHasLoadedStats(true);
+        }
+        if (res.dev_card && typeof res.dev_card === "object" && Object.keys(res.dev_card).length > 0) {
+          const apiCard = res.dev_card as Partial<DevCardFormState>;
+          const hydrated: DevCardFormState = {
+            ...cloneCardState(DEFAULT_FORM),
+            ...apiCard,
+            specialtyTitle:
+              apiCard.specialtyTitle || res.coder_title || DEFAULT_FORM.specialtyTitle,
+            techStack: Array.isArray(apiCard.techStack)
+              ? apiCard.techStack
+              : DEFAULT_FORM.techStack,
+            projects: Array.isArray(apiCard.projects)
+              ? apiCard.projects
+              : DEFAULT_FORM.projects,
+          };
+          setFormData(cloneCardState(hydrated));
+          setDraftData((currDraft) => (isEditing ? currDraft : cloneCardState(hydrated)));
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(hydrated));
+          } catch {}
+        } else if (res.coder_title) {
+          setFormData((prev) => {
+            const next = { ...prev, specialtyTitle: res.coder_title! };
+            setDraftData((currDraft) => (isEditing ? currDraft : cloneCardState(next)));
+            return next;
+          });
+        }
+        if ((res as any)?.is_super || (currentUser as any)?.is_super) {
+          setIsSuper(true);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, [currentUser?.id, currentUser?.username, syncNav]);
 
   const openEditor = useCallback(() => {
     soundEffects.playSoftClick();
+    setSaveError(null);
     setDraftData(cloneCardState(formData));
     setTechInput("");
     setIsEditing(true);
@@ -239,6 +298,7 @@ export default function DevHubPage() {
 
   const cancelEditor = useCallback(() => {
     soundEffects.playSoftClick();
+    setSaveError(null);
     setDraftData(cloneCardState(formData));
     setTechInput("");
     setIsEditing(false);
@@ -249,6 +309,7 @@ export default function DevHubPage() {
     soundEffects.playSoftClick();
     setIsSaving(true);
     setSaveSuccess(false);
+    setSaveError(null);
 
     const pendingSkill = techInput.trim();
     const cleanedStack = [...draftData.techStack];
@@ -277,21 +338,54 @@ export default function DevHubPage() {
       projects: cleanedProjects,
     };
 
-    setFormData(cloneCardState(nextSaved));
-    setDraftData(cloneCardState(nextSaved));
-    setTechInput("");
-
     const storageKey = `buggy_dev_card_${currentUser?.id || currentUser?.username || "default"}`;
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(nextSaved));
-      await updateDevCardApi(nextSaved);
-    } catch {}
 
-    setIsSaving(false);
-    setIsEditing(false);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 2500);
-  }, [currentUser, draftData, isSaving, techInput]);
+    try {
+      const res = await updateDevCardApi(nextSaved);
+      const persistedCard =
+        res?.dev_card && typeof res.dev_card === "object"
+          ? {
+              ...nextSaved,
+              ...res.dev_card,
+              techStack: Array.isArray(res.dev_card.techStack)
+                ? res.dev_card.techStack
+                : nextSaved.techStack,
+              projects: Array.isArray(res.dev_card.projects)
+                ? res.dev_card.projects
+                : nextSaved.projects,
+            }
+          : nextSaved;
+
+      setFormData(cloneCardState(persistedCard));
+      setDraftData(cloneCardState(persistedCard));
+      setTechInput("");
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(persistedCard));
+      } catch {}
+
+      if (res?.user) {
+        setUser(res.user);
+      }
+      if (res?.stats) {
+        setLiveStats({
+          ...res.stats,
+          courses_mastery:
+            Array.isArray(res.courses_mastery) && res.courses_mastery.length > 0
+              ? res.courses_mastery
+              : res.stats.courses_mastery || [],
+        });
+        setHasLoadedStats(true);
+      }
+
+      setIsSaving(false);
+      setIsEditing(false);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2500);
+    } catch {
+      setIsSaving(false);
+      setSaveError("Could not save to server. Please try again.");
+    }
+  }, [currentUser?.id, currentUser?.username, draftData, isSaving, setUser, techInput]);
 
   useEffect(() => {
     if (!isEditing) return;
@@ -367,13 +461,15 @@ export default function DevHubPage() {
     }));
   };
 
-  const displayName = currentUser?.username || "Iliya Mehri";
-  const usernameHandle = currentUser?.username || "iliya";
-  const effectiveStreak = streakCount || 42;
-  const effectiveBugs = completedNodesCount ? completedNodesCount * 3 : 128;
-  const accuracyScore =
-    Math.max(80, Math.min(100, Math.round(100 - (mistakesCount / Math.max(1, completedNodesCount)) * 10))) || 89;
-  const masteryScore = Math.min(100, Math.max(20, Math.round((completedNodesCount / 20) * 100))) || 85;
+  const displayName = currentUser?.username || serverUsername || "Developer";
+  const usernameHandle = (currentUser?.username || serverUsername || "me")
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+  const effectiveStreak = hasLoadedStats ? liveStats.streak : navStreak;
+  const effectiveBugs = liveStats.bugs_fixed;
+  const accuracyScore = liveStats.accuracy;
+  const masteryScore = liveStats.mastery_percent;
+  const coursesMastery = liveStats.courses_mastery;
 
   const activeSocialMeta = SOCIAL_TABS.find((t) => t.key === activeSocialKey) || SOCIAL_TABS[0];
 
@@ -612,26 +708,10 @@ export default function DevHubPage() {
             </div>
           </div>
 
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-900/85 border border-slate-800 flex flex-col gap-2 shrink-0">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-2">
-                <img src="/icons/js-badge.png" alt="JS" className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" />
-                <span className="text-xs sm:text-base font-black text-white">
-                  JavaScript • {masteryScore}% Mastery
-                </span>
-              </div>
-              <span className="text-[10px] sm:text-xs font-black text-amber-400 bg-amber-400/15 border border-amber-400/40 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Verified ✓
-              </span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                style={{ width: `${Math.min(100, Math.max(10, masteryScore))}%` }}
-              />
-            </div>
-          </div>
+          <CourseMasterySection
+            courses={coursesMastery}
+            fallbackMasteryPercent={masteryScore}
+          />
 
           <div className="flex-1 flex flex-col gap-2 min-h-0">
             <div className="flex items-center justify-between shrink-0">
@@ -806,7 +886,14 @@ export default function DevHubPage() {
             </button>
           </div>
 
-          {saveSuccess && (
+          {saveError && (
+            <span className="px-3.5 py-1.5 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-300 font-black text-xs sm:text-sm flex items-center gap-1.5 shrink-0 animate-in fade-in duration-200">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{saveError}</span>
+            </span>
+          )}
+
+          {saveSuccess && !saveError && (
             <span className="hidden sm:flex px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-black text-xs sm:text-sm items-center gap-1.5 shrink-0 animate-in fade-in duration-200">
               <Check className="w-4 h-4" strokeWidth={2.5} />
               Saved!
@@ -829,6 +916,7 @@ export default function DevHubPage() {
                 bugsHunted={effectiveBugs}
                 accuracy={accuracyScore}
                 masteryPercent={masteryScore}
+                coursesMastery={coursesMastery}
                 techStack={formData.techStack}
                 projects={formData.projects}
                 socialLinks={{

@@ -9,4 +9,6 @@ vi.mock("next/navigation", () => ({
     back: vi.fn(),
   }),
   usePathname: () => "/roadmap",
+  useSearchParams: () => new URLSearchParams(),
+  redirect: vi.fn(),
 }));

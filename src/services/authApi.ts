@@ -33,6 +33,8 @@ export interface UserProfile {
   created_at?: string;
   avatar?: AvatarConfig;
   avatar_config?: AvatarConfig;
+  coder_title?: string;
+  dev_card?: Record<string, any>;
 }
 
 export interface AuthResponse {
