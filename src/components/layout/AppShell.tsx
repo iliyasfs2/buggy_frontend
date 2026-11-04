@@ -8,13 +8,18 @@ import { MobileBottomNav } from "./MobileBottomNav";
 export interface AppShellProps {
   children?: ReactNode;
   className?: string;
+  hideMobileHeader?: boolean;
 }
 
-export function AppShell({ children = null, className = "" }: AppShellProps): ReactElement {
+export function AppShell({
+  children = null,
+  className = "",
+  hideMobileHeader = false,
+}: AppShellProps): ReactElement {
   return (
     <div className={`min-h-screen bg-[#101826] text-slate-100 flex flex-col ${className}`}>
       <DesktopSidebar />
-      <MobileHeader />
+      {!hideMobileHeader && <MobileHeader />}
       <main className="flex-1 md:pl-64 min-h-screen pb-16 md:pb-0 bg-[#101826]">
         {children}
       </main>

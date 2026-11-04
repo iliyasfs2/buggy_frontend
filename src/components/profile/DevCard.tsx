@@ -139,8 +139,8 @@ export function DevCard({
         label: "Looking for Teammate",
         dotColor: "bg-purple-400",
         pingColor: "bg-purple-400",
-        pillBg: "bg-purple-500/10",
-        border: "border-purple-500/30",
+        pillBg: "bg-purple-500/15",
+        border: "border-purple-500/40",
         text: "text-purple-300",
       };
     }
@@ -149,8 +149,8 @@ export function DevCard({
         label: "Learning & Coding",
         dotColor: "bg-amber-400",
         pingColor: "bg-amber-400",
-        pillBg: "bg-amber-500/10",
-        border: "border-amber-500/30",
+        pillBg: "bg-amber-500/15",
+        border: "border-amber-500/40",
         text: "text-amber-300",
       };
     }
@@ -158,8 +158,8 @@ export function DevCard({
       label: "Open to Work",
       dotColor: "bg-emerald-400",
       pingColor: "bg-emerald-400",
-      pillBg: "bg-emerald-500/10",
-      border: "border-emerald-500/30",
+      pillBg: "bg-emerald-500/15",
+      border: "border-emerald-500/40",
       text: "text-emerald-400",
     };
   };
@@ -308,22 +308,22 @@ export function DevCard({
   const cardContent = (
     <div
       ref={setMergedRef}
-      className={`bg-[#0f172a] rounded-3xl p-5 sm:p-6 select-none relative ${
+      className={`bg-[#0f172a] rounded-3xl p-6 sm:p-8 lg:p-9 select-none relative md:min-h-[540px] flex flex-col justify-between ${
         isSuper ? "" : "border-2 border-slate-700 shadow-2xl"
       }`}
     >
-      <div className="flex flex-col gap-5 md:grid md:grid-cols-12 md:gap-6">
-        <div className="md:col-span-5 flex flex-col justify-between gap-4 md:border-r md:border-slate-800/80 md:pr-6">
-          <div className="flex flex-col gap-3.5">
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-16 h-16 rounded-full border-2 border-slate-700 bg-slate-950 flex items-center justify-center shrink-0 overflow-hidden shadow-md">
-                <AvatarRenderer config={avatarConfig} size={58} />
+      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 lg:gap-10 flex-1">
+        <div className="md:col-span-5 flex flex-col justify-between gap-6 md:border-r-2 md:border-slate-800/90 md:pr-8 lg:pr-10">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-20 h-20 rounded-full border-2 border-slate-700 bg-slate-950 flex items-center justify-center shrink-0 overflow-hidden shadow-lg">
+                <AvatarRenderer config={avatarConfig} size={74} />
               </div>
               <div className="flex flex-col min-w-0">
-                <h3 className="text-xl font-black text-white leading-tight truncate">
+                <h3 className="text-2xl sm:text-[26px] font-black text-white leading-tight truncate">
                   {displayName}
                 </h3>
-                <span className="text-xs sm:text-sm font-semibold text-slate-400 truncate mt-0.5">
+                <span className="text-sm sm:text-base font-extrabold text-slate-300 truncate mt-1">
                   {specialtyTitle}
                 </span>
               </div>
@@ -331,33 +331,33 @@ export function DevCard({
 
             <div>
               <div
-                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border ${statusMeta.pillBg} ${statusMeta.border} ${statusMeta.text} shadow-sm`}
+                className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black border ${statusMeta.pillBg} ${statusMeta.border} ${statusMeta.text} shadow-sm`}
               >
-                <span className="relative flex h-2 w-2 shrink-0">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span
                     className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusMeta.pingColor}`}
                   />
-                  <span className={`relative inline-flex rounded-full h-2 w-2 ${statusMeta.dotColor}`} />
+                  <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusMeta.dotColor}`} />
                 </span>
                 <span>{statusMeta.label}</span>
               </div>
             </div>
 
-            <div className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal bg-slate-900/60 p-3 rounded-2xl border border-slate-800/80">
-              <p className="line-clamp-2">{bio}</p>
+            <div className="text-sm sm:text-base text-slate-200 leading-relaxed font-bold bg-slate-900/70 p-4 rounded-2xl border border-slate-800">
+              <p className="line-clamp-3">{bio}</p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <span className="text-[11px] font-black tracking-wider text-slate-400 uppercase">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
                 TECH STACK
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {techStack.map((tech) => (
                   <span
                     key={tech}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700/60 text-slate-200 text-xs font-bold shadow-sm"
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-800 border border-slate-700/80 text-white text-xs sm:text-sm font-black shadow-sm"
                   >
                     {tech}
                   </span>
@@ -365,18 +365,20 @@ export function DevCard({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-              <span className="text-xs font-black text-slate-500 truncate pr-2">@{username}</span>
-              <div className="flex items-center gap-1.5 shrink-0">
+            <div className="pt-4 border-t-2 border-slate-800/80 flex items-center justify-between">
+              <span className="text-sm sm:text-base font-black text-slate-400 truncate pr-2">
+                @{username}
+              </span>
+              <div className="flex items-center gap-2 shrink-0">
                 {socialLinks.githubUrl && (
                   <a
                     href={socialLinks.githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                     title="GitHub"
                   >
-                    <Github className="w-4 h-4" />
+                    <Github className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.linkedinUrl && (
@@ -384,10 +386,10 @@ export function DevCard({
                     href={socialLinks.linkedinUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                     title="LinkedIn"
                   >
-                    <Linkedin className="w-4 h-4" />
+                    <Linkedin className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.telegramUrl ? (
@@ -395,29 +397,29 @@ export function DevCard({
                     href={socialLinks.telegramUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                     title="Telegram"
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4" />
                   </a>
                 ) : socialLinks.websiteUrl ? (
                   <a
                     href={socialLinks.websiteUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                     title="Website"
                   >
-                    <Globe className="w-4 h-4" />
+                    <Globe className="w-5 h-5" />
                   </a>
                 ) : null}
                 {socialLinks.email && (
                   <a
                     href={`mailto:${socialLinks.email}`}
-                    className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                     title="Email"
                   >
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-5 h-5" />
                   </a>
                 )}
               </div>
@@ -425,65 +427,65 @@ export function DevCard({
           </div>
         </div>
 
-        <div className="md:col-span-7 flex flex-col justify-between gap-4">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <span className="text-[11px] font-black tracking-wider text-sky-400 uppercase flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-400" />
+        <div className="md:col-span-7 flex flex-col justify-between gap-6">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-3">
+              <span className="text-xs sm:text-sm font-black tracking-wider text-sky-400 uppercase flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-sky-400" strokeWidth={2.5} />
                 VERIFIED BY BUGGY
               </span>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div className="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-base sm:text-lg font-black text-amber-400 flex items-center gap-1">
-                    <Flame className="w-4 h-4 fill-amber-400" />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                  <span className="text-xl sm:text-2xl font-black text-amber-400 flex items-center gap-1.5">
+                    <Flame className="w-5 h-5 fill-amber-400" />
                     {streakCount}
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
                     Streak
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-base sm:text-lg font-black text-rose-400 flex items-center gap-1">
-                    <Bug className="w-4 h-4" />
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                  <span className="text-xl sm:text-2xl font-black text-rose-400 flex items-center gap-1.5">
+                    <Bug className="w-5 h-5" />
                     {bugsHunted}
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
                     Bugs Fixed
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-base sm:text-lg font-black text-emerald-400 flex items-center gap-1">
-                    <Target className="w-4 h-4" />
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                  <span className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-1.5">
+                    <Target className="w-5 h-5" />
                     {accuracy}%
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mt-0.5">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
                     Accuracy
                   </span>
                 </div>
               </div>
 
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-slate-900/80 border border-slate-800/80 flex flex-col gap-1.5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-2.5 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
                     <img
                       src="/icons/js-badge.png"
                       alt="JS"
-                      className="w-5 h-5 object-contain"
+                      className="w-6 h-6 object-contain"
                     />
-                    <span className="text-xs sm:text-sm font-black text-white">
+                    <span className="text-sm sm:text-base font-black text-white">
                       JavaScript • {masteryPercent}% Mastery
                     </span>
                   </div>
-                  <span className="text-[10px] font-black text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3" />
+                  <span className="text-xs font-black text-amber-400 bg-amber-400/15 border border-amber-400/40 px-2.5 py-1 rounded-full inline-flex items-center gap-1 shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5" />
                     Verified ✓
                   </span>
                 </div>
 
-                <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
                     style={{ width: `${Math.min(100, Math.max(10, masteryPercent))}%` }}
@@ -493,18 +495,18 @@ export function DevCard({
             </div>
 
             {projects && projects.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <span className="text-[11px] font-black tracking-wider text-slate-400 uppercase">
+              <div className="flex flex-col gap-2.5">
+                <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
                   FEATURED PROJECTS
                 </span>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2.5">
                   {projects.slice(0, 2).map((proj) => (
                     <div
                       key={proj.id}
-                      className="p-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-0.5 transition-colors"
+                      className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1 transition-colors"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs sm:text-sm font-bold text-white truncate">
+                        <span className="text-sm sm:text-base font-black text-white truncate">
                           {proj.title}
                         </span>
                         {proj.link && (
@@ -512,14 +514,14 @@ export function DevCard({
                             href={proj.link}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[11px] font-bold text-sky-400 hover:text-sky-300 inline-flex items-center gap-1 shrink-0 transition-colors"
+                            className="text-xs sm:text-sm font-black text-sky-400 hover:text-sky-300 inline-flex items-center gap-1 shrink-0 transition-colors"
                           >
                             <span>View</span>
-                            <ExternalLink className="w-3 h-3" />
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         )}
                       </div>
-                      <p className="text-[11px] sm:text-xs text-slate-400 font-normal truncate">
+                      <p className="text-xs sm:text-sm text-slate-300 font-bold truncate">
                         {proj.desc}
                       </p>
                     </div>
@@ -531,7 +533,7 @@ export function DevCard({
 
           <div
             data-export-ignore="true"
-            className="flex items-center gap-2.5 pt-2 border-t border-slate-800/80"
+            className="flex items-center gap-3 pt-4 border-t-2 border-slate-800/80"
           >
             {isMe ? (
               <>
@@ -541,18 +543,18 @@ export function DevCard({
                     soundEffects.playSoftClick();
                     if (onEditInDevHub) onEditInDevHub();
                   }}
-                  className="flex-1 h-11 px-4 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="flex-1 h-12 sm:h-[52px] px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
-                  <Edit3 className="w-4 h-4" />
+                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>{editButtonText}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleOpenShareModal}
-                  className="flex-1 h-11 px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-slate-200 hover:text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="flex-1 h-12 sm:h-[52px] px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4 text-sky-400" />
+                  <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400" />
                   <span>Share Card</span>
                 </button>
               </>
@@ -560,9 +562,9 @@ export function DevCard({
               <button
                 type="button"
                 onClick={handleOpenShareModal}
-                className="w-full h-11 px-4 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                className="w-full h-12 sm:h-[52px] px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
               >
-                <Share2 className="w-4 h-4" />
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Share Card</span>
               </button>
             )}
@@ -643,7 +645,7 @@ export function DevCard({
         </div>
 
         <div className="flex flex-col gap-2.5">
-          <span className="text-[11px] font-black tracking-wider text-slate-400 uppercase">
+          <span className="text-xs font-black tracking-wider text-slate-300 uppercase">
             Share to Social Media
           </span>
           <div className="grid grid-cols-4 gap-2">
@@ -657,7 +659,7 @@ export function DevCard({
                 className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${item.colorClass}`}
               >
                 <div className="w-7 h-7 flex items-center justify-center">{item.icon}</div>
-                <span className="text-[10px] font-black tracking-tight truncate max-w-full">
+                <span className="text-[11px] font-black tracking-tight truncate max-w-full">
                   {item.label}
                 </span>
               </a>
@@ -671,7 +673,7 @@ export function DevCard({
               <div className="w-7 h-7 flex items-center justify-center">
                 <Share2 className="w-5 h-5" />
               </div>
-              <span className="text-[10px] font-black tracking-tight truncate max-w-full">
+              <span className="text-[11px] font-black tracking-tight truncate max-w-full">
                 More Apps
               </span>
             </button>
@@ -687,8 +689,8 @@ export function DevCard({
         <div
           className={`relative p-[2px] rounded-3xl bg-gradient-to-tr from-purple-600 via-cyan-400 to-amber-400 shadow-[0_0_35px_rgba(168,85,247,0.3)] ${className}`}
         >
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 via-cyan-500 to-amber-400 text-white font-black text-[10px] tracking-widest uppercase px-3.5 py-0.5 rounded-full shadow-lg border border-white/20 flex items-center gap-1 shrink-0 z-20 select-none">
-            <Sparkles className="w-3 h-3 text-amber-200 fill-amber-200" />
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 via-cyan-500 to-amber-400 text-white font-black text-xs tracking-widest uppercase px-4 py-1 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5 shrink-0 z-20 select-none">
+            <Sparkles className="w-3.5 h-3.5 text-amber-200 fill-amber-200" />
             <span>SUPER MEMBER</span>
           </div>
           {cardContent}

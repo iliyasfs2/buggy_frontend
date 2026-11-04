@@ -37,7 +37,7 @@ export function DevCardModal({
       onClick={onClose}
     >
       <div
-        className="w-full min-h-screen md:min-h-0 md:w-full md:max-w-[880px] bg-[#0c162c] md:bg-transparent flex flex-col justify-center relative p-3 sm:p-4 md:p-0 animate-in slide-in-from-bottom duration-200"
+        className="w-full min-h-screen md:min-h-0 md:w-full md:max-w-[1060px] bg-[#0c162c] md:bg-transparent flex flex-col justify-center relative p-3 sm:p-4 md:p-0 animate-in slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button
