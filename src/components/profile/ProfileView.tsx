@@ -21,6 +21,7 @@ import {
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { AvatarCustomizerModal } from "@/components/profile/AvatarCustomizerModal";
 import { DevCardModal } from "@/components/profile/DevCardModal";
+import type { DevProjectItem } from "@/components/profile/DevCard";
 import { ProfileHonors } from "@/components/profile/ProfileHonors";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 import { soundEffects } from "@/utils/soundEffects";
@@ -47,6 +48,7 @@ export interface DevCardDataState {
   collabStatus: string;
   bio: string;
   techStack: string[];
+  projects?: DevProjectItem[];
   githubUrl: string;
   linkedinUrl: string;
   websiteUrl: string;
@@ -1314,6 +1316,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         accuracy={Math.max(80, Math.min(100, Math.round(100 - (navMistakesCount / Math.max(1, effectiveCompletedNodes)) * 10))) || 89}
         masteryPercent={Math.min(100, Math.max(20, Math.round((effectiveCompletedNodes / 20) * 100))) || 85}
         techStack={devCardData.techStack && devCardData.techStack.length > 0 ? devCardData.techStack : ["JavaScript", "React", "TypeScript", "Python", "FastAPI"]}
+        projects={devCardData.projects}
         socialLinks={{
           githubUrl: devCardData.githubUrl,
           linkedinUrl: devCardData.linkedinUrl,
@@ -1324,7 +1327,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         isMe={isMe}
         onEditInDevHub={() => {
           setIsDevCardOpen(false);
-          router.push("/setup");
+          router.push("/setup?edit=1");
         }}
       />
 
