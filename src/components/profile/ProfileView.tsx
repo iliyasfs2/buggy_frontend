@@ -1327,7 +1327,7 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
         isMe={isMe}
         onEditInDevHub={() => {
           setIsDevCardOpen(false);
-          router.push("/setup?edit=1");
+          router.push("/dev-hub?edit=1");
         }}
       />
 

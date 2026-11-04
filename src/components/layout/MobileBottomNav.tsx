@@ -153,6 +153,7 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
             ? isMoreActive
             : (pathname === "/store" && item.id === "store") ||
               (pathname.startsWith("/debug") && item.id === "debug") ||
+              ((pathname.startsWith("/dev-hub") || pathname.startsWith("/setup")) && item.id === "setup") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
           const Icon = item.icon;
           const badgeCount = item.id === "debug" ? mistakesCount : item.badgeCount;
@@ -200,6 +201,8 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
                   router.push("/store");
                 } else if (item.id === "debug") {
                   router.push("/debug");
+                } else if (item.id === "setup") {
+                  router.push("/dev-hub");
                 } else {
                   if (pathname !== "/roadmap" && pathname !== "/") {
                     router.push("/roadmap");

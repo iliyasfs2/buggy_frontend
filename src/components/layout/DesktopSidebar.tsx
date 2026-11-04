@@ -53,7 +53,7 @@ export function DesktopSidebar({
               (pathname.startsWith("/debug") && item.id === "debug") ||
               (isLeaderboardActive && item.id === "leaderboard") ||
               (pathname.startsWith("/settings") && item.id === "settings") ||
-              (pathname.startsWith("/setup") && item.id === "setup") ||
+              ((pathname.startsWith("/dev-hub") || pathname.startsWith("/setup")) && item.id === "setup") ||
               ((pathname === "/roadmap" || pathname === "/") && activeTab === item.id);
             const Icon = item.icon;
             const badgeCount = item.id === "debug" ? mistakesCount : item.badgeCount;
@@ -76,7 +76,7 @@ export function DesktopSidebar({
                   } else if (item.id === "settings") {
                     router.push("/settings");
                   } else if (item.id === "setup") {
-                    router.push("/setup");
+                    router.push("/dev-hub");
                   } else {
                     if (pathname !== "/roadmap" && pathname !== "/") {
                       router.push("/roadmap");
