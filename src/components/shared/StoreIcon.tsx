@@ -9,8 +9,9 @@ export function StoreIcon({ className = "" }: LucideProps): ReactElement {
     <Image
       src="/icons/store.png"
       alt="Store navigation icon"
-      width={28}
-      height={28}
+      width={64}
+      height={64}
+      unoptimized
       className={`shrink-0 object-contain ${className}`}
       priority
     />

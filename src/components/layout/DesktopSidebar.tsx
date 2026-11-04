@@ -34,12 +34,12 @@ export function DesktopSidebar({
       aria-label="Desktop Navigation"
       className={`hidden md:flex flex-col w-64 h-screen fixed inset-y-0 left-0 bg-[#101826] border-r-4 border-slate-700 z-50 select-none p-4 ${className}`}
     >
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center px-4">
-          <BuggyLogo className="h-11 w-auto object-contain" />
+      <div className="flex flex-col gap-7">
+        <div className="flex items-center px-4 pt-1">
+          <BuggyLogo className="h-12 w-auto object-contain" />
         </div>
 
-        <nav className="flex flex-col gap-1.5" aria-label="Main menu">
+        <nav className="flex flex-col gap-2" aria-label="Main menu">
           {NAVIGATION_ITEMS.map((item) => {
             const isLeaderboardActive =
               pathname.startsWith("/leaderboard") ||
@@ -83,7 +83,7 @@ export function DesktopSidebar({
                     }
                   }
                 }}
-                className={`flex items-center justify-between px-4 py-3 rounded-2xl font-black text-sm tracking-wide transition-all cursor-pointer ${
+                className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-black text-base tracking-wide transition-all cursor-pointer ${
                   isActive
                     ? "bg-blue-600/15 text-blue-400 border-2 border-b-4 border-blue-500 shadow-sm"
                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-2 border-transparent"
@@ -91,7 +91,7 @@ export function DesktopSidebar({
               >
                 <div className="flex items-center gap-4">
                   <Icon
-                    className={`w-6 h-6 transition-transform ${
+                    className={`w-[30px] h-[30px] transition-transform ${
                       isActive ? "scale-110 text-blue-400" : "text-slate-400"
                     }`}
                   />

@@ -9,8 +9,9 @@ export function SettingsIcon({ className = "" }: LucideProps): ReactElement {
     <Image
       src="/icons/settings.png"
       alt="Settings navigation icon"
-      width={28}
-      height={28}
+      width={64}
+      height={64}
+      unoptimized
       className={`shrink-0 object-contain ${className}`}
       priority
     />

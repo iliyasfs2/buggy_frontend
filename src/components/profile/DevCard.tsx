@@ -304,270 +304,268 @@ export function DevCard({
   const cardContent = (
     <div
       ref={setMergedRef}
-      className={`bg-[#0f172a] rounded-3xl p-6 sm:p-8 select-none relative md:h-[580px] flex flex-col justify-between ${
+      className={`bg-[#0f172a] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 select-none relative h-auto md:h-[510px] flex flex-col ${
         isSuper ? "" : "border-2 border-slate-700 shadow-2xl"
       }`}
     >
-      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 lg:gap-10 flex-1 min-h-0">
-        <div className="md:col-span-5 flex flex-col justify-between gap-5 md:border-r-2 md:border-slate-800/90 md:pr-8 lg:pr-10">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4 min-w-0">
-              <div className="w-20 h-20 rounded-full border-2 border-slate-700 bg-slate-950 flex items-center justify-center shrink-0 overflow-hidden shadow-lg">
-                <AvatarRenderer config={avatarConfig} size={74} />
-              </div>
-              <div className="flex flex-col min-w-0">
-                <h3 className="text-2xl sm:text-[26px] font-black text-white leading-tight truncate">
-                  {displayName}
-                </h3>
-                <span className="text-sm sm:text-base font-extrabold text-slate-300 truncate mt-1">
+      <div className="flex flex-col gap-5 md:grid md:grid-cols-12 md:gap-7 lg:gap-9 flex-1 min-h-0">
+        <div className="md:col-span-5 flex flex-col gap-3.5 sm:gap-4 md:border-r-2 md:border-slate-800/90 md:pr-7 lg:pr-9 min-h-0">
+          <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 shrink-0">
+            <div className="w-16 h-16 sm:w-[76px] sm:h-[76px] rounded-full border-2 border-slate-700 bg-slate-950 flex items-center justify-center shrink-0 overflow-hidden shadow-lg">
+              <AvatarRenderer config={avatarConfig} size={70} />
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
+              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight truncate">
+                {displayName}
+              </h3>
+              <div className="h-7 sm:h-8 flex items-center">
+                <span className="text-sm sm:text-base font-extrabold text-slate-300 truncate">
                   {specialtyTitle}
                 </span>
               </div>
             </div>
+          </div>
 
-            <div>
-              <div
-                className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black border ${statusMeta.pillBg} ${statusMeta.border} ${statusMeta.text} shadow-sm`}
-              >
-                <span className="relative flex h-2.5 w-2.5 shrink-0">
-                  <span
-                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusMeta.pingColor}`}
-                  />
-                  <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusMeta.dotColor}`} />
-                </span>
-                <span>{statusMeta.label}</span>
-              </div>
-            </div>
-
-            <div className="text-sm sm:text-base text-slate-200 leading-relaxed font-bold bg-slate-900/70 p-4 rounded-2xl border border-slate-800">
-              <p className="line-clamp-3">{bio}</p>
+          <div className="shrink-0">
+            <div
+              className={`h-9 sm:h-10 inline-flex items-center gap-2.5 px-4 rounded-xl text-xs sm:text-sm font-black border ${statusMeta.pillBg} ${statusMeta.border} ${statusMeta.text} shadow-sm`}
+            >
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusMeta.pingColor}`}
+                />
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusMeta.dotColor}`} />
+              </span>
+              <span>{statusMeta.label}</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-2.5">
-              <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
-                TECH STACK
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-800 border border-slate-700/80 text-white text-xs sm:text-sm font-black shadow-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
+          <div className="flex-1 min-h-[82px] text-sm sm:text-base text-slate-200 leading-relaxed font-bold bg-slate-900/80 p-3.5 sm:p-4 rounded-2xl border border-slate-800 flex items-center">
+            <p className="line-clamp-3">{bio}</p>
+          </div>
 
-            <div className="pt-4 border-t-2 border-slate-800/80 flex items-center justify-between">
-              <span className="text-sm sm:text-base font-black text-slate-400 truncate pr-2">
-                @{username}
-              </span>
-              <div className="flex items-center gap-2 shrink-0">
-                {socialLinks.githubUrl && (
-                  <a
-                    href={socialLinks.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                    title="GitHub"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.linkedinUrl && (
-                  <a
-                    href={socialLinks.linkedinUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                    title="LinkedIn"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.telegramUrl ? (
-                  <a
-                    href={socialLinks.telegramUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                    title="Telegram"
-                  >
-                    <Send className="w-4 h-4" />
-                  </a>
-                ) : socialLinks.websiteUrl ? (
-                  <a
-                    href={socialLinks.websiteUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                    title="Website"
-                  >
-                    <Globe className="w-5 h-5" />
-                  </a>
-                ) : null}
-                {socialLinks.email && (
-                  <a
-                    href={`mailto:${socialLinks.email}`}
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
-                    title="Email"
-                  >
-                    <Mail className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
+          <div className="flex flex-col gap-2 shrink-0">
+            <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
+              TECH STACK
+            </span>
+            <div className="p-3 rounded-2xl bg-slate-900/75 border border-slate-800 flex flex-wrap items-center gap-2 min-h-[54px]">
+              {techStack.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-3 py-1 rounded-xl bg-slate-800 border border-slate-700/80 text-white text-xs sm:text-sm font-black shadow-sm"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-3 border-t-2 border-slate-800/80 flex items-center justify-between gap-2 shrink-0 min-h-[44px]">
+            <span className="text-sm sm:text-base font-black text-slate-400 truncate pr-2">
+              @{username}
+            </span>
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {socialLinks.githubUrl && (
+                <a
+                  href={socialLinks.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
+                  title="GitHub"
+                >
+                  <Github className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+              )}
+              {socialLinks.linkedinUrl && (
+                <a
+                  href={socialLinks.linkedinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
+                  title="LinkedIn"
+                >
+                  <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+              )}
+              {socialLinks.telegramUrl ? (
+                <a
+                  href={socialLinks.telegramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
+                  title="Telegram"
+                >
+                  <Send className="w-4 h-4" />
+                </a>
+              ) : socialLinks.websiteUrl ? (
+                <a
+                  href={socialLinks.websiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
+                  title="Website"
+                >
+                  <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+              ) : null}
+              {socialLinks.email && (
+                <a
+                  href={`mailto:${socialLinks.email}`}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
+                  title="Email"
+                >
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="md:col-span-7 flex flex-col justify-between gap-5">
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-3">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-xl sm:text-2xl font-black text-amber-400 flex items-center gap-2">
-                    <img
-                      src="/icons/streak.png"
-                      alt="Streak"
-                      className="w-6 h-6 object-contain shrink-0"
-                    />
-                    {streakCount}
-                  </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
-                    Streak
-                  </span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-xl sm:text-2xl font-black text-indigo-300 flex items-center gap-2">
-                    <img
-                      src="/icons/vault.png"
-                      alt="Bugs Fixed"
-                      className="w-6 h-6 object-contain shrink-0"
-                    />
-                    {bugsHunted}
-                  </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
-                    Bugs Fixed
-                  </span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-2">
-                    <img
-                      src="/icons/target.png"
-                      alt="Accuracy"
-                      className="w-7 h-7 object-contain shrink-0"
-                    />
-                    {accuracy}%
-                  </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
-                    Accuracy
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-2.5 shadow-sm">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <img
-                      src="/icons/js-badge.png"
-                      alt="JS"
-                      className="w-6 h-6 object-contain"
-                    />
-                    <span className="text-sm sm:text-base font-black text-white">
-                      JavaScript • {masteryPercent}% Mastery
-                    </span>
-                  </div>
-                  <span className="text-xs font-black text-amber-400 bg-amber-400/15 border border-amber-400/40 px-2.5 py-1 rounded-full inline-flex items-center gap-1 shrink-0">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Verified ✓
-                  </span>
-                </div>
-
-                <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                    style={{ width: `${Math.min(100, Math.max(10, masteryPercent))}%` }}
-                  />
-                </div>
-              </div>
+        <div className="md:col-span-7 flex flex-col gap-3.5 sm:gap-4 min-h-0">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 shrink-0">
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+              <span className="text-base sm:text-2xl font-black text-amber-400 flex items-center gap-1.5 sm:gap-2">
+                <img
+                  src="/icons/streak.png"
+                  alt="Streak"
+                  className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
+                />
+                {streakCount}
+              </span>
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+                Streak
+              </span>
             </div>
 
-            {projects && projects.length > 0 && (
-              <div className="flex flex-col gap-2.5">
-                <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
-                  FEATURED PROJECTS
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+              <span className="text-base sm:text-2xl font-black text-indigo-300 flex items-center gap-1.5 sm:gap-2">
+                <img
+                  src="/icons/vault.png"
+                  alt="Bugs Fixed"
+                  className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
+                />
+                {bugsHunted}
+              </span>
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+                Bugs Fixed
+              </span>
+            </div>
+
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+              <span className="text-base sm:text-2xl font-black text-emerald-400 flex items-center gap-1.5 sm:gap-2">
+                <img
+                  src="/icons/target.png"
+                  alt="Accuracy"
+                  className="w-5 h-5 sm:w-7 sm:h-7 object-contain shrink-0"
+                />
+                {accuracy}%
+              </span>
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+                Accuracy
+              </span>
+            </div>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-900/85 border border-slate-800 flex flex-col gap-2 shadow-sm shrink-0">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <img
+                  src="/icons/js-badge.png"
+                  alt="JS"
+                  className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
+                />
+                <span className="text-xs sm:text-base font-black text-white">
+                  JavaScript • {masteryPercent}% Mastery
                 </span>
-                <div className="flex flex-col gap-3">
-                  {projects.slice(0, 2).map((proj) => (
-                    <div
-                      key={proj.id}
-                      className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1 transition-colors"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm sm:text-base font-black text-white truncate">
-                          {proj.title}
-                        </span>
-                        {proj.link && (
-                          <a
-                            href={proj.link}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-xs sm:text-sm font-black text-sky-400 hover:text-sky-300 inline-flex items-center gap-1 shrink-0 transition-colors"
-                          >
-                            <span>View</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        )}
-                      </div>
-                      <p className="text-xs sm:text-sm text-slate-300 font-bold truncate">
-                        {proj.desc}
-                      </p>
+              </div>
+              <span className="text-[10px] sm:text-xs font-black text-amber-400 bg-amber-400/15 border border-amber-400/40 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Verified ✓
+              </span>
+            </div>
+
+            <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
+                style={{ width: `${Math.min(100, Math.max(10, masteryPercent))}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col gap-2 min-h-0">
+            <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase shrink-0">
+              FEATURED PROJECTS
+            </span>
+            {projects && projects.length > 0 ? (
+              <div className="flex-1 grid grid-cols-1 gap-2.5">
+                {projects.slice(0, 2).map((proj) => (
+                  <div
+                    key={proj.id}
+                    className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/85 border border-slate-800 flex flex-col justify-center gap-1 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm sm:text-base font-black text-white truncate">
+                        {proj.title}
+                      </span>
+                      {proj.link && (
+                        <a
+                          href={proj.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs sm:text-sm font-black text-sky-400 hover:text-sky-300 inline-flex items-center gap-1 shrink-0 transition-colors"
+                        >
+                          <span>View</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
                     </div>
-                  ))}
-                </div>
+                    <p className="text-xs sm:text-sm text-slate-300 font-bold line-clamp-2 sm:truncate">
+                      {proj.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex-1 rounded-2xl bg-slate-900/50 border border-slate-800/80 flex items-center justify-center p-4 text-xs sm:text-sm font-bold text-slate-400">
+                No featured projects added yet.
               </div>
             )}
           </div>
 
           <div
             data-export-ignore="true"
-            className="flex items-center gap-3 pt-4 border-t-2 border-slate-800/80"
+            className="pt-3 border-t-2 border-slate-800/80 shrink-0"
           >
             {isMe ? (
-              <>
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playSoftClick();
                     if (onEditInDevHub) onEditInDevHub();
                   }}
-                  className="flex-1 h-12 sm:h-[52px] px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="h-11 sm:h-12 px-3 sm:px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
-                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>{editButtonText}</span>
+                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                  <span className="truncate">{editButtonText}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleOpenShareModal}
-                  className="flex-1 h-12 sm:h-[52px] px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="h-11 sm:h-12 px-3 sm:px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-xs sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400" />
-                  <span>Share Card</span>
+                  <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 shrink-0" />
+                  <span className="truncate">Share Card</span>
                 </button>
-              </>
+              </div>
             ) : (
               <button
                 type="button"
                 onClick={handleOpenShareModal}
-                className="w-full h-12 sm:h-[52px] px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-sm sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                className="w-full h-11 sm:h-12 px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
               >
-                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 <span>Share Card</span>
               </button>
             )}
@@ -662,7 +660,7 @@ export function DevCard({
                 className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${item.colorClass}`}
               >
                 <div className="w-7 h-7 flex items-center justify-center">{item.icon}</div>
-                <span className="text-[11px] font-black tracking-tight truncate max-w-full">
+                <span className="text-[10px] sm:text-[11px] font-black tracking-tight truncate max-w-full">
                   {item.label}
                 </span>
               </a>
@@ -676,7 +674,7 @@ export function DevCard({
               <div className="w-7 h-7 flex items-center justify-center">
                 <Share2 className="w-5 h-5" />
               </div>
-              <span className="text-[11px] font-black tracking-tight truncate max-w-full">
+              <span className="text-[10px] sm:text-[11px] font-black tracking-tight truncate max-w-full">
                 More Apps
               </span>
             </button>
@@ -690,9 +688,9 @@ export function DevCard({
     return (
       <>
         <div
-          className={`relative p-[2px] rounded-3xl bg-gradient-to-tr from-purple-600 via-cyan-400 to-amber-400 shadow-[0_0_35px_rgba(168,85,247,0.3)] ${className}`}
+          className={`relative p-[2px] rounded-2xl sm:rounded-3xl bg-gradient-to-tr from-purple-600 via-cyan-400 to-amber-400 shadow-[0_0_35px_rgba(168,85,247,0.3)] ${className}`}
         >
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 via-cyan-500 to-amber-400 text-white font-black text-xs tracking-widest uppercase px-4 py-1 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5 shrink-0 z-20 select-none">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 via-cyan-500 to-amber-400 text-white font-black text-[10px] sm:text-xs tracking-widest uppercase px-3.5 sm:px-4 py-0.5 sm:py-1 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5 shrink-0 z-20 select-none">
             <Sparkles className="w-3.5 h-3.5 text-amber-200 fill-amber-200" />
             <span>SUPER MEMBER</span>
           </div>
