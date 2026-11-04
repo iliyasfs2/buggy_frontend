@@ -3,7 +3,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   ShieldCheck,
-  CheckCircle2,
   ExternalLink,
   Github,
   Linkedin,
@@ -14,8 +13,6 @@ import {
   Copy,
   Check,
   Mail,
-  Flame,
-  Bug,
   Target,
   Sparkles,
   Download,
@@ -308,12 +305,12 @@ export function DevCard({
   const cardContent = (
     <div
       ref={setMergedRef}
-      className={`bg-[#0f172a] rounded-3xl p-6 sm:p-8 lg:p-9 select-none relative md:min-h-[540px] flex flex-col justify-between ${
+      className={`bg-[#0f172a] rounded-3xl p-6 sm:p-8 select-none relative md:h-[580px] flex flex-col justify-between ${
         isSuper ? "" : "border-2 border-slate-700 shadow-2xl"
       }`}
     >
-      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 lg:gap-10 flex-1">
-        <div className="md:col-span-5 flex flex-col justify-between gap-6 md:border-r-2 md:border-slate-800/90 md:pr-8 lg:pr-10">
+      <div className="flex flex-col gap-6 md:grid md:grid-cols-12 md:gap-8 lg:gap-10 flex-1 min-h-0">
+        <div className="md:col-span-5 flex flex-col justify-between gap-5 md:border-r-2 md:border-slate-800/90 md:pr-8 lg:pr-10">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4 min-w-0">
               <div className="w-20 h-20 rounded-full border-2 border-slate-700 bg-slate-950 flex items-center justify-center shrink-0 overflow-hidden shadow-lg">
@@ -427,47 +424,50 @@ export function DevCard({
           </div>
         </div>
 
-        <div className="md:col-span-7 flex flex-col justify-between gap-6">
+        <div className="md:col-span-7 flex flex-col justify-between gap-5">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm font-black tracking-wider text-sky-400 uppercase flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-sky-400" strokeWidth={2.5} />
-                VERIFIED BY BUGGY
-              </span>
-
               <div className="grid grid-cols-3 gap-3">
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-xl sm:text-2xl font-black text-amber-400 flex items-center gap-1.5">
-                    <Flame className="w-5 h-5 fill-amber-400" />
+                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                  <span className="text-xl sm:text-2xl font-black text-amber-400 flex items-center gap-2">
+                    <img
+                      src="/icons/streak.png"
+                      alt="Streak"
+                      className="w-6 h-6 object-contain shrink-0"
+                    />
                     {streakCount}
                   </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
                     Streak
                   </span>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
-                  <span className="text-xl sm:text-2xl font-black text-rose-400 flex items-center gap-1.5">
-                    <Bug className="w-5 h-5" />
+                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                  <span className="text-xl sm:text-2xl font-black text-indigo-300 flex items-center gap-2">
+                    <img
+                      src="/icons/vault.png"
+                      alt="Bugs Fixed"
+                      className="w-6 h-6 object-contain shrink-0"
+                    />
                     {bugsHunted}
                   </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
                     Bugs Fixed
                   </span>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
+                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                   <span className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-1.5">
-                    <Target className="w-5 h-5" />
+                    <Target className="w-6 h-6 shrink-0" />
                     {accuracy}%
                   </span>
-                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1">
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
                     Accuracy
                   </span>
                 </div>
               </div>
 
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-2.5 shadow-sm">
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-2.5 shadow-sm">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <img
@@ -499,11 +499,11 @@ export function DevCard({
                 <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
                   FEATURED PROJECTS
                 </span>
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-3">
                   {projects.slice(0, 2).map((proj) => (
                     <div
                       key={proj.id}
-                      className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1 transition-colors"
+                      className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1 transition-colors"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-sm sm:text-base font-black text-white truncate">
