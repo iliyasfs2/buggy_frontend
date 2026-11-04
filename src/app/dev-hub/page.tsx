@@ -22,7 +22,6 @@ import {
   Send,
   Globe,
   Mail,
-  Target,
   ShieldCheck,
   Sparkles,
   Link2,
@@ -686,8 +685,12 @@ export default function DevHubPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-center justify-center text-center">
-                  <span className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-1.5">
-                    <Target className="w-6 h-6 shrink-0" />
+                  <span className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center gap-2">
+                    <img
+                      src="/icons/target.png"
+                      alt="Accuracy"
+                      className="w-7 h-7 object-contain shrink-0"
+                    />
                     {accuracyScore}%
                   </span>
                   <span className="text-xs font-black text-slate-300 uppercase tracking-wider mt-1.5">
