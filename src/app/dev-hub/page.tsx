@@ -3,23 +3,38 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DevCard, type DevProjectItem } from "@/components/profile/DevCard";
+import { DevCardModal } from "@/components/profile/DevCardModal";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { CourseMasterySection } from "@/components/profile/CourseMasterySection";
+import { TalentSearchTab } from "@/components/dev-hub/TalentSearchTab";
+import { SquadsShowcaseTab } from "@/components/dev-hub/SquadsShowcaseTab";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNavStore } from "@/store/useNavStore";
 import {
   fetchDevCardApi,
   fetchUserProgress,
   updateDevCardApi,
+  fetchDevHubTalentsApi,
+  fetchDevHubSquadsApi,
+  createDevHubSquadApi,
+  deleteDevHubSquadApi,
+  fetchDevHubShowcaseApi,
+  toggleBoostShowcaseApi,
+  followUserApi,
+  unfollowUserApi,
   type DevCardStats,
+  type TalentDeveloper,
+  type SquadRequestItem,
+  type CreateSquadPayload,
+  type ShowcaseProjectItem,
 } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import {
   Check,
   Save,
   Layers,
-  Wrench,
-  FolderGit2,
+  Search,
+  Trophy,
   X,
   Plus,
   Github,
@@ -168,7 +183,7 @@ export default function DevHubPage() {
   const navStreak = useNavStore((s) => s.streakCount);
   const syncNav = useNavStore((s) => s.syncNav);
 
-  const [activeTab, setActiveTab] = useState<"card" | "setup" | "projects">("card");
+  const [activeTab, setActiveTab] = useState<"card" | "talents" | "squads">("card");
   const [formData, setFormData] = useState<DevCardFormState>(DEFAULT_FORM);
   const [draftData, setDraftData] = useState<DevCardFormState>(DEFAULT_FORM);
   const [serverUsername, setServerUsername] = useState<string>("");
@@ -198,6 +213,11 @@ export default function DevHubPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [talents, setTalents] = useState<TalentDeveloper[]>([]);
+  const [squads, setSquads] = useState<SquadRequestItem[]>([]);
+  const [showcaseProjects, setShowcaseProjects] = useState<ShowcaseProjectItem[]>([]);
+  const [directoryLoading, setDirectoryLoading] = useState(false);
+  const [selectedTalentModal, setSelectedTalentModal] = useState<TalentDeveloper | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -283,10 +303,73 @@ export default function DevHubPage() {
       })
       .catch(() => {});
 
+    setDirectoryLoading(true);
+    Promise.all([
+      fetchDevHubTalentsApi().catch(() => ({ talents: [] })),
+      fetchDevHubSquadsApi().catch(() => ({ squads: [] })),
+      fetchDevHubShowcaseApi().catch(() => ({ projects: [] })),
+    ]).then(([tRes, sqRes, shRes]) => {
+      if (!active) return;
+      setTalents(tRes.talents || []);
+      setSquads(sqRes.squads || []);
+      setShowcaseProjects(shRes.projects || []);
+      setDirectoryLoading(false);
+    });
+
     return () => {
       active = false;
     };
   }, [currentUser?.id, currentUser?.username, syncNav]);
+
+  const handleToggleFollow = useCallback(async (dev: TalentDeveloper) => {
+    const prevFollowing = dev.is_following;
+    setTalents((prev) =>
+      prev.map((item) =>
+        item.id === dev.id ? { ...item, is_following: !prevFollowing } : item
+      )
+    );
+    try {
+      if (prevFollowing) {
+        await unfollowUserApi(dev.id);
+      } else {
+        await followUserApi(dev.id);
+      }
+    } catch {
+      setTalents((prev) =>
+        prev.map((item) =>
+          item.id === dev.id ? { ...item, is_following: prevFollowing } : item
+        )
+      );
+    }
+  }, []);
+
+  const handleCreateSquad = useCallback(async (payload: CreateSquadPayload) => {
+    const res = await createDevHubSquadApi(payload);
+    if (res?.squads) {
+      setSquads(res.squads);
+    }
+  }, []);
+
+  const handleDeleteSquad = useCallback(async (squadId: number) => {
+    setSquads((prev) => prev.filter((s) => s.id !== squadId));
+    try {
+      await deleteDevHubSquadApi(squadId);
+    } catch {}
+  }, []);
+
+  const handleToggleBoost = useCallback(async (projectId: number) => {
+    const res = await toggleBoostShowcaseApi(projectId);
+    if (res?.success) {
+      setShowcaseProjects((prev) => {
+        const updated = prev.map((p) =>
+          p.id === projectId
+            ? { ...p, boost_count: res.boost_count, has_boosted: res.has_boosted }
+            : p
+        );
+        return [...updated].sort((a, b) => b.boost_count - a.boost_count || a.id - b.id);
+      });
+    }
+  }, []);
 
   const openEditor = useCallback(() => {
     soundEffects.playSoftClick();
@@ -380,6 +463,12 @@ export default function DevHubPage() {
       setIsSaving(false);
       setIsEditing(false);
       setSaveSuccess(true);
+      fetchDevHubTalentsApi()
+        .then((tRes) => setTalents(tRes.talents || []))
+        .catch(() => {});
+      fetchDevHubShowcaseApi()
+        .then((shRes) => setShowcaseProjects(shRes.projects || []))
+        .catch(() => {});
       setTimeout(() => setSaveSuccess(false), 2500);
     } catch {
       setIsSaving(false);
@@ -828,8 +917,17 @@ export default function DevHubPage() {
 
   return (
     <AppShell hideMobileHeader>
-      <div className="max-w-[1140px] w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 pb-8 sm:py-6 flex flex-col gap-4 sm:gap-5">
-        <div className="flex items-center justify-between gap-2 border-b-2 border-slate-800 pb-2.5 sm:pb-3">
+      <div className="max-w-[1140px] w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 pb-8 sm:py-5 flex flex-col gap-3.5 sm:gap-4">
+        <div className="flex flex-col gap-1 max-w-[1080px] w-full mx-auto">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+            Dev Hub
+          </h1>
+          <p className="text-xs sm:text-sm font-bold text-slate-400">
+            Build your profile, find developers, and join cool projects.
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between gap-2 border-b-2 border-slate-800 pb-2.5 sm:pb-3 max-w-[1080px] w-full mx-auto">
           <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2.5 w-full sm:w-auto">
             <button
               type="button"
@@ -844,45 +942,39 @@ export default function DevHubPage() {
               }`}
             >
               <Layers className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">Dev Card</span>
+              <span className="truncate">My Dev Card</span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 soundEffects.playSoftClick();
-                setActiveTab("setup");
+                setActiveTab("talents");
               }}
               className={`px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
-                activeTab === "setup"
+                activeTab === "talents"
                   ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
-              <Wrench className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">Workstation</span>
-              <span className="hidden md:inline-block text-[10px] font-black uppercase bg-slate-800 text-amber-400 border border-amber-400/30 px-2 py-0.5 rounded-full">
-                Soon
-              </span>
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Talent Search</span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 soundEffects.playSoftClick();
-                setActiveTab("projects");
+                setActiveTab("squads");
               }}
               className={`px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
-                activeTab === "projects"
+                activeTab === "squads"
                   ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
-              <FolderGit2 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">Projects</span>
-              <span className="hidden md:inline-block text-[10px] font-black uppercase bg-slate-800 text-sky-400 border border-sky-400/30 px-2 py-0.5 rounded-full">
-                Soon
-              </span>
+              <Trophy className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Squads &amp; Showcase</span>
             </button>
           </div>
 
@@ -944,18 +1036,54 @@ export default function DevHubPage() {
           </div>
         )}
 
-        {activeTab !== "card" && (
-          <div className="py-16 md:h-[510px] flex flex-col items-center justify-center text-center gap-4 bg-[#0f172a] rounded-2xl sm:rounded-3xl border-2 border-slate-700 p-6 sm:p-10 max-w-[1080px] mx-auto w-full">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-900 border-2 border-slate-700 flex items-center justify-center text-3xl sm:text-4xl shadow-inner">
-              {activeTab === "setup" ? "⚡" : "💼"}
-            </div>
-            <h2 className="text-xl sm:text-3xl font-black text-white">
-              {activeTab === "setup" ? "Workstation Gear" : "Portfolio Projects"}
-            </h2>
-            <p className="text-sm sm:text-lg font-black text-slate-300 max-w-md">
-              Coming Soon
-            </p>
-          </div>
+        {activeTab === "talents" && (
+          <TalentSearchTab
+            talents={talents}
+            loading={directoryLoading}
+            onOpenDevCard={(dev) => setSelectedTalentModal(dev)}
+            onToggleFollow={handleToggleFollow}
+          />
+        )}
+
+        {activeTab === "squads" && (
+          <SquadsShowcaseTab
+            squads={squads}
+            projects={showcaseProjects}
+            loading={directoryLoading}
+            onCreateSquad={handleCreateSquad}
+            onDeleteSquad={handleDeleteSquad}
+            onToggleBoost={handleToggleBoost}
+            onOpenDevCard={(dev) => setSelectedTalentModal(dev)}
+          />
+        )}
+
+        {selectedTalentModal && (
+          <DevCardModal
+            isOpen={Boolean(selectedTalentModal)}
+            onClose={() => setSelectedTalentModal(null)}
+            displayName={selectedTalentModal.display_name}
+            username={selectedTalentModal.username}
+            avatarConfig={selectedTalentModal.avatar_config}
+            specialtyTitle={selectedTalentModal.specialty_title}
+            collabStatus={selectedTalentModal.collab_status}
+            bio={selectedTalentModal.bio}
+            isSuper={selectedTalentModal.is_super}
+            streakCount={selectedTalentModal.streak}
+            bugsHunted={selectedTalentModal.bugs_fixed}
+            accuracy={selectedTalentModal.accuracy}
+            masteryPercent={selectedTalentModal.mastery_percent}
+            coursesMastery={selectedTalentModal.courses_mastery}
+            techStack={selectedTalentModal.tech_stack}
+            projects={selectedTalentModal.projects}
+            socialLinks={selectedTalentModal.social_links}
+            isMe={selectedTalentModal.is_me}
+            editButtonText="Edit Card"
+            onEditInDevHub={() => {
+              setSelectedTalentModal(null);
+              setActiveTab("card");
+              openEditor();
+            }}
+          />
         )}
       </div>
     </AppShell>

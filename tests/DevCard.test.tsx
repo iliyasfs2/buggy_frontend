@@ -167,7 +167,119 @@ describe("DevHubPage Backend & DB Integration", () => {
       coder_title: payload.specialtyTitle,
     }));
 
+    vi.spyOn(progressApi, "fetchDevHubTalentsApi").mockResolvedValue({
+      talents: [
+        {
+          id: "user_6",
+          username: "Alex",
+          display_name: "Alex",
+          specialty_title: "Backend Developer",
+          role_category: "Backend",
+          collab_status: "Looking for Teammate",
+          bio: "Distributed systems & high-speed Python APIs.",
+          tech_stack: ["Python", "FastAPI", "SQL"],
+          projects: [],
+          social_links: {},
+          is_super: true,
+          streak: 14,
+          bugs_fixed: 32,
+          accuracy: 96,
+          total_xp: 900,
+          mastery_percent: 100,
+          courses_mastery: [{ id: "python", title: "Python", shortLabel: "PY", percent: 100, isCompleted: true }],
+          is_following: false,
+          followers_count: 5,
+          is_me: false,
+        },
+      ],
+    });
+
+    vi.spyOn(progressApi, "fetchDevHubSquadsApi").mockResolvedValue({
+      squads: [
+        {
+          id: 1,
+          creator_id: "user_6",
+          creator_username: "Alex",
+          project_title: "Realtime Code Collab CLI",
+          my_role: "Backend",
+          needed_role: "Frontend",
+          min_streak: 5,
+          description: "FastAPI WebSocket backend is ready.",
+          is_mine: false,
+          creator: {
+            id: "user_6",
+            username: "Alex",
+            display_name: "Alex",
+            specialty_title: "Backend Developer",
+            role_category: "Backend",
+            collab_status: "Looking for Teammate",
+            bio: "Distributed systems.",
+            tech_stack: ["Python", "FastAPI"],
+            projects: [],
+            social_links: {},
+            is_super: true,
+            streak: 14,
+            bugs_fixed: 32,
+            accuracy: 96,
+            total_xp: 900,
+            mastery_percent: 100,
+            courses_mastery: [],
+            is_following: false,
+            followers_count: 5,
+            is_me: false,
+          },
+        },
+      ],
+    });
+
+    vi.spyOn(progressApi, "fetchDevHubShowcaseApi").mockResolvedValue({
+      projects: [
+        {
+          id: 10,
+          rank: 1,
+          creator_id: "user_2",
+          creator_username: "ILIYASFS",
+          title: "Buggy Platform",
+          description: "Gamified platform to learn coding.",
+          url: "https://buggy.dev",
+          tech_tags: ["JavaScript", "React"],
+          boost_count: 48,
+          has_boosted: false,
+          creator: {
+            id: "user_2",
+            username: "ILIYASFS",
+            display_name: "ILIYASFS",
+            specialty_title: "Full-Stack Developer",
+            role_category: "Full-Stack",
+            collab_status: "Open to Work",
+            bio: "Building interactive web apps.",
+            tech_stack: ["JavaScript", "React"],
+            projects: [],
+            social_links: {},
+            is_super: true,
+            streak: 4,
+            bugs_fixed: 12,
+            accuracy: 79,
+            total_xp: 305,
+            mastery_percent: 50,
+            courses_mastery: [],
+            is_following: false,
+            followers_count: 0,
+            is_me: true,
+          },
+        },
+      ],
+    });
+
     render(<DevHubPage />);
+
+    expect(screen.getByText("Dev Hub")).toBeInTheDocument();
+    expect(
+      screen.getByText("Build your profile, find developers, and join cool projects.")
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /My Dev Card/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Talent Search/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Squads & Showcase/i })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText("DBTestedCoder")).toBeInTheDocument();
@@ -192,6 +304,26 @@ describe("DevHubPage Backend & DB Integration", () => {
       expect(updateSpy).toHaveBeenCalledTimes(1);
       expect(updateSpy.mock.calls[0][0].specialtyTitle).toBe("Systems Engineer");
       expect(screen.getByText("Systems Engineer")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Talent Search/i }));
+    await waitFor(() => {
+      expect(screen.getByText("Alex")).toBeInTheDocument();
+      expect(screen.getByText("SUPER")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /View Dev Card/i })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Squads & Showcase/i }));
+    await waitFor(() => {
+      expect(screen.getByText("Realtime Code Collab CLI")).toBeInTheDocument();
+      expect(screen.getByText("Have: Backend")).toBeInTheDocument();
+      expect(screen.getByText("Need: Frontend")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Project Showcase/i }));
+    await waitFor(() => {
+      expect(screen.getByText("#1 Project of the Season")).toBeInTheDocument();
+      expect(screen.getByText(/Byte Boost \(48\)/i)).toBeInTheDocument();
     });
   });
 });

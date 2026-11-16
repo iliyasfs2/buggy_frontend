@@ -354,3 +354,127 @@ export const updateDevCardApi = async (data: Record<string, any>): Promise<any> 
   if (!res.ok) throw new Error("Failed to update dev card");
   return res.json();
 };
+
+export interface TalentDeveloper {
+  id: string;
+  username: string;
+  display_name: string;
+  avatar_config?: AvatarConfig;
+  specialty_title: string;
+  role_category: "Frontend" | "Backend" | "Full-Stack" | string;
+  collab_status: string;
+  bio: string;
+  tech_stack: string[];
+  projects: Array<{ id: string; title: string; desc: string; link: string }>;
+  social_links: {
+    githubUrl?: string;
+    linkedinUrl?: string;
+    websiteUrl?: string;
+    telegramUrl?: string;
+    email?: string;
+  };
+  is_super: boolean;
+  streak: number;
+  bugs_fixed: number;
+  accuracy: number;
+  total_xp: number;
+  mastery_percent: number;
+  courses_mastery: CourseMasteryItem[];
+  is_following: boolean;
+  followers_count: number;
+  is_me: boolean;
+}
+
+export interface SquadRequestItem {
+  id: number;
+  creator_id: string;
+  creator_username: string;
+  project_title: string;
+  my_role: string;
+  needed_role: string;
+  min_streak: number;
+  description: string;
+  created_at?: string;
+  is_mine?: boolean;
+  creator: TalentDeveloper;
+}
+
+export interface CreateSquadPayload {
+  project_title: string;
+  my_role: string;
+  needed_role: string;
+  min_streak: number;
+  description: string;
+}
+
+export interface ShowcaseProjectItem {
+  id: number;
+  rank: number;
+  creator_id: string;
+  creator_username: string;
+  title: string;
+  description: string;
+  url: string;
+  tech_tags: string[];
+  boost_count: number;
+  has_boosted: boolean;
+  creator: TalentDeveloper;
+}
+
+export const fetchDevHubTalentsApi = async (): Promise<{ talents: TalentDeveloper[] }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/talents`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch talents");
+  return res.json();
+};
+
+export const fetchDevHubSquadsApi = async (): Promise<{ squads: SquadRequestItem[] }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/squads`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch squads");
+  return res.json();
+};
+
+export const createDevHubSquadApi = async (
+  payload: CreateSquadPayload
+): Promise<{ squads: SquadRequestItem[] }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/squads`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("Failed to create squad request");
+  return res.json();
+};
+
+export const deleteDevHubSquadApi = async (
+  squadId: number
+): Promise<{ success: boolean; deleted_id: number }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/squads/${squadId}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to delete squad request");
+  return res.json();
+};
+
+export const fetchDevHubShowcaseApi = async (): Promise<{ projects: ShowcaseProjectItem[] }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/showcase`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch showcase projects");
+  return res.json();
+};
+
+export const toggleBoostShowcaseApi = async (
+  projectId: number
+): Promise<{ success: boolean; project_id: number; boost_count: number; has_boosted: boolean }> => {
+  const res = await fetch(`${API_BASE_URL}/api/dev-hub/showcase/${projectId}/boost`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to boost project");
+  return res.json();
+};
