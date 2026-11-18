@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import type { DevProjectItem } from "@/components/profile/DevCard";
 import {
   Users,
   Trophy,
@@ -18,8 +19,6 @@ import {
   Linkedin,
   Mail,
   Link2,
-  Flame,
-  Briefcase,
   Handshake,
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
@@ -34,6 +33,8 @@ import type {
 export interface SquadsShowcaseTabProps {
   squads: SquadRequestItem[];
   projects: ShowcaseProjectItem[];
+  userDevProjects?: DevProjectItem[];
+  currentUsername?: string;
   loading: boolean;
   defaultContactLink?: string;
   onCreateSquad: (payload: CreateSquadPayload) => Promise<void>;
@@ -88,6 +89,8 @@ function normalizeContactHref(raw: string): string {
 export function SquadsShowcaseTab({
   squads,
   projects,
+  userDevProjects = [],
+  currentUsername = "",
   defaultContactLink = "",
   onCreateSquad,
   onDeleteSquad,
@@ -108,6 +111,52 @@ export function SquadsShowcaseTab({
   const [boostingIds, setBoostingIds] = useState<Record<number, boolean>>({});
   const [activeConnectSquad, setActiveConnectSquad] = useState<SquadRequestItem | null>(null);
   const [copiedIntro, setCopiedIntro] = useState(false);
+  const [highlightedProjectId, setHighlightedProjectId] = useState<number | null>(null);
+  const projectCardRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const myResolvedProjects = useMemo(() => {
+    const validCardProjects = (userDevProjects || []).filter(
+      (p) => p && typeof p.title === "string" && p.title.trim().length > 0
+    );
+    if (validCardProjects.length === 0) return [];
+
+    const cleanUser = (currentUsername || "").trim().toLowerCase();
+    return validCardProjects.slice(0, 2).map((cardProj) => {
+      const targetTitle = cardProj.title.trim().toLowerCase();
+      const matched =
+        projects.find(
+          (sp) =>
+            sp.title.trim().toLowerCase() === targetTitle &&
+            (sp.creator?.is_me ||
+              (cleanUser && sp.creator_username.trim().toLowerCase() === cleanUser))
+        ) ||
+        projects.find((sp) => sp.title.trim().toLowerCase() === targetTitle);
+
+      return {
+        key: cardProj.id || cardProj.title,
+        title: cardProj.title.trim(),
+        showcaseId: matched ? matched.id : null,
+        boostCount: matched ? matched.boost_count : 0,
+      };
+    });
+  }, [userDevProjects, projects, currentUsername]);
+
+  const handleScrollToMyProject = (showcaseId: number | null) => {
+    soundEffects.playSoftClick();
+    if (showcaseId === null) return;
+    const node = projectCardRefs.current[showcaseId];
+    if (node) {
+      node.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    setHighlightedProjectId(showcaseId);
+    if (highlightTimeoutRef.current) {
+      clearTimeout(highlightTimeoutRef.current);
+    }
+    highlightTimeoutRef.current = setTimeout(() => {
+      setHighlightedProjectId(null);
+    }, 2400);
+  };
 
   useEffect(() => {
     if (defaultContactLink && !contactLink) {
@@ -216,7 +265,7 @@ export function SquadsShowcaseTab({
           </button>
         </div>
 
-        {subTab === "squads" ? (
+        {subTab === "squads" && (
           <button
             type="button"
             onClick={handleOpenPostModal}
@@ -224,18 +273,6 @@ export function SquadsShowcaseTab({
           >
             <Plus className="w-4 h-4 shrink-0" />
             <span>Post Team Request</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              soundEffects.playSoftClick();
-              onSubmitYourProject();
-            }}
-            className="h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4 shrink-0" />
-            <span>Submit Your Project</span>
           </button>
         )}
       </div>
@@ -348,13 +385,64 @@ export function SquadsShowcaseTab({
         </div>
       ) : (
         <div className="flex flex-col gap-3.5">
+          {myResolvedProjects.length === 0 ? (
+            <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-600/15 via-indigo-600/10 to-[#0f172a] border-2 border-blue-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+              <span className="text-sm sm:text-base font-black text-white break-words">
+                Want to compete in this season&apos;s showcase?
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  onSubmitYourProject();
+                }}
+                className="h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer shrink-0"
+              >
+                <Plus className="w-4 h-4 shrink-0" />
+                <span>Submit Your Project</span>
+              </button>
+            </div>
+          ) : (
+            <div className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-slate-800 flex flex-wrap items-center gap-2 sm:gap-2.5 shadow-lg">
+              <span className="text-xs sm:text-sm font-black text-slate-300 uppercase tracking-wider mr-1">
+                My Projects:
+              </span>
+              {myResolvedProjects.map((mp) => {
+                const isHighlighted =
+                  mp.showcaseId !== null && highlightedProjectId === mp.showcaseId;
+                return (
+                  <button
+                    key={mp.key}
+                    type="button"
+                    onClick={() => handleScrollToMyProject(mp.showcaseId)}
+                    className={`px-3.5 py-1.5 rounded-xl border text-xs sm:text-sm font-black inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+                      isHighlighted
+                        ? "bg-sky-500/25 border-sky-400 text-sky-200 ring-2 ring-sky-400/50"
+                        : "bg-slate-900 hover:bg-slate-800 border-slate-700 text-white hover:border-sky-500/50"
+                    }`}
+                  >
+                    <span>🚀</span>
+                    <span className="break-words">{mp.title}</span>
+                    <span className="text-sky-400">• {mp.boostCount} Boosts</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {projects.map((proj, index) => {
             const isFirst = index === 0;
+            const isHighlighted = highlightedProjectId === proj.id;
             return (
               <div
                 key={proj.id}
-                className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0f172a] flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative transition-all ${
-                  isFirst
+                ref={(el) => {
+                  projectCardRefs.current[proj.id] = el;
+                }}
+                className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0f172a] flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative transition-all duration-300 ${
+                  isHighlighted
+                    ? "border-2 border-sky-400 ring-2 ring-sky-400 shadow-[0_0_28px_rgba(56,189,248,0.28)]"
+                    : isFirst
                     ? "border-2 border-amber-400/70 bg-gradient-to-r from-amber-500/10 via-[#0f172a] to-[#0f172a] shadow-[0_0_28px_rgba(245,158,11,0.16)]"
                     : "border-2 border-slate-800 hover:border-slate-700 shadow-lg"
                 }`}

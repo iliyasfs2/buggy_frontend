@@ -1067,6 +1067,8 @@ export default function DevHubPage() {
           <SquadsShowcaseTab
             squads={squads}
             projects={showcaseProjects}
+            userDevProjects={formData.projects}
+            currentUsername={displayName}
             loading={directoryLoading}
             defaultContactLink={
               formData.telegramUrl ||
