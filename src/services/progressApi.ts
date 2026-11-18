@@ -390,9 +390,11 @@ export interface SquadRequestItem {
   creator_id: string;
   creator_username: string;
   project_title: string;
+  project_vibe?: string;
   my_role: string;
   needed_role: string;
   min_streak: number;
+  contact_link?: string;
   description: string;
   created_at?: string;
   is_mine?: boolean;
@@ -401,9 +403,11 @@ export interface SquadRequestItem {
 
 export interface CreateSquadPayload {
   project_title: string;
+  project_vibe?: string;
   my_role: string;
   needed_role: string;
   min_streak: number;
+  contact_link?: string;
   description: string;
 }
 

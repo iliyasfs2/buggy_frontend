@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   Trophy,
@@ -12,6 +12,15 @@ import {
   Trash2,
   X,
   Eye,
+  Copy,
+  Check,
+  Send,
+  Linkedin,
+  Mail,
+  Link2,
+  Flame,
+  Briefcase,
+  Handshake,
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { soundEffects } from "@/utils/soundEffects";
@@ -26,30 +35,93 @@ export interface SquadsShowcaseTabProps {
   squads: SquadRequestItem[];
   projects: ShowcaseProjectItem[];
   loading: boolean;
+  defaultContactLink?: string;
   onCreateSquad: (payload: CreateSquadPayload) => Promise<void>;
   onDeleteSquad: (squadId: number) => Promise<void>;
   onToggleBoost: (projectId: number) => Promise<void>;
   onOpenDevCard: (talent: TalentDeveloper) => void;
+  onSubmitYourProject: () => void;
+}
+
+const VIBE_OPTIONS = [
+  {
+    value: "Fun Side Project",
+    label: "Fun Side Project",
+    emoji: "🔥",
+    activeClass: "bg-amber-500/20 border-amber-400 text-amber-200 shadow-sm",
+    badgeClass: "bg-amber-500/15 border-amber-400/40 text-amber-300",
+  },
+  {
+    value: "Portfolio Builder",
+    label: "Portfolio Builder",
+    emoji: "💼",
+    activeClass: "bg-sky-500/20 border-sky-400 text-sky-200 shadow-sm",
+    badgeClass: "bg-sky-500/15 border-sky-400/40 text-sky-300",
+  },
+  {
+    value: "Serious / Startup",
+    label: "Serious / Startup",
+    emoji: "🏆",
+    activeClass: "bg-purple-500/20 border-purple-400 text-purple-200 shadow-sm",
+    badgeClass: "bg-purple-500/15 border-purple-400/40 text-purple-300",
+  },
+];
+
+const INTRO_MESSAGE_TEXT =
+  "Hey! I saw your squad post on Buggy. Let's build this project together!";
+
+function normalizeContactHref(raw: string): string {
+  const val = (raw || "").trim();
+  if (!val) return "";
+  if (val.startsWith("http://") || val.startsWith("https://") || val.startsWith("mailto:")) {
+    return val;
+  }
+  if (val.includes("@") && val.includes(".") && !val.startsWith("@")) {
+    return `mailto:${val}`;
+  }
+  if (val.startsWith("@")) {
+    return `https://t.me/${val.slice(1)}`;
+  }
+  return `https://${val}`;
 }
 
 export function SquadsShowcaseTab({
   squads,
   projects,
-  loading,
+  defaultContactLink = "",
   onCreateSquad,
   onDeleteSquad,
   onToggleBoost,
   onOpenDevCard,
+  onSubmitYourProject,
 }: SquadsShowcaseTabProps) {
   const [subTab, setSubTab] = useState<"squads" | "showcase">("squads");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [projectTitle, setProjectTitle] = useState("");
+  const [projectVibe, setProjectVibe] = useState("Portfolio Builder");
   const [myRole, setMyRole] = useState("");
   const [neededRole, setNeededRole] = useState("");
-  const [minStreak, setMinStreak] = useState(3);
+  const [minStreak, setMinStreak] = useState(7);
+  const [contactLink, setContactLink] = useState(defaultContactLink);
   const [description, setDescription] = useState("");
   const [submittingSquad, setSubmittingSquad] = useState(false);
   const [boostingIds, setBoostingIds] = useState<Record<number, boolean>>({});
+  const [activeConnectSquad, setActiveConnectSquad] = useState<SquadRequestItem | null>(null);
+  const [copiedIntro, setCopiedIntro] = useState(false);
+
+  useEffect(() => {
+    if (defaultContactLink && !contactLink) {
+      setContactLink(defaultContactLink);
+    }
+  }, [defaultContactLink, contactLink]);
+
+  const handleOpenPostModal = () => {
+    soundEffects.playSoftClick();
+    if (!contactLink && defaultContactLink) {
+      setContactLink(defaultContactLink);
+    }
+    setIsPostModalOpen(true);
+  };
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,16 +131,19 @@ export function SquadsShowcaseTab({
     try {
       await onCreateSquad({
         project_title: projectTitle.trim(),
+        project_vibe: projectVibe,
         my_role: myRole.trim(),
         needed_role: neededRole.trim(),
         min_streak: Number(minStreak) || 0,
-        description: description.trim() || "Looking for a motivated teammate to build and ship together.",
+        contact_link: contactLink.trim(),
+        description:
+          description.trim() || "Looking for a motivated teammate to build and ship together.",
       });
       setProjectTitle("");
       setMyRole("");
       setNeededRole("");
       setDescription("");
-      setMinStreak(3);
+      setMinStreak(7);
       setIsPostModalOpen(false);
     } finally {
       setSubmittingSquad(false);
@@ -84,6 +159,24 @@ export function SquadsShowcaseTab({
     } finally {
       setBoostingIds((prev) => ({ ...prev, [projectId]: false }));
     }
+  };
+
+  const handleCopyIntroMessage = async () => {
+    soundEffects.playSoftClick();
+    try {
+      if (navigator?.clipboard) {
+        await navigator.clipboard.writeText(INTRO_MESSAGE_TEXT);
+      }
+    } catch {}
+    setCopiedIntro(true);
+    setTimeout(() => setCopiedIntro(false), 2200);
+  };
+
+  const getVibeMeta = (vibe?: string) => {
+    return (
+      VIBE_OPTIONS.find((v) => v.value.toLowerCase() === (vibe || "").toLowerCase()) ||
+      VIBE_OPTIONS[1]
+    );
   };
 
   return (
@@ -123,103 +216,135 @@ export function SquadsShowcaseTab({
           </button>
         </div>
 
-        {subTab === "squads" && (
+        {subTab === "squads" ? (
           <button
             type="button"
-            onClick={() => {
-              soundEffects.playSoftClick();
-              setIsPostModalOpen(true);
-            }}
+            onClick={handleOpenPostModal}
             className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:translate-y-0.5 border-b-4 border-emerald-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4 shrink-0" />
             <span>Post Team Request</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playSoftClick();
+              onSubmitYourProject();
+            }}
+            className="h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4 shrink-0" />
+            <span>Submit Your Project</span>
           </button>
         )}
       </div>
 
       {subTab === "squads" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {squads.map((sq) => (
-            <div
-              key={sq.id}
-              className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-slate-800 hover:border-slate-700 flex flex-col justify-between gap-3.5 shadow-lg transition-colors"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-11 h-11 rounded-full bg-slate-950 border-2 border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-                      <AvatarRenderer config={sq.creator.avatar_config} size={42} />
+          {squads.map((sq) => {
+            const vibeMeta = getVibeMeta(sq.project_vibe);
+            return (
+              <div
+                key={sq.id}
+                className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-slate-800 hover:border-slate-700 flex flex-col justify-between gap-3.5 shadow-lg transition-colors"
+              >
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-11 h-11 rounded-full bg-slate-950 border-2 border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                        <AvatarRenderer config={sq.creator.avatar_config} size={42} />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm sm:text-base font-black text-white break-words leading-snug">
+                          {sq.creator_username}
+                        </span>
+                        <span className="text-xs font-bold text-slate-400 break-words leading-snug">
+                          {sq.creator.specialty_title}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm sm:text-base font-black text-white break-words leading-snug">
-                        {sq.creator_username}
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-black inline-flex items-center gap-1">
+                        <img
+                          src="/icons/streak.png"
+                          alt="Streak"
+                          className="w-3.5 h-3.5 object-contain"
+                        />
+                        {sq.creator.streak}d
                       </span>
-                      <span className="text-xs font-bold text-slate-400 break-words leading-snug">
-                        {sq.creator.specialty_title}
+                      {sq.is_mine && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEffects.playSoftClick();
+                            onDeleteSquad(sq.id);
+                          }}
+                          title="Delete request"
+                          className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-rose-500/20 border border-slate-800 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="text-base sm:text-lg font-black text-white leading-snug break-words">
+                      {sq.project_title}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span
+                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-black inline-flex items-center gap-1 ${vibeMeta.badgeClass}`}
+                      >
+                        <span>{vibeMeta.emoji}</span>
+                        <span>{vibeMeta.label}</span>
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-black inline-flex items-center gap-1">
-                      <img src="/icons/streak.png" alt="Streak" className="w-3.5 h-3.5 object-contain" />
-                      {sq.creator.streak}d
-                    </span>
-                    {sq.is_mine && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEffects.playSoftClick();
-                          onDeleteSquad(sq.id);
-                        }}
-                        title="Delete request"
-                        className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-rose-500/20 border border-slate-800 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 inline-flex items-center gap-2 text-xs font-black">
+                      <span className="text-sky-300">Have: {sq.my_role}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                      <span className="text-purple-300">Need: {sq.needed_role}</span>
+                    </div>
+
+                    {sq.min_streak > 0 && (
+                      <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] font-black text-amber-300 inline-flex items-center gap-1">
+                        <img
+                          src="/icons/streak.png"
+                          alt="Min Streak"
+                          className="w-3.5 h-3.5 object-contain"
+                        />
+                        <span>{sq.min_streak}d+ Streak</span>
+                      </span>
                     )}
                   </div>
+
+                  <p className="text-xs sm:text-sm font-bold text-slate-300 leading-relaxed break-words">
+                    {sq.description}
+                  </p>
                 </div>
 
-                <h3 className="text-base sm:text-lg font-black text-white leading-snug">
-                  {sq.project_title}
-                </h3>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 inline-flex items-center gap-2 text-xs font-black">
-                    <span className="text-sky-300">Have: {sq.my_role}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
-                    <span className="text-purple-300">Need: {sq.needed_role}</span>
-                  </div>
-
-                  {sq.min_streak > 0 && (
-                    <span className="px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] font-black text-slate-300">
-                      Min Streak: {sq.min_streak}d
-                    </span>
-                  )}
+                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playSoftClick();
+                      setCopiedIntro(false);
+                      setActiveConnectSquad(sq);
+                    }}
+                    className="w-full sm:w-auto h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <Handshake className="w-4 h-4 shrink-0" />
+                    <span>Connect</span>
+                  </button>
                 </div>
-
-                <p className="text-xs sm:text-sm font-bold text-slate-300 leading-relaxed line-clamp-2">
-                  {sq.description}
-                </p>
               </div>
-
-              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    onOpenDevCard(sq.creator);
-                  }}
-                  className="w-full sm:w-auto h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                >
-                  <Eye className="w-3.5 h-3.5 shrink-0" />
-                  <span>Connect / View Card</span>
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="flex flex-col gap-3.5">
@@ -326,13 +451,13 @@ export function SquadsShowcaseTab({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150"
           onClick={() => setIsPostModalOpen(false)}
         >
           <form
             onSubmit={handleCreateSubmit}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#0f172a] border-2 border-b-4 border-slate-700 border-b-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 animate-in zoom-in-95 duration-150"
+            className="w-full max-w-lg bg-[#0f172a] border-2 border-b-4 border-slate-700 border-b-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 my-auto animate-in zoom-in-95 duration-150"
           >
             <div className="flex items-center justify-between">
               <h4 className="text-lg font-black text-white">Post Team Request</h4>
@@ -356,6 +481,33 @@ export function SquadsShowcaseTab({
                 placeholder="e.g. Realtime AI Code Reviewer"
                 className="h-10 px-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-400 text-sm font-bold text-white placeholder-slate-500 focus:outline-none"
               />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-black text-slate-300 uppercase">Project Vibe</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {VIBE_OPTIONS.map((vibe) => {
+                  const active = projectVibe === vibe.value;
+                  return (
+                    <button
+                      key={vibe.value}
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playSoftClick();
+                        setProjectVibe(vibe.value);
+                      }}
+                      className={`h-10 px-3 rounded-xl border text-xs font-black inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        active
+                          ? vibe.activeClass
+                          : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <span>{vibe.emoji}</span>
+                      <span>{vibe.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -386,17 +538,52 @@ export function SquadsShowcaseTab({
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-black text-slate-300 uppercase">
-                Minimum Streak (Days)
-              </label>
+            <div className="flex flex-col gap-2 p-3 rounded-2xl bg-slate-900/90 border border-slate-800">
+              <div className="flex items-center justify-between gap-2">
+                <label className="text-xs font-black text-slate-300 uppercase">
+                  Min Streak Required
+                </label>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-black inline-flex items-center gap-1">
+                  <img
+                    src="/icons/streak.png"
+                    alt="Streak"
+                    className="w-3.5 h-3.5 object-contain"
+                  />
+                  <span>
+                    {minStreak === 0
+                      ? "Any Streak"
+                      : `${minStreak}${minStreak >= 30 ? "+" : ""}d+ Streak`}
+                  </span>
+                </span>
+              </div>
               <input
-                type="number"
+                type="range"
                 min={0}
-                max={365}
+                max={30}
+                step={1}
                 value={minStreak}
                 onChange={(e) => setMinStreak(Number(e.target.value) || 0)}
-                className="h-10 px-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-400 text-sm font-bold text-white focus:outline-none"
+                className="w-full accent-amber-400 cursor-pointer h-2 bg-slate-950 rounded-lg"
+              />
+              <div className="flex items-center justify-between text-[10px] font-black text-slate-500">
+                <span>0d (Anyone)</span>
+                <span>7d</span>
+                <span>14d</span>
+                <span>30d+</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-black text-slate-300 uppercase">
+                Contact Link / Handle
+              </label>
+              <input
+                type="text"
+                maxLength={140}
+                value={contactLink}
+                onChange={(e) => setContactLink(e.target.value)}
+                placeholder="https://t.me/username or LinkedIn URL"
+                className="h-10 px-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-400 text-xs sm:text-sm font-bold text-white placeholder-slate-500 focus:outline-none"
               />
             </div>
 
@@ -405,7 +592,7 @@ export function SquadsShowcaseTab({
                 Short Description
               </label>
               <textarea
-                rows={3}
+                rows={2}
                 maxLength={200}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -414,7 +601,7 @@ export function SquadsShowcaseTab({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 pt-2">
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
               <button
                 type="button"
                 onClick={() => setIsPostModalOpen(false)}
@@ -431,6 +618,156 @@ export function SquadsShowcaseTab({
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {activeConnectSquad && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          onClick={() => setActiveConnectSquad(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-[#0f172a] border-2 border-b-4 border-slate-700 border-b-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 animate-in zoom-in-95 duration-150"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Handshake className="w-5 h-5 text-sky-400" />
+                <h4 className="text-lg font-black text-white">Connect &amp; Join Squad</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveConnectSquad(null)}
+                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-slate-950 border-2 border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                <AvatarRenderer config={activeConnectSquad.creator.avatar_config} size={46} />
+              </div>
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-base font-black text-white break-words leading-snug">
+                  {activeConnectSquad.creator_username}
+                </span>
+                <span className="text-xs font-bold text-slate-400 break-words leading-snug">
+                  {activeConnectSquad.creator.specialty_title}
+                </span>
+                <span className="text-xs font-black text-sky-300 mt-0.5 break-words leading-snug">
+                  Project: {activeConnectSquad.project_title}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-black text-slate-300 uppercase">
+                Quick Intro Message
+              </span>
+              <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col gap-3">
+                <p className="text-xs sm:text-sm font-bold text-slate-200 leading-relaxed select-all">
+                  &ldquo;{INTRO_MESSAGE_TEXT}&rdquo;
+                </p>
+                <button
+                  type="button"
+                  onClick={handleCopyIntroMessage}
+                  className={`h-10 px-4 rounded-xl font-black text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    copiedIntro
+                      ? "bg-emerald-500/20 border border-emerald-400/50 text-emerald-300"
+                      : "bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 text-white"
+                  }`}
+                >
+                  {copiedIntro ? (
+                    <>
+                      <Check className="w-4 h-4 shrink-0" />
+                      <span>Copied Intro Message!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 shrink-0" />
+                      <span>Copy Intro Message</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-black text-slate-300 uppercase">
+                Direct Contact Channels
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {activeConnectSquad.contact_link && (
+                  <a
+                    href={normalizeContactHref(activeConnectSquad.contact_link)}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => soundEffects.playSoftClick()}
+                    className="h-10 px-3.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-sky-300 font-black text-xs inline-flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Link2 className="w-4 h-4 shrink-0" />
+                    <span>Direct Contact Link</span>
+                  </a>
+                )}
+
+                {activeConnectSquad.creator.social_links?.telegramUrl && (
+                  <a
+                    href={normalizeContactHref(activeConnectSquad.creator.social_links.telegramUrl)}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => soundEffects.playSoftClick()}
+                    className="h-10 px-3.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-sky-300 font-black text-xs inline-flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Send className="w-4 h-4 shrink-0" />
+                    <span>Open Telegram</span>
+                  </a>
+                )}
+
+                {activeConnectSquad.creator.social_links?.linkedinUrl && (
+                  <a
+                    href={normalizeContactHref(activeConnectSquad.creator.social_links.linkedinUrl)}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => soundEffects.playSoftClick()}
+                    className="h-10 px-3.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/40 text-blue-300 font-black text-xs inline-flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Linkedin className="w-4 h-4 shrink-0" />
+                    <span>Open LinkedIn</span>
+                  </a>
+                )}
+
+                {activeConnectSquad.creator.social_links?.email && (
+                  <a
+                    href={`mailto:${activeConnectSquad.creator.social_links.email}`}
+                    onClick={() => soundEffects.playSoftClick()}
+                    className="h-10 px-3.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-black text-xs inline-flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Mail className="w-4 h-4 shrink-0" />
+                    <span>Send Email</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  const creator = activeConnectSquad.creator;
+                  setActiveConnectSquad(null);
+                  onOpenDevCard(creator);
+                }}
+                className="text-xs sm:text-sm font-black text-slate-300 hover:text-white inline-flex items-center gap-1.5 py-1 transition-colors cursor-pointer"
+              >
+                <Eye className="w-4 h-4 text-sky-400" />
+                <span>View Creator&apos;s Full Dev Card</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

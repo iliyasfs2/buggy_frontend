@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DevCard, type DevProjectItem } from "@/components/profile/DevCard";
 import { DevCardModal } from "@/components/profile/DevCardModal";
@@ -218,6 +218,7 @@ export default function DevHubPage() {
   const [showcaseProjects, setShowcaseProjects] = useState<ShowcaseProjectItem[]>([]);
   const [directoryLoading, setDirectoryLoading] = useState(false);
   const [selectedTalentModal, setSelectedTalentModal] = useState<TalentDeveloper | null>(null);
+  const featuredProjectsSectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -377,6 +378,23 @@ export default function DevHubPage() {
     setDraftData(cloneCardState(formData));
     setTechInput("");
     setIsEditing(true);
+  }, [formData]);
+
+  const handleJumpToProjectsEditor = useCallback(() => {
+    soundEffects.playSoftClick();
+    setSaveError(null);
+    setDraftData(cloneCardState(formData));
+    setTechInput("");
+    setActiveTab("card");
+    setIsEditing(true);
+    setTimeout(() => {
+      if (featuredProjectsSectionRef.current) {
+        featuredProjectsSectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100);
   }, [formData]);
 
   const cancelEditor = useCallback(() => {
@@ -802,7 +820,7 @@ export default function DevHubPage() {
             fallbackMasteryPercent={masteryScore}
           />
 
-          <div className="flex-1 flex flex-col gap-2 min-h-0">
+          <div ref={featuredProjectsSectionRef} className="flex-1 flex flex-col gap-2 min-h-0">
             <div className="flex items-center justify-between shrink-0">
               <span className="text-xs sm:text-sm font-black tracking-wider text-slate-300 uppercase">
                 FEATURED PROJECTS
@@ -1050,10 +1068,18 @@ export default function DevHubPage() {
             squads={squads}
             projects={showcaseProjects}
             loading={directoryLoading}
+            defaultContactLink={
+              formData.telegramUrl ||
+              formData.linkedinUrl ||
+              formData.email ||
+              formData.githubUrl ||
+              ""
+            }
             onCreateSquad={handleCreateSquad}
             onDeleteSquad={handleDeleteSquad}
             onToggleBoost={handleToggleBoost}
             onOpenDevCard={(dev) => setSelectedTalentModal(dev)}
+            onSubmitYourProject={handleJumpToProjectsEditor}
           />
         )}
 
