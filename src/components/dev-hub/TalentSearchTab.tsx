@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Search, Sparkles, UserPlus, UserCheck, Eye, Flame, Bug, Zap } from "lucide-react";
+import { Search, Sparkles, UserPlus, UserCheck, Eye, Flame, Bug, Zap, X } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { soundEffects } from "@/utils/soundEffects";
 import type { TalentDeveloper } from "@/services/progressApi";
@@ -13,7 +13,6 @@ export interface TalentSearchTabProps {
   onToggleFollow: (talent: TalentDeveloper) => void;
 }
 
-type RoleFilter = "All" | "Frontend" | "Backend" | "Full-Stack";
 type SortOption = "streak" | "bugs" | "xp";
 
 export function TalentSearchTab({
@@ -23,7 +22,6 @@ export function TalentSearchTab({
   onToggleFollow,
 }: TalentSearchTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<RoleFilter>("All");
   const [onlyOpenToWork, setOnlyOpenToWork] = useState(false);
   const [onlyLookingForTeammate, setOnlyLookingForTeammate] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("streak");
@@ -37,20 +35,6 @@ export function TalentSearchTab({
         const inRole = t.specialty_title.toLowerCase().includes(q);
         const inStack = t.tech_stack.some((tag) => tag.toLowerCase().includes(q));
         if (!inName && !inRole && !inStack) return false;
-      }
-
-      if (roleFilter !== "All") {
-        const cat = (t.role_category || "").toLowerCase();
-        const title = (t.specialty_title || "").toLowerCase();
-        if (roleFilter === "Frontend" && !cat.includes("front") && !title.includes("front")) {
-          return false;
-        }
-        if (roleFilter === "Backend" && !cat.includes("back") && !title.includes("back")) {
-          return false;
-        }
-        if (roleFilter === "Full-Stack" && !cat.includes("full") && !title.includes("full")) {
-          return false;
-        }
       }
 
       const rawStatus = (t.collab_status || "").toLowerCase();
@@ -82,7 +66,7 @@ export function TalentSearchTab({
       if (b.total_xp !== a.total_xp) return b.total_xp - a.total_xp;
       return b.streak - a.streak;
     });
-  }, [talents, searchQuery, roleFilter, onlyOpenToWork, onlyLookingForTeammate, sortBy]);
+  }, [talents, searchQuery, onlyOpenToWork, onlyLookingForTeammate, sortBy]);
 
   const getStatusBadge = (status: string) => {
     const low = (status || "").toLowerCase();
@@ -109,52 +93,37 @@ export function TalentSearchTab({
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-[1080px] mx-auto">
-      <div className="p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-slate-800 flex flex-col gap-3 shadow-lg">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by username, headline, or skill (e.g. React, Python)..."
-              className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 text-xs sm:text-sm font-bold text-white placeholder-slate-500 focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 md:pb-0">
-            {(["All", "Frontend", "Backend", "Full-Stack"] as RoleFilter[]).map((role) => {
-              const active = roleFilter === role;
-              return (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playSoftClick();
-                    setRoleFilter(role);
-                  }}
-                  className={`h-10 px-3.5 rounded-xl text-xs font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                    active
-                      ? "bg-blue-600 text-white border border-blue-400 shadow-sm"
-                      : "bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800"
-                  }`}
-                >
-                  {role}
-                </button>
-              );
-            })}
-          </div>
+      <div className="p-3 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 shadow-lg">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search developers..."
+            className="w-full h-10 pl-10 pr-9 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 text-xs sm:text-sm font-bold text-white placeholder-slate-500 focus:outline-none transition-colors"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800/80">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between sm:justify-start gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             <button
               type="button"
               onClick={() => {
                 soundEffects.playSoftClick();
                 setOnlyOpenToWork((v) => !v);
               }}
-              className={`h-8 px-3 rounded-xl border text-xs font-black inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`h-9 px-3 rounded-xl border text-xs font-black inline-flex items-center gap-1.5 transition-all cursor-pointer ${
                 onlyOpenToWork
                   ? "bg-emerald-500/20 border-emerald-400/60 text-emerald-200 shadow-sm"
                   : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white"
@@ -170,35 +139,34 @@ export function TalentSearchTab({
                 soundEffects.playSoftClick();
                 setOnlyLookingForTeammate((v) => !v);
               }}
-              className={`h-8 px-3 rounded-xl border text-xs font-black inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`h-9 px-3 rounded-xl border text-xs font-black inline-flex items-center gap-1.5 transition-all cursor-pointer ${
                 onlyLookingForTeammate
                   ? "bg-purple-500/20 border-purple-400/60 text-purple-200 shadow-sm"
                   : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white"
               }`}
             >
               <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
-              <span>Looking for Teammate</span>
+              <span>Teammate</span>
             </button>
           </div>
 
+          <div className="hidden sm:block w-px h-6 bg-slate-800 mx-0.5" />
+
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider mr-1">
-              Sort:
-            </span>
             <button
               type="button"
               onClick={() => {
                 soundEffects.playSoftClick();
                 setSortBy("streak");
               }}
-              className={`h-8 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
+              className={`h-9 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
                 sortBy === "streak"
                   ? "bg-amber-500/20 border-amber-400/50 text-amber-300"
                   : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
               }`}
             >
               <Flame className="w-3.5 h-3.5 text-amber-400" />
-              <span>Highest Streak</span>
+              <span>Streak</span>
             </button>
 
             <button
@@ -207,14 +175,14 @@ export function TalentSearchTab({
                 soundEffects.playSoftClick();
                 setSortBy("bugs");
               }}
-              className={`h-8 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
+              className={`h-9 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
                 sortBy === "bugs"
                   ? "bg-indigo-500/20 border-indigo-400/50 text-indigo-200"
                   : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
               }`}
             >
               <Bug className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Most Bugs Fixed</span>
+              <span>Bugs Fixed</span>
             </button>
 
             <button
@@ -223,7 +191,7 @@ export function TalentSearchTab({
                 soundEffects.playSoftClick();
                 setSortBy("xp");
               }}
-              className={`h-8 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
+              className={`h-9 px-2.5 rounded-xl border text-xs font-black inline-flex items-center gap-1 transition-all cursor-pointer ${
                 sortBy === "xp"
                   ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
                   : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
@@ -247,9 +215,9 @@ export function TalentSearchTab({
         </div>
       ) : filteredTalents.length === 0 ? (
         <div className="py-14 px-6 rounded-3xl bg-[#0f172a] border-2 border-slate-800 flex flex-col items-center justify-center text-center gap-2">
-          <span className="text-lg font-black text-white">No developers matched your filters</span>
+          <span className="text-lg font-black text-white">No developers found</span>
           <span className="text-xs sm:text-sm font-bold text-slate-400">
-            Try clearing the search box or switching role filters.
+            Try clearing your search or status filters.
           </span>
         </div>
       ) : (
