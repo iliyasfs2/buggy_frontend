@@ -246,10 +246,10 @@ export function TalentSearchTab({
                       <AvatarRenderer config={dev.avatar_config} size={52} />
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <span className="text-base sm:text-lg font-black text-white truncate">
+                      <span className="text-base sm:text-lg font-black text-white break-words leading-snug">
                         {dev.display_name}
                       </span>
-                      <span className="text-xs sm:text-sm font-bold text-slate-300 truncate">
+                      <span className="text-xs sm:text-sm font-bold text-slate-300 break-words leading-snug">
                         {dev.specialty_title}
                       </span>
                     </div>

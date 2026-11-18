@@ -581,7 +581,7 @@ export default function DevHubPage() {
               <AvatarRenderer config={currentUser?.avatar_config || currentUser?.avatar} size={70} />
             </div>
             <div className="flex flex-col min-w-0 flex-1 gap-1">
-              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight truncate">
+              <h3 className="text-lg sm:text-2xl font-black text-white leading-tight break-words">
                 {displayName}
               </h3>
               <input
@@ -609,13 +609,13 @@ export default function DevHubPage() {
                     soundEffects.playSoftClick();
                     setDraftData((prev) => ({ ...prev, collabStatus: opt.value }));
                   }}
-                  className={`h-full px-2 rounded-xl text-[11px] sm:text-xs font-black inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
+                  className={`h-full px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black inline-flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
                     active ? opt.activeClass : opt.idleClass
                   }`}
                 >
                   {opt.icon}
-                  <span className="truncate sm:hidden">{opt.shortLabel}</span>
-                  <span className="truncate hidden sm:inline">{opt.fullLabel}</span>
+                  <span className="sm:hidden leading-tight">{opt.shortLabel}</span>
+                  <span className="hidden sm:inline leading-tight">{opt.fullLabel}</span>
                   {active && (
                     <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${opt.dot}`} />
                   )}
@@ -763,7 +763,7 @@ export default function DevHubPage() {
                 />
                 {effectiveStreak}
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Streak
               </span>
             </div>
@@ -777,7 +777,7 @@ export default function DevHubPage() {
                 />
                 {effectiveBugs}
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Bugs Fixed
               </span>
             </div>
@@ -791,7 +791,7 @@ export default function DevHubPage() {
                 />
                 {accuracyScore}%
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Accuracy
               </span>
             </div>
@@ -935,14 +935,14 @@ export default function DevHubPage() {
                 soundEffects.playSoftClick();
                 setActiveTab("card");
               }}
-              className={`px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black flex items-center justify-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer ${
+              className={`px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-base font-black flex items-center justify-center gap-1 sm:gap-2.5 text-center leading-tight transition-all cursor-pointer ${
                 activeTab === "card"
                   ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
-              <Layers className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">My Dev Card</span>
+              <Layers className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0" />
+              <span>My Dev Card</span>
             </button>
 
             <button
@@ -951,14 +951,14 @@ export default function DevHubPage() {
                 soundEffects.playSoftClick();
                 setActiveTab("talents");
               }}
-              className={`px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
+              className={`px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-base font-black flex items-center justify-center gap-1 sm:gap-2 text-center leading-tight transition-all cursor-pointer ${
                 activeTab === "talents"
                   ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
-              <Search className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">Talent Search</span>
+              <Search className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0" />
+              <span>Talent Search</span>
             </button>
 
             <button
@@ -967,14 +967,14 @@ export default function DevHubPage() {
                 soundEffects.playSoftClick();
                 setActiveTab("squads");
               }}
-              className={`px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
+              className={`px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-base font-black flex items-center justify-center gap-1 sm:gap-2 text-center leading-tight transition-all cursor-pointer ${
                 activeTab === "squads"
                   ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
-              <Trophy className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              <span className="truncate">Squads &amp; Showcase</span>
+              <Trophy className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0" />
+              <span>Squads &amp; Showcase</span>
             </button>
           </div>
 

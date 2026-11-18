@@ -333,11 +333,11 @@ export function DevCard({
               <AvatarRenderer config={avatarConfig} size={70} />
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight truncate">
+              <h3 className="text-lg sm:text-2xl font-black text-white leading-tight break-words">
                 {displayName}
               </h3>
-              <div className="h-7 sm:h-8 flex items-center">
-                <span className="text-sm sm:text-base font-extrabold text-slate-300 truncate">
+              <div className="min-h-[28px] sm:h-8 flex items-center">
+                <span className="text-xs sm:text-base font-extrabold text-slate-300 break-words leading-snug">
                   {specialtyTitle}
                 </span>
               </div>
@@ -346,7 +346,7 @@ export function DevCard({
 
           <div className="shrink-0">
             <div
-              className={`w-full h-11 px-3 rounded-2xl border flex items-center justify-between gap-2 ${statusMeta.barBg} ${statusMeta.border}`}
+              className={`w-full min-h-[44px] py-1.5 px-3 rounded-2xl border flex items-center justify-between gap-2 ${statusMeta.barBg} ${statusMeta.border}`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <div
@@ -354,7 +354,7 @@ export function DevCard({
                 >
                   {statusMeta.icon}
                 </div>
-                <span className={`text-xs sm:text-sm font-black truncate ${statusMeta.text}`}>
+                <span className={`text-xs sm:text-sm font-black break-words leading-snug ${statusMeta.text}`}>
                   {statusMeta.label}
                 </span>
               </div>
@@ -461,7 +461,7 @@ export function DevCard({
                 />
                 {streakCount}
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Streak
               </span>
             </div>
@@ -475,7 +475,7 @@ export function DevCard({
                 />
                 {bugsHunted}
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Bugs Fixed
               </span>
             </div>
@@ -489,7 +489,7 @@ export function DevCard({
                 />
                 {accuracy}%
               </span>
-              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 truncate max-w-full">
+              <span className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mt-1 leading-tight">
                 Accuracy
               </span>
             </div>
@@ -512,7 +512,7 @@ export function DevCard({
                     className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/85 border border-slate-800 flex flex-col justify-center gap-1 transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm sm:text-base font-black text-white truncate">
+                      <span className="text-sm sm:text-base font-black text-white break-words leading-snug">
                         {proj.title}
                       </span>
                       {proj.link && (
@@ -527,7 +527,7 @@ export function DevCard({
                         </a>
                       )}
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-300 font-bold line-clamp-2 sm:truncate">
+                    <p className="text-xs sm:text-sm text-slate-300 font-bold break-words leading-relaxed">
                       {proj.desc}
                     </p>
                   </div>
@@ -555,7 +555,7 @@ export function DevCard({
                   className="h-11 sm:h-12 px-3 sm:px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:translate-y-0.5 border-b-4 border-blue-800 text-white font-black text-xs sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
                   <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-                  <span className="truncate">{editButtonText}</span>
+                  <span>{editButtonText}</span>
                 </button>
 
                 <button
@@ -564,7 +564,7 @@ export function DevCard({
                   className="h-11 sm:h-12 px-3 sm:px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-xs sm:text-base inline-flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
                 >
                   <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 shrink-0" />
-                  <span className="truncate">Share Card</span>
+                  <span>Share Card</span>
                 </button>
               </div>
             ) : (

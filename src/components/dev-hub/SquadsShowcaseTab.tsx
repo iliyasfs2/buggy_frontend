@@ -7,7 +7,7 @@ import {
   Plus,
   ArrowRight,
   ExternalLink,
-  Rocket,
+  Heart,
   Crown,
   Trash2,
   X,
@@ -152,10 +152,10 @@ export function SquadsShowcaseTab({
                       <AvatarRenderer config={sq.creator.avatar_config} size={42} />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-sm sm:text-base font-black text-white truncate">
+                      <span className="text-sm sm:text-base font-black text-white break-words leading-snug">
                         {sq.creator_username}
                       </span>
-                      <span className="text-xs font-bold text-slate-400 truncate">
+                      <span className="text-xs font-bold text-slate-400 break-words leading-snug">
                         {sq.creator.specialty_title}
                       </span>
                     </div>
@@ -247,12 +247,12 @@ export function SquadsShowcaseTab({
                       </span>
                     )}
 
-                    <h3 className="text-base sm:text-xl font-black text-white truncate">
+                    <h3 className="text-base sm:text-xl font-black text-white break-words leading-snug">
                       {proj.title}
                     </h3>
                   </div>
 
-                  <p className="text-xs sm:text-sm font-bold text-slate-300 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-bold text-slate-300 leading-relaxed break-words">
                     {proj.description}
                   </p>
 
@@ -284,14 +284,14 @@ export function SquadsShowcaseTab({
                   </div>
                 </div>
 
-                <div className="flex sm:flex-col md:flex-row items-center gap-2.5 shrink-0">
+                <div className="grid grid-cols-2 sm:flex sm:flex-col md:flex-row items-center gap-2.5 shrink-0 w-full sm:w-auto">
                   {proj.url && (
                     <a
                       href={proj.url}
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => soundEffects.playSoftClick()}
-                      className="h-11 px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="h-11 px-3.5 sm:px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-0.5 border-b-4 border-slate-950 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
                       <span>View Project</span>
                       <ExternalLink className="w-3.5 h-3.5 text-sky-400 shrink-0" />
@@ -302,14 +302,18 @@ export function SquadsShowcaseTab({
                     type="button"
                     disabled={Boolean(boostingIds[proj.id])}
                     onClick={() => handleBoostClick(proj.id)}
-                    className={`h-11 px-4 rounded-2xl font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 border-b-4 active:translate-y-0.5 transition-all cursor-pointer ${
+                    className={`h-11 px-3.5 sm:px-4 rounded-2xl font-black text-xs sm:text-sm inline-flex items-center justify-center gap-2 border-b-4 active:translate-y-0.5 transition-all cursor-pointer ${
                       proj.has_boosted
-                        ? "bg-amber-500 hover:bg-amber-400 border-amber-700 text-slate-950 shadow-md"
-                        : "bg-blue-600 hover:bg-blue-500 border-blue-800 text-white shadow-md"
+                        ? "bg-rose-600 hover:bg-rose-500 border-rose-800 text-white shadow-md"
+                        : "bg-slate-800 hover:bg-slate-700 border-slate-950 text-white shadow-md"
                     }`}
                   >
-                    <Rocket className="w-4 h-4 shrink-0" />
-                    <span>Byte Boost ({proj.boost_count})</span>
+                    <Heart
+                      className={`w-4 h-4 shrink-0 ${
+                        proj.has_boosted ? "fill-white text-white" : "text-rose-400"
+                      }`}
+                    />
+                    <span>Like ({proj.boost_count})</span>
                   </button>
                 </div>
               </div>

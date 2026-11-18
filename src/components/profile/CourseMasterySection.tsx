@@ -185,7 +185,7 @@ export function CourseMasterySection({
         <div className="flex items-center justify-between gap-2 min-w-0">
           <div className="flex items-center gap-2 min-w-0">
             {meta.renderIcon(false)}
-            <span className="text-xs sm:text-base font-black text-white truncate">
+            <span className="text-xs sm:text-base font-black text-white break-words leading-snug">
               {item.title}
             </span>
           </div>
@@ -248,7 +248,7 @@ export function CourseMasterySection({
             <div className="flex items-center justify-between gap-1.5 min-w-0">
               <div className="flex items-center gap-1.5 min-w-0">
                 {meta.renderIcon(true)}
-                <span className="text-xs sm:text-sm font-black text-white truncate">
+                <span className="text-xs sm:text-sm font-black text-white break-words leading-snug">
                   {displayLabel}
                 </span>
               </div>

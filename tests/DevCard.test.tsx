@@ -323,7 +323,7 @@ describe("DevHubPage Backend & DB Integration", () => {
     fireEvent.click(screen.getByRole("button", { name: /Project Showcase/i }));
     await waitFor(() => {
       expect(screen.getByText("#1 Project of the Season")).toBeInTheDocument();
-      expect(screen.getByText(/Byte Boost \(48\)/i)).toBeInTheDocument();
+      expect(screen.getByText(/Like \(48\)/i)).toBeInTheDocument();
     });
   });
 });
