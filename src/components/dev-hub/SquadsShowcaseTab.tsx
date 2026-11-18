@@ -32,8 +32,6 @@ export interface SquadsShowcaseTabProps {
   onOpenDevCard: (talent: TalentDeveloper) => void;
 }
 
-const ROLE_CHOICES = ["Frontend", "Backend", "Full-Stack", "UI/UX", "Mobile", "AI / Data"];
-
 export function SquadsShowcaseTab({
   squads,
   projects,
@@ -46,8 +44,8 @@ export function SquadsShowcaseTab({
   const [subTab, setSubTab] = useState<"squads" | "showcase">("squads");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [projectTitle, setProjectTitle] = useState("");
-  const [myRole, setMyRole] = useState("Frontend");
-  const [neededRole, setNeededRole] = useState("Backend");
+  const [myRole, setMyRole] = useState("");
+  const [neededRole, setNeededRole] = useState("");
   const [minStreak, setMinStreak] = useState(3);
   const [description, setDescription] = useState("");
   const [submittingSquad, setSubmittingSquad] = useState(false);
@@ -55,18 +53,20 @@ export function SquadsShowcaseTab({
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectTitle.trim() || submittingSquad) return;
+    if (!projectTitle.trim() || !myRole.trim() || !neededRole.trim() || submittingSquad) return;
     soundEffects.playSoftClick();
     setSubmittingSquad(true);
     try {
       await onCreateSquad({
         project_title: projectTitle.trim(),
-        my_role: myRole,
-        needed_role: neededRole,
+        my_role: myRole.trim(),
+        needed_role: neededRole.trim(),
         min_streak: Number(minStreak) || 0,
         description: description.trim() || "Looking for a motivated teammate to build and ship together.",
       });
       setProjectTitle("");
+      setMyRole("");
+      setNeededRole("");
       setDescription("");
       setMinStreak(3);
       setIsPostModalOpen(false);
@@ -133,7 +133,7 @@ export function SquadsShowcaseTab({
             className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:translate-y-0.5 border-b-4 border-emerald-800 text-white font-black text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4 shrink-0" />
-            <span>+ Post Team Request</span>
+            <span>Post Team Request</span>
           </button>
         )}
       </div>
@@ -361,32 +361,28 @@ export function SquadsShowcaseTab({
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-slate-300 uppercase">My Role (Have)</label>
-                <select
+                <input
+                  type="text"
+                  required
+                  maxLength={30}
                   value={myRole}
                   onChange={(e) => setMyRole(e.target.value)}
-                  className="h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs sm:text-sm font-black text-white focus:outline-none"
-                >
-                  {ROLE_CHOICES.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="e.g. Frontend"
+                  className="h-10 px-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-400 text-xs sm:text-sm font-bold text-white placeholder-slate-500 focus:outline-none"
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-slate-300 uppercase">Needed Role</label>
-                <select
+                <input
+                  type="text"
+                  required
+                  maxLength={30}
                   value={neededRole}
                   onChange={(e) => setNeededRole(e.target.value)}
-                  className="h-10 px-3 rounded-xl bg-slate-900 border border-slate-700 text-xs sm:text-sm font-black text-white focus:outline-none"
-                >
-                  {ROLE_CHOICES.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="e.g. Backend"
+                  className="h-10 px-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-400 text-xs sm:text-sm font-bold text-white placeholder-slate-500 focus:outline-none"
+                />
               </div>
             </div>
 
