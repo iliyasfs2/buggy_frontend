@@ -20,6 +20,9 @@ import {
   Mail,
   Link2,
   Handshake,
+  Flame,
+  Briefcase,
+  Rocket,
 } from "lucide-react";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { soundEffects } from "@/utils/soundEffects";
@@ -48,21 +51,21 @@ const VIBE_OPTIONS = [
   {
     value: "Fun Side Project",
     label: "Fun Side Project",
-    emoji: "🔥",
+    icon: <Flame className="w-3.5 h-3.5 text-amber-400 shrink-0" />,
     activeClass: "bg-amber-500/20 border-amber-400 text-amber-200 shadow-sm",
     badgeClass: "bg-amber-500/15 border-amber-400/40 text-amber-300",
   },
   {
     value: "Portfolio Builder",
     label: "Portfolio Builder",
-    emoji: "💼",
+    icon: <Briefcase className="w-3.5 h-3.5 text-sky-400 shrink-0" />,
     activeClass: "bg-sky-500/20 border-sky-400 text-sky-200 shadow-sm",
     badgeClass: "bg-sky-500/15 border-sky-400/40 text-sky-300",
   },
   {
     value: "Serious / Startup",
     label: "Serious / Startup",
-    emoji: "🏆",
+    icon: <Trophy className="w-3.5 h-3.5 text-purple-400 shrink-0" />,
     activeClass: "bg-purple-500/20 border-purple-400 text-purple-200 shadow-sm",
     badgeClass: "bg-purple-500/15 border-purple-400/40 text-purple-300",
   },
@@ -333,9 +336,9 @@ export function SquadsShowcaseTab({
                     </h3>
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span
-                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-black inline-flex items-center gap-1 ${vibeMeta.badgeClass}`}
+                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-black inline-flex items-center gap-1.5 ${vibeMeta.badgeClass}`}
                       >
-                        <span>{vibeMeta.emoji}</span>
+                        {vibeMeta.icon}
                         <span>{vibeMeta.label}</span>
                       </span>
                     </div>
@@ -421,7 +424,7 @@ export function SquadsShowcaseTab({
                         : "bg-slate-900 hover:bg-slate-800 border-slate-700 text-white hover:border-sky-500/50"
                     }`}
                   >
-                    <span>🚀</span>
+                    <Rocket className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                     <span className="break-words">{mp.title}</span>
                     <span className="text-sky-400">• {mp.boostCount} Boosts</span>
                   </button>
@@ -590,7 +593,7 @@ export function SquadsShowcaseTab({
                           : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800"
                       }`}
                     >
-                      <span>{vibe.emoji}</span>
+                      <span>{vibe.icon}</span>
                       <span>{vibe.label}</span>
                     </button>
                   );
