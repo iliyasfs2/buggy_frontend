@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, type ReactElement } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { X } from "lucide-react";
 import {
   useGameStore,
   selectActiveTab,
@@ -10,6 +11,7 @@ import {
 } from "@/store/useGameStore";
 import { MOBILE_NAVIGATION_ITEMS } from "@/constants/navigation";
 import { LeaderboardIcon, ProfileIcon, SettingsIcon } from "@/components/shared";
+import { DailyQuestsWidget } from "@/components/quests/DailyQuestsWidget";
 import { soundEffects } from "@/utils/soundEffects";
 
 export interface MobileBottomNavProps {
@@ -44,12 +46,20 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
   const activeTab = useGameStore(selectActiveTab);
   const setActiveTab = useGameStore(selectSetActiveTab);
   const mistakesCount = useGameStore(selectMistakesCount);
+  const dailyQuests = useGameStore((state) => state.dailyQuests);
+
+  const totalQuestsCount = dailyQuests && dailyQuests.length > 0 ? dailyQuests.length : 3;
+  const completedQuestsCount =
+    dailyQuests && dailyQuests.length > 0
+      ? dailyQuests.filter((q) => q.claimed || q.current >= q.target).length
+      : 0;
 
   const isFromLeaderboard = searchParams?.get("from") === "leaderboard";
   const isLeaderboardActive = pathname.startsWith("/leaderboard") || (pathname.startsWith("/profile") && isFromLeaderboard);
   const isProfileActive = pathname.startsWith("/profile") && !isFromLeaderboard;
 
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isQuestsSheetOpen, setIsQuestsSheetOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,6 +104,39 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
             <div className="w-10 h-1 bg-slate-700 rounded-full mx-auto mb-2.5 opacity-70" />
 
             <div className="flex flex-col divide-y divide-slate-800/80">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsMoreOpen(false);
+                  setIsQuestsSheetOpen(true);
+                }}
+                className="w-full flex items-center justify-between px-3.5 py-3.5 rounded-2xl font-black text-sm tracking-wide text-slate-200 hover:text-white hover:bg-slate-800/60 active:bg-slate-800 active:scale-[0.99] transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border bg-slate-800/90 border-slate-700/70">
+                    <img
+                      src="/icons/chest-closed.png"
+                      alt="Daily Quests"
+                      className="w-6 h-6 object-contain brightness-125 contrast-105"
+                    />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-wider">
+                    Daily Quests
+                  </span>
+                </div>
+
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-black border ${
+                    completedQuestsCount >= totalQuestsCount
+                      ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
+                      : "bg-amber-500/15 border-amber-400/35 text-amber-300"
+                  }`}
+                >
+                  {completedQuestsCount}/{totalQuestsCount}
+                </span>
+              </button>
+
               {MORE_SUBITEMS.map((sub) => {
                 const isSubActive =
                   (sub.id === "leaderboard" && isLeaderboardActive) ||
@@ -236,6 +279,38 @@ export function MobileBottomNav({ className = "" }: MobileBottomNavProps): React
           );
         })}
       </nav>
+
+      {isQuestsSheetOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Daily Quests"
+          onClick={() => setIsQuestsSheetOpen(false)}
+          className="fixed inset-0 z-50 md:hidden bg-black/75 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-200 select-none"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-[#131f24] border-t-2 border-slate-700 rounded-t-3xl p-4 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-[0_-12px_40px_rgba(0,0,0,0.8)] flex flex-col gap-3 animate-in slide-in-from-bottom duration-200"
+          >
+            <div className="flex items-center justify-between px-1">
+              <div className="w-10 h-1 bg-slate-700 rounded-full mx-auto opacity-80" />
+              <button
+                type="button"
+                aria-label="Close Daily Quests"
+                onClick={() => {
+                  soundEffects.playSoftClick();
+                  setIsQuestsSheetOpen(false);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" strokeWidth={2.4} />
+              </button>
+            </div>
+
+            <DailyQuestsWidget />
+          </div>
+        </div>
+      )}
     </>
   );
 }
