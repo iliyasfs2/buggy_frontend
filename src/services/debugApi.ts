@@ -35,6 +35,44 @@ export interface DebugStats {
   stories_count: number;
 }
 
+export interface OutputLabDrill {
+  id: string;
+  code: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
+export interface CleanCodeDrill {
+  id: string;
+  messy_code: string;
+  prompt: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
+export interface MiniScenarioStep {
+  step: number;
+  instruction: string;
+  code_template: string;
+  options: string[];
+  answer: string;
+}
+
+export interface MiniScenarioDrill {
+  id: string;
+  title: string;
+  subtitle: string;
+  steps: MiniScenarioStep[];
+}
+
+export interface DebugChallengesData {
+  output_lab: OutputLabDrill[];
+  clean_code: CleanCodeDrill[];
+  mini_scenarios: MiniScenarioDrill[];
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const getHeaders = (): Record<string, string> => {
@@ -93,5 +131,13 @@ export const fetchDebugStatsApi = async (): Promise<DebugStats> => {
     headers: getHeaders(),
   });
   if (!res.ok) throw new Error("Failed to fetch debug stats");
+  return res.json();
+};
+
+export const fetchDebugChallengesApi = async (): Promise<DebugChallengesData> => {
+  const res = await fetch(`${API_BASE_URL}/api/debug/challenges`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch debug challenges");
   return res.json();
 };

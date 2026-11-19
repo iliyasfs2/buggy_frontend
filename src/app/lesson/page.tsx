@@ -3,14 +3,20 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LessonPlayer } from "@/components/lesson/LessonPlayer";
+import {
+  DebugDrillPlayer,
+  type CuratedDebugMode,
+} from "@/components/debug/DebugDrillPlayer";
 import type { LessonContent } from "@/types/lesson";
 import {
-  DEBUG_TRACING_LESSON,
-  DEBUG_REFACTOR_LESSON,
-  DEBUG_STORIES_LESSON,
+  SEED_DEBUG_CHALLENGES,
   createMistakesLesson,
 } from "@/constants/debugLessons";
-import { fetchMistakesApi } from "@/services/debugApi";
+import {
+  fetchMistakesApi,
+  fetchDebugChallengesApi,
+  type DebugChallengesData,
+} from "@/services/debugApi";
 import { LESSON_JS_1_1 } from "@/data/mock/lessons/js-1-1";
 import { LESSON_JS_1_2 } from "@/data/mock/lessons/js-1-2";
 import { LESSON_JS_1_3 } from "@/data/mock/lessons/js-1-3";
@@ -26,29 +32,53 @@ const getRoadmapLessonContent = (id: string): LessonContent => {
   return LESSON_JS_1_1;
 };
 
+function isCuratedDebugMode(mode: string): mode is CuratedDebugMode {
+  return (
+    mode === "debug_tracing" ||
+    mode === "debug_refactor" ||
+    mode === "debug_stories"
+  );
+}
+
 function LessonContentController() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "";
   const nodeId = searchParams.get("nodeId") || "js-1-1";
   const isDebugSession = Boolean(mode && mode.startsWith("debug"));
+  const isCuratedDrill = isCuratedDebugMode(mode);
 
   const [lesson, setLesson] = useState<LessonContent | null>(null);
+  const [challenges, setChallenges] = useState<DebugChallengesData>(
+    SEED_DEBUG_CHALLENGES
+  );
   const [loading, setLoading] = useState(true);
   const [emptyMistakes, setEmptyMistakes] = useState(false);
 
   useEffect(() => {
     let active = true;
 
-    if (mode === "debug_tracing") {
-      setLesson(DEBUG_TRACING_LESSON);
-      setLoading(false);
-    } else if (mode === "debug_refactor") {
-      setLesson(DEBUG_REFACTOR_LESSON);
-      setLoading(false);
-    } else if (mode === "debug_stories") {
-      setLesson(DEBUG_STORIES_LESSON);
-      setLoading(false);
+    if (isCuratedDrill) {
+      setLoading(true);
+      fetchDebugChallengesApi()
+        .then((data) => {
+          if (!active) return;
+          if (
+            data &&
+            Array.isArray(data.output_lab) &&
+            data.output_lab.length > 0
+          ) {
+            setChallenges(data);
+          } else {
+            setChallenges(SEED_DEBUG_CHALLENGES);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          if (!active) return;
+          setChallenges(SEED_DEBUG_CHALLENGES);
+          setLoading(false);
+        });
     } else if (mode === "debug_mistakes") {
       setLoading(true);
       fetchMistakesApi()
@@ -74,7 +104,7 @@ function LessonContentController() {
     return () => {
       active = false;
     };
-  }, [mode, nodeId]);
+  }, [mode, nodeId, isCuratedDrill]);
 
   const handleComplete = () => {
     if (isDebugSession) {
@@ -94,7 +124,7 @@ function LessonContentController() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#101826] flex flex-col items-center justify-center p-4 text-center select-none">
+      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center p-4 text-center select-none">
         <div className="w-12 h-12 rounded-full border-4 border-sky-500 border-t-transparent animate-spin mb-4" />
         <h2 className="text-lg font-black text-white tracking-wide">
           Loading Practice Session...
@@ -106,12 +136,23 @@ function LessonContentController() {
     );
   }
 
+  if (isCuratedDrill) {
+    return (
+      <DebugDrillPlayer
+        mode={mode}
+        challenges={challenges}
+        onComplete={handleComplete}
+        onExit={handleExit}
+      />
+    );
+  }
+
   if (emptyMistakes) {
     return (
-      <div className="min-h-screen bg-[#101826] flex items-center justify-center p-6 select-none">
-        <div className="max-w-md w-full rounded-3xl bg-slate-900 border-2 border-slate-800 p-8 text-center shadow-2xl flex flex-col items-center gap-6">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 select-none">
+        <div className="max-w-md w-full rounded-3xl bg-[#131f24] border-2 border-slate-800 p-8 text-center shadow-2xl flex flex-col items-center gap-6">
           <div className="w-20 h-20 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <CheckCircle2 className="w-10 h-10" />
+            <CheckCircle2 className="w-10 h-10" strokeWidth={2} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -119,7 +160,7 @@ function LessonContentController() {
               Mistakes Bank All Clear!
             </h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              You do not have any unresolved bugs right now. Keep practicing with code tracing or refactoring challenges!
+              You do not have any unresolved bugs right now. Keep practicing with Output Lab or Clean Code challenges!
             </p>
           </div>
 
@@ -129,7 +170,7 @@ function LessonContentController() {
               onClick={() => router.push("/lesson?mode=debug_tracing")}
               className="w-full py-3.5 px-4 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-1 border-b-4 border-sky-700 text-slate-950 font-black text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
             >
-              <span>Practice Code Tracing (+15 XP)</span>
+              <span>Practice Output Lab (+20 XP)</span>
             </button>
 
             <button
@@ -137,8 +178,8 @@ function LessonContentController() {
               onClick={() => router.push("/debug")}
               className="w-full py-3.5 px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 active:translate-y-1 border-b-4 border-slate-950 text-slate-200 font-black text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Debug Hub</span>
+              <ArrowLeft className="w-4 h-4" strokeWidth={2} />
+              <span>Back to Debug Lab</span>
             </button>
           </div>
         </div>
@@ -148,7 +189,7 @@ function LessonContentController() {
 
   if (!lesson) {
     return (
-      <div className="min-h-screen bg-[#101826] flex flex-col items-center justify-center p-6 text-center select-none gap-4">
+      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center p-6 text-center select-none gap-4">
         <p className="text-slate-300 font-bold">Lesson not found.</p>
         <button
           type="button"
@@ -175,7 +216,7 @@ export default function LessonPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#101826] flex items-center justify-center text-slate-400 font-bold">
+        <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-slate-400 font-bold">
           Loading lesson session...
         </div>
       }
