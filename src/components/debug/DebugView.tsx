@@ -73,7 +73,7 @@ export function DebugView() {
           <div className="flex flex-col space-y-2.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 sm:px-6 sm:py-4 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+                <div className="w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
                   <Terminal className="w-7 h-7" strokeWidth={2} />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0 flex-1">
@@ -105,7 +105,7 @@ export function DebugView() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 sm:px-6 sm:py-4 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                <div className="w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                   <Wand2 className="w-7 h-7" strokeWidth={2} />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0 flex-1">
@@ -147,7 +147,7 @@ export function DebugView() {
           <div className="flex flex-col space-y-2.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 sm:px-6 sm:py-4 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+                <div className="w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
                   <RotateCcw className="w-7 h-7" strokeWidth={2} />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0 flex-1">
@@ -179,7 +179,7 @@ export function DebugView() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 sm:px-6 sm:py-4 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                <div className="w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
                   <Layers className="w-7 h-7" strokeWidth={2} />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0 flex-1">
