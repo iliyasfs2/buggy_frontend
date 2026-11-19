@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Zap,
-  CheckCircle2,
-  Target,
-  Bug,
-  ShieldCheck,
-  Clock,
-  Check,
-} from "lucide-react";
+import { Clock, Check } from "lucide-react";
 import { useNavStore } from "@/store/useNavStore";
 import { fetchUserProgress, type Quest } from "@/services/progressApi";
 
@@ -104,52 +96,48 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
   const renderLeadingIcon = (questId: string) => {
     if (questId === "earn_xp") {
       return (
-        <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 text-amber-400">
-          <Zap className="w-7 h-7 sm:w-[30px] sm:h-[30px]" strokeWidth={2.2} />
+        <div className="w-10 h-10 flex items-center justify-center shrink-0">
+          <img
+            src="/icons/lightning.png"
+            alt="XP Quest"
+            className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow"
+          />
         </div>
       );
     }
 
-    if (questId === "complete_nodes") {
+    if (questId === "complete_nodes" || questId === "hunt_bugs") {
       return (
-        <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 text-sky-400">
-          <CheckCircle2 className="w-7 h-7 sm:w-[30px] sm:h-[30px]" strokeWidth={2.2} />
-        </div>
-      );
-    }
-
-    if (questId === "hunt_bugs") {
-      return (
-        <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 text-purple-400">
-          <Bug className="w-7 h-7 sm:w-[30px] sm:h-[30px]" strokeWidth={2.2} />
-        </div>
-      );
-    }
-
-    if (questId === "perfect_node") {
-      return (
-        <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 text-cyan-400">
-          <ShieldCheck className="w-7 h-7 sm:w-[30px] sm:h-[30px]" strokeWidth={2.2} />
+        <div className="w-10 h-10 flex items-center justify-center shrink-0">
+          <img
+            src="/icons/vault.png"
+            alt="Bug Quest"
+            className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow"
+          />
         </div>
       );
     }
 
     return (
-      <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 text-emerald-400">
-        <Target className="w-7 h-7 sm:w-[30px] sm:h-[30px]" strokeWidth={2.2} />
+      <div className="w-10 h-10 flex items-center justify-center shrink-0">
+        <img
+          src="/icons/target.png"
+          alt="Accuracy Quest"
+          className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow"
+        />
       </div>
     );
   };
 
   return (
     <div
-      className={`rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 p-5 sm:p-6 shadow-2xl flex flex-col gap-5 select-none relative ${className}`}
+      className={`rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 px-4 py-5 sm:px-5 sm:py-5 shadow-2xl flex flex-col gap-5 select-none relative ${className}`}
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-white font-black text-xl sm:text-2xl tracking-tight whitespace-nowrap">
+        <h3 className="text-white font-black text-xl tracking-tight whitespace-nowrap">
           Daily Quests
         </h3>
-        <div className="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-400/35 text-xs sm:text-sm font-black text-amber-400 inline-flex items-center gap-1.5 shrink-0 shadow-sm">
+        <div className="px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-400/35 text-xs sm:text-sm font-black text-amber-400 inline-flex items-center gap-1.5 shrink-0 shadow-sm">
           <Clock className="w-4 h-4 text-amber-400 shrink-0" strokeWidth={2.4} />
           <span className="font-mono tracking-tight">{timeLeft}</span>
         </div>
@@ -166,19 +154,19 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
           );
 
           return (
-            <div key={quest.id} className="flex items-center gap-3.5">
+            <div key={quest.id} className="flex items-center gap-3">
               {renderLeadingIcon(quest.id)}
 
-              <div className="flex-1 min-w-0 flex flex-col gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-1.5">
                 <span
-                  className={`font-black text-base sm:text-[17px] truncate whitespace-nowrap leading-snug ${
+                  className={`font-black text-sm sm:text-base truncate whitespace-nowrap leading-snug ${
                     isCompleted ? "text-emerald-300" : "text-slate-100"
                   }`}
                 >
                   {quest.title}
                 </span>
 
-                <div className="relative w-full h-6 rounded-full bg-slate-700/60 overflow-hidden flex items-center shadow-inner">
+                <div className="relative w-full h-5 sm:h-6 rounded-full bg-slate-700/60 overflow-hidden flex items-center shadow-inner">
                   <div
                     className={`h-full shadow-[inset_0_-2px_0_rgba(0,0,0,0.2)] rounded-full transition-all duration-500 ease-out ${
                       isCompleted ? "bg-emerald-500" : "bg-amber-400"
@@ -200,22 +188,22 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
               </div>
 
               {isCompleted ? (
-                <div className="relative shrink-0 flex items-center justify-center w-12 h-12">
+                <div className="relative shrink-0 flex items-center justify-center w-11 h-11">
                   <img
                     src="/icons/chest-gold.png"
                     alt="Claimed Chest"
-                    className="w-11 h-11 sm:w-12 sm:h-12 object-contain brightness-110 drop-shadow-[0_2px_8px_rgba(250,204,21,0.35)]"
+                    className="w-11 h-11 object-contain brightness-110 drop-shadow-[0_2px_8px_rgba(250,204,21,0.35)]"
                   />
                   <div className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 text-slate-950 p-0.5 rounded-full border-2 border-slate-900 shadow">
                     <Check className="w-3 h-3 text-slate-950" strokeWidth={3.5} />
                   </div>
                 </div>
               ) : (
-                <div className="relative shrink-0 flex items-center justify-center w-12 h-12">
+                <div className="relative shrink-0 flex items-center justify-center w-11 h-11">
                   <img
                     src="/icons/chest-closed.png"
                     alt="Reward Chest"
-                    className="w-11 h-11 sm:w-12 sm:h-12 object-contain brightness-125 contrast-105 drop-shadow-[0_2px_6px_rgba(255,255,255,0.12)]"
+                    className="w-11 h-11 object-contain brightness-125 contrast-105 drop-shadow-[0_2px_6px_rgba(255,255,255,0.12)]"
                   />
                 </div>
               )}

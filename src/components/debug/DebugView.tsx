@@ -40,8 +40,8 @@ export function DebugView() {
   }, [setMistakesCount, syncNav]);
 
   return (
-    <div className="w-full pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 pt-3 pb-4 md:py-3 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 select-none relative">
-      <div className="w-full max-w-2xl xl:max-w-[740px] flex flex-col gap-3.5 shrink-0">
+    <div className="w-full pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 pt-3 pb-4 md:py-6 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 select-none relative">
+      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-3.5 shrink-0">
         <div className="hidden md:flex lg:hidden justify-end w-full">
           <DesktopMetricBar inline />
         </div>
@@ -208,9 +208,9 @@ export function DebugView() {
         </section>
       </div>
 
-      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-4">
+      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8">
         <DesktopMetricBar inline />
-        <div className="w-full max-w-[390px] xl:max-w-[420px]">
+        <div className="w-full max-w-[360px]">
           <DailyQuestsCard />
         </div>
       </div>

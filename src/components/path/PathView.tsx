@@ -190,7 +190,7 @@ export function PathView(): ReactElement {
 
         <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8" onClick={(e) => e.stopPropagation()}>
           <DesktopMetricBar inline />
-          <div className="w-full max-w-[390px] xl:max-w-[420px]">
+          <div className="w-full max-w-[360px]">
             <PathSidebar />
           </div>
         </div>
