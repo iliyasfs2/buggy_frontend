@@ -63,7 +63,7 @@ export function DebugView() {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
                   <Terminal className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
@@ -89,13 +89,13 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_tracing");
                 }}
-                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-0.5 border-b-4 border-sky-700 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-sky-500 hover:bg-sky-400 border-b-[5px] border-sky-700 hover:translate-y-[2px] hover:border-b-[3px] active:translate-y-[4px] active:border-b-0 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer shadow-md"
               >
                 <span>Start Drill</span>
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                   <Wand2 className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
@@ -121,7 +121,7 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_refactor");
                 }}
-                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:translate-y-0.5 border-b-4 border-amber-600 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 border-b-[5px] border-amber-600 hover:translate-y-[2px] hover:border-b-[3px] active:translate-y-[4px] active:border-b-0 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer shadow-md"
               >
                 <span>Start Challenge</span>
               </button>
@@ -137,7 +137,7 @@ export function DebugView() {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
                   <RotateCcw className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
@@ -163,13 +163,13 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_mistakes");
                 }}
-                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-rose-500 hover:bg-rose-400 active:translate-y-0.5 border-b-4 border-rose-700 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-rose-500 hover:bg-rose-400 border-b-[5px] border-rose-700 hover:translate-y-[2px] hover:border-b-[3px] active:translate-y-[4px] active:border-b-0 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer shadow-md"
               >
                 <span>Fix Mistakes</span>
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 hover:border-slate-700 transition-all shadow-xl">
               <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
                   <Layers className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
@@ -190,7 +190,7 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_stories");
                 }}
-                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-purple-600 hover:bg-purple-500 active:translate-y-0.5 border-b-4 border-purple-800 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-purple-600 hover:bg-purple-500 border-b-[5px] border-purple-800 hover:translate-y-[2px] hover:border-b-[3px] active:translate-y-[4px] active:border-b-0 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer shadow-md"
               >
                 <span>Play Scenario</span>
               </button>
