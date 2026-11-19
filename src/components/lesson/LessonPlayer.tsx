@@ -422,6 +422,7 @@ export function LessonPlayer({
       earnedBytes,
       nextNodeId,
       flawless: isPerfectRun,
+      accuracy: accuracyPercentage,
       mode: mode || undefined,
     })
       .then((data) => {

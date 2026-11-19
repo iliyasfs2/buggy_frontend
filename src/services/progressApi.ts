@@ -164,6 +164,7 @@ export interface CompleteNodePayload {
   earnedXp: number;
   nextNodeId?: string | null;
   flawless?: boolean;
+  accuracy?: number;
   earnedBytes?: number;
   mode?: string;
 }
@@ -172,7 +173,7 @@ export const completeNode = async (
   nodeIdOrPayload: string | CompleteNodePayload,
   earnedXp?: number,
   nextNodeId?: string | null,
-  options?: { flawless?: boolean; earnedBytes?: number; mode?: string }
+  options?: { flawless?: boolean; accuracy?: number; earnedBytes?: number; mode?: string }
 ): Promise<ProgressData> => {
   const body: CompleteNodePayload =
     typeof nodeIdOrPayload === "string"
@@ -181,6 +182,7 @@ export const completeNode = async (
           earnedXp: earnedXp ?? 0,
           nextNodeId: nextNodeId ?? null,
           flawless: options?.flawless ?? false,
+          accuracy: options?.accuracy,
           earnedBytes: options?.earnedBytes ?? 0,
           mode: options?.mode,
         }

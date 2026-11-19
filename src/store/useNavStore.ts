@@ -245,6 +245,11 @@ export const selectSetTrack = (state: NavState): ((track: string) => void) =>
   state.setTrack;
 export const selectActiveCourse = (state: NavState): string => state.activeCourse;
 export const selectHasCompletedToday = (state: NavState) => {
-  const q1 = state.dailyQuests?.find((q: Quest) => q.id === "q1");
-  return q1 ? q1.current > 0 : false;
+  return (
+    state.dailyQuests?.some(
+      (q: Quest) =>
+        (q.id === "complete_nodes" || q.id === "earn_xp" || q.id === "q1") &&
+        q.current > 0
+    ) ?? false
+  );
 };
