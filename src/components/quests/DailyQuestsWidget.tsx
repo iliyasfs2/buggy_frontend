@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Clock, Check } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { Check } from "lucide-react";
 import { useNavStore } from "@/store/useNavStore";
 import { fetchUserProgress, type Quest } from "@/services/progressApi";
 
@@ -23,11 +23,11 @@ const DEFAULT_QUESTS: Quest[] = [
     claimed: false,
   },
   {
-    id: "clean_accuracy",
-    title: "Score 80%+ in a lesson",
+    id: "hunt_bugs",
+    title: "Fix 3 bugs in Debug Lab",
     current: 0,
-    target: 1,
-    reward_bytes: 20,
+    target: 3,
+    reward_bytes: 15,
     claimed: false,
   },
 ];
@@ -42,28 +42,45 @@ const SHORT_TITLES: Record<string, string> = {
 
 const VALID_IDS = new Set(Object.keys(SHORT_TITLES));
 
-function getTimeUntilMidnight(): string {
+function getMidnightCountdown(): { label: string; currentDayKey: string } {
   const now = new Date();
+  const dayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const midnight = new Date(now);
   midnight.setHours(24, 0, 0, 0);
   const diffSeconds = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
   const hours = Math.floor(diffSeconds / 3600);
   const minutes = Math.floor((diffSeconds % 3600) / 60);
-  return `${hours}H ${minutes.toString().padStart(2, "0")}M`;
+  const seconds = diffSeconds % 60;
+  const label =
+    hours > 0
+      ? `${hours}H ${String(minutes).padStart(2, "0")}M`
+      : `${minutes}M ${String(seconds).padStart(2, "0")}S`;
+  return { label, currentDayKey: dayKey };
 }
 
 export function DailyQuestsWidget({ className = "" }: { className?: string }) {
   const dailyQuests = useNavStore((state) => state.dailyQuests);
   const syncNav = useNavStore((state) => state.syncNav);
-  const [timeLeft, setTimeLeft] = useState<string>(() => getTimeUntilMidnight());
+  const [timeLeft, setTimeLeft] = useState<string>(() => getMidnightCountdown().label);
+  const lastDayKeyRef = useRef<string>(getMidnightCountdown().currentDayKey);
 
   useEffect(() => {
-    setTimeLeft(getTimeUntilMidnight());
-    const intervalId = setInterval(() => {
-      setTimeLeft(getTimeUntilMidnight());
-    }, 30000);
+    const tick = () => {
+      const { label, currentDayKey } = getMidnightCountdown();
+      setTimeLeft(label);
+      if (currentDayKey !== lastDayKeyRef.current) {
+        lastDayKeyRef.current = currentDayKey;
+        fetchUserProgress()
+          .then((prog) => {
+            syncNav(prog);
+          })
+          .catch(() => {});
+      }
+    };
+    tick();
+    const intervalId = setInterval(tick, 1000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [syncNav]);
 
   useEffect(() => {
     const needsSync =
@@ -93,8 +110,8 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
     })
   );
 
-  const renderLeadingIcon = (questId: string) => {
-    if (questId === "earn_xp") {
+  const renderLeadingIcon = (questId: string, index: number) => {
+    if (questId === "earn_xp" || index === 0) {
       return (
         <div className="w-10 h-10 flex items-center justify-center shrink-0">
           <img
@@ -106,13 +123,13 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
       );
     }
 
-    if (questId === "complete_nodes" || questId === "hunt_bugs") {
+    if (questId === "complete_nodes" || index === 1) {
       return (
         <div className="w-10 h-10 flex items-center justify-center shrink-0">
           <img
-            src="/icons/vault.png"
-            alt="Bug Quest"
-            className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow"
+            src="/icons/target.png"
+            alt="Lesson Target Quest"
+            className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow"
           />
         </div>
       );
@@ -121,9 +138,9 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
     return (
       <div className="w-10 h-10 flex items-center justify-center shrink-0">
         <img
-          src="/icons/target.png"
-          alt="Accuracy Quest"
-          className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow"
+          src="/icons/vault.png"
+          alt="Bug Quest"
+          className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow"
         />
       </div>
     );
@@ -137,14 +154,13 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
         <h3 className="text-white font-black text-xl tracking-tight whitespace-nowrap">
           Daily Quests
         </h3>
-        <div className="px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-400/35 text-xs sm:text-sm font-black text-amber-400 inline-flex items-center gap-1.5 shrink-0 shadow-sm">
-          <Clock className="w-4 h-4 text-amber-400 shrink-0" strokeWidth={2.4} />
-          <span className="font-mono tracking-tight">{timeLeft}</span>
-        </div>
+        <span className="text-slate-400 font-extrabold text-xs sm:text-sm tracking-wider uppercase shrink-0">
+          {timeLeft}
+        </span>
       </div>
 
       <div className="flex flex-col gap-5">
-        {quests.map((quest) => {
+        {quests.map((quest, index) => {
           const isCompleted = Boolean(
             quest.claimed || quest.current >= quest.target
           );
@@ -155,7 +171,7 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
 
           return (
             <div key={quest.id} className="flex items-center gap-3">
-              {renderLeadingIcon(quest.id)}
+              {renderLeadingIcon(quest.id, index)}
 
               <div className="flex-1 min-w-0 flex flex-col gap-1.5">
                 <span
