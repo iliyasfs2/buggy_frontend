@@ -148,7 +148,7 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-700/80 border-b-slate-600 px-4 py-5 sm:px-5 sm:py-5 shadow-2xl flex flex-col gap-5 select-none relative ${className}`}
+      className={`rounded-3xl bg-slate-900/90 border-2 border-b-4 border-slate-800 border-b-slate-950/90 px-4 py-5 sm:px-5 sm:py-5 shadow-2xl flex flex-col gap-5 select-none relative ${className}`}
     >
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-white font-black text-xl tracking-tight whitespace-nowrap">
