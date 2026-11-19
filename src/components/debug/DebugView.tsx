@@ -14,6 +14,7 @@ import {
   selectMistakesCount,
 } from "@/store/useGameStore";
 import { fetchMistakesApi } from "@/services/debugApi";
+import { fetchUserProgress } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
 
@@ -21,14 +22,21 @@ export function DebugView() {
   const router = useRouter();
   const mistakesCount = useGameStore(selectMistakesCount);
   const setMistakesCount = useGameStore((state) => state.setMistakesCount);
+  const syncNav = useGameStore((state) => state.syncNav);
 
   useEffect(() => {
+    fetchUserProgress()
+      .then((prog) => {
+        syncNav(prog);
+      })
+      .catch(() => {});
+
     fetchMistakesApi()
       .then((data) => {
         setMistakesCount(data.count);
       })
       .catch(() => {});
-  }, [setMistakesCount]);
+  }, [setMistakesCount, syncNav]);
 
   return (
     <div className="w-full min-h-screen px-3.5 sm:pl-10 md:pl-14 lg:pl-20 xl:pl-28 sm:pr-8 lg:pr-10 py-5 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-12 pb-32 md:pb-16 select-none relative">
