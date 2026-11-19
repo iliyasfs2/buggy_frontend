@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Zap,
   CheckCircle2,
@@ -50,9 +50,28 @@ const SHORT_TITLES: Record<string, string> = {
 
 const VALID_IDS = new Set(Object.keys(SHORT_TITLES));
 
+function getTimeUntilMidnight(): string {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const diffSeconds = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
+  const hours = Math.floor(diffSeconds / 3600);
+  const minutes = Math.floor((diffSeconds % 3600) / 60);
+  return `${hours}H ${minutes.toString().padStart(2, "0")}M`;
+}
+
 export function DailyQuestsWidget({ className = "" }: { className?: string }) {
   const dailyQuests = useNavStore((state) => state.dailyQuests);
   const syncNav = useNavStore((state) => state.syncNav);
+  const [timeLeft, setTimeLeft] = useState<string>(() => getTimeUntilMidnight());
+
+  useEffect(() => {
+    setTimeLeft(getTimeUntilMidnight());
+    const intervalId = setInterval(() => {
+      setTimeLeft(getTimeUntilMidnight());
+    }, 30000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     const needsSync =
@@ -130,9 +149,9 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
         <h3 className="text-white font-black text-xl sm:text-2xl tracking-tight whitespace-nowrap">
           Daily Quests
         </h3>
-        <div className="px-3 py-1 rounded-xl bg-slate-950/80 border border-slate-800 text-xs sm:text-sm font-extrabold text-slate-300 inline-flex items-center gap-1.5 shrink-0">
-          <Clock className="w-4 h-4 text-sky-400 shrink-0" strokeWidth={2.2} />
-          <span>Resets daily</span>
+        <div className="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-400/35 text-xs sm:text-sm font-black text-amber-400 inline-flex items-center gap-1.5 shrink-0 shadow-sm">
+          <Clock className="w-4 h-4 text-amber-400 shrink-0" strokeWidth={2.4} />
+          <span className="font-mono tracking-tight">{timeLeft}</span>
         </div>
       </div>
 
@@ -181,31 +200,23 @@ export function DailyQuestsWidget({ className = "" }: { className?: string }) {
               </div>
 
               {isCompleted ? (
-                <div className="relative shrink-0 flex flex-col items-center justify-center gap-1 w-14">
-                  <div className="relative flex items-center justify-center">
-                    <img
-                      src="/icons/chest-gold.png"
-                      alt="Claimed Chest"
-                      className="w-11 h-11 sm:w-12 sm:h-12 object-contain brightness-110 drop-shadow-[0_2px_8px_rgba(250,204,21,0.35)]"
-                    />
-                    <div className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 text-slate-950 p-0.5 rounded-full border-2 border-slate-900 shadow">
-                      <Check className="w-3 h-3 text-slate-950" strokeWidth={3.5} />
-                    </div>
+                <div className="relative shrink-0 flex items-center justify-center w-12 h-12">
+                  <img
+                    src="/icons/chest-gold.png"
+                    alt="Claimed Chest"
+                    className="w-11 h-11 sm:w-12 sm:h-12 object-contain brightness-110 drop-shadow-[0_2px_8px_rgba(250,204,21,0.35)]"
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 text-slate-950 p-0.5 rounded-full border-2 border-slate-900 shadow">
+                    <Check className="w-3 h-3 text-slate-950" strokeWidth={3.5} />
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-black leading-none">
-                    +{quest.reward_bytes}
-                  </span>
                 </div>
               ) : (
-                <div className="relative shrink-0 flex flex-col items-center justify-center gap-1 w-14">
+                <div className="relative shrink-0 flex items-center justify-center w-12 h-12">
                   <img
                     src="/icons/chest-closed.png"
                     alt="Reward Chest"
                     className="w-11 h-11 sm:w-12 sm:h-12 object-contain brightness-125 contrast-105 drop-shadow-[0_2px_6px_rgba(255,255,255,0.12)]"
                   />
-                  <span className="px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-200 text-xs font-black leading-none shadow-sm">
-                    +{quest.reward_bytes}
-                  </span>
                 </div>
               )}
             </div>
