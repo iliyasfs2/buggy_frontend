@@ -17,6 +17,7 @@ import { fetchMistakesApi } from "@/services/debugApi";
 import { fetchUserProgress } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
+import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 
 export function DebugView() {
   const router = useRouter();
@@ -207,8 +208,11 @@ export function DebugView() {
         </section>
       </div>
 
-      <div className="hidden lg:flex flex-1 justify-center sticky top-4">
+      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-4">
         <DesktopMetricBar inline />
+        <div className="w-full max-w-[390px] xl:max-w-[420px]">
+          <DailyQuestsCard />
+        </div>
       </div>
     </div>
   );

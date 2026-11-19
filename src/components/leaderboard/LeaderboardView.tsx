@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AvatarRenderer } from "@/components/profile/AvatarRenderer";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
+import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 import { DEFAULT_AVATAR_CONFIG } from "@/services/authApi";
 import { soundEffects } from "@/utils/soundEffects";
 import {
@@ -243,8 +244,11 @@ export function LeaderboardView() {
         </div>
       </div>
 
-      <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8">
         <DesktopMetricBar inline />
+        <div className="w-full max-w-[390px] xl:max-w-[420px]">
+          <DailyQuestsCard />
+        </div>
       </div>
     </div>
   );

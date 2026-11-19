@@ -24,6 +24,7 @@ import { DevCardModal } from "@/components/profile/DevCardModal";
 import type { DevProjectItem } from "@/components/profile/DevCard";
 import { ProfileHonors } from "@/components/profile/ProfileHonors";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
+import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 import { soundEffects } from "@/utils/soundEffects";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useGameStore } from "@/store/useGameStore";
@@ -1038,8 +1039,11 @@ export function ProfileView({ username, isOwnProfile, is_me, from }: ProfileView
       )}
       </div>
 
-      <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8">
         <DesktopMetricBar inline />
+        <div className="w-full max-w-[390px] xl:max-w-[420px]">
+          <DailyQuestsCard />
+        </div>
       </div>
 
       {isCoursesModalOpen && (

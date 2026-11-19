@@ -13,6 +13,7 @@ import {
 import { fetchUserProgress } from "@/services/progressApi";
 import { soundEffects } from "@/utils/soundEffects";
 import { DesktopMetricBar } from "@/components/layout/DesktopMetricBar";
+import { DailyQuestsCard } from "@/components/quests/DailyQuestsCard";
 
 const BATTERY_REFILL_PRICE = 100;
 const STREAK_FREEZE_PRICE = 150;
@@ -316,8 +317,11 @@ export function StoreView() {
         </div>
       </div>
 
-      <div className="hidden lg:flex flex-1 justify-center sticky top-8">
+      <div className="hidden lg:flex flex-1 flex-col items-center gap-6 sticky top-8">
         <DesktopMetricBar inline />
+        <div className="w-full max-w-[390px] xl:max-w-[420px]">
+          <DailyQuestsCard />
+        </div>
       </div>
     </div>
   );
