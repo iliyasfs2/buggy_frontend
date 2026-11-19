@@ -207,7 +207,7 @@ export function DebugView() {
         </section>
       </div>
 
-      <div className="hidden lg:flex shrink-0 justify-end sticky top-3">
+      <div className="hidden lg:flex flex-1 justify-center sticky top-4">
         <DesktopMetricBar inline />
       </div>
     </div>
