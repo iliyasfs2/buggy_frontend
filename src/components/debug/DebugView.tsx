@@ -31,53 +31,53 @@ export function DebugView() {
   }, [setMistakesCount]);
 
   return (
-    <div className="w-full min-h-screen pl-4 sm:pl-10 md:pl-16 lg:pl-24 xl:pl-32 pr-4 sm:pr-8 lg:pr-10 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-14 pb-32 md:pb-16 select-none relative">
-      <div className="w-full max-w-xl xl:max-w-2xl flex flex-col gap-7 shrink-0">
+    <div className="w-full min-h-screen px-3.5 sm:pl-10 md:pl-14 lg:pl-20 xl:pl-28 sm:pr-8 lg:pr-10 py-5 sm:py-8 flex flex-col lg:flex-row items-start gap-8 xl:gap-12 pb-32 md:pb-16 select-none relative">
+      <div className="w-full max-w-2xl xl:max-w-3xl flex flex-col gap-7 sm:gap-8 shrink-0">
         <div className="hidden md:flex lg:hidden justify-end w-full">
           <DesktopMetricBar inline />
         </div>
 
-        <div className="relative w-full rounded-2xl bg-[#131f24] border-2 border-slate-800 p-5 sm:p-6 shadow-xl flex items-center justify-between gap-4 overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-sky-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
+        <div className="relative w-full rounded-3xl bg-slate-900/90 border-2 border-slate-800 p-5 sm:p-7 lg:p-8 shadow-2xl flex items-center justify-between gap-4 overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-sky-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
 
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-500/15 border-2 border-sky-500/30 flex items-center justify-center shrink-0 shadow-inner text-sky-400">
-              <Wrench className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2} />
+          <div className="flex items-center gap-3.5 sm:gap-5 relative z-10 min-w-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-2xl bg-sky-500/15 border-2 border-sky-500/30 flex items-center justify-center shrink-0 shadow-inner text-sky-400">
+              <Wrench className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9" strokeWidth={2} />
             </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight break-words">
                 Debug Lab
               </h1>
-              <p className="text-xs sm:text-sm font-bold text-slate-400 mt-0.5">
+              <p className="text-xs sm:text-sm lg:text-base font-bold text-slate-400 mt-1 leading-relaxed break-words">
                 Fix past mistakes and sharpen your coding skills.
               </p>
             </div>
           </div>
         </div>
 
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-3.5 sm:gap-4">
           <div className="px-1">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-400">
               SKILL DRILLS
             </h2>
           </div>
 
-          <div className="flex flex-col space-y-3.5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#131f24] border-2 border-slate-800 hover:border-slate-700 transition-all shadow-lg">
-              <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
-                  <Terminal className="w-6 h-6" strokeWidth={2} />
+          <div className="flex flex-col space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+              <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+                  <Terminal className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                 </div>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight break-words">
                       Output Lab
                     </h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[11px] font-black">
+                    <span className="px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-black shrink-0">
                       +5 Bytes
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm lg:text-base font-bold text-slate-400 leading-relaxed break-words">
                     Read short code and predict the console output.
                   </p>
                 </div>
@@ -89,27 +89,27 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_tracing");
                 }}
-                className="w-full sm:w-36 h-11 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 active:translate-y-0.5 border-b-4 border-sky-700 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-sky-500 hover:bg-sky-400 active:translate-y-0.5 border-b-4 border-sky-700 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
               >
                 <span>Start Drill</span>
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#131f24] border-2 border-slate-800 hover:border-slate-700 transition-all shadow-lg">
-              <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-                  <Wand2 className="w-6 h-6" strokeWidth={2} />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+              <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                  <Wand2 className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                 </div>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight break-words">
                       Clean Code
                     </h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-black">
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-black shrink-0">
                       +20 XP
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm lg:text-base font-bold text-slate-400 leading-relaxed break-words">
                     Turn messy JavaScript into clean, modern code.
                   </p>
                 </div>
@@ -121,7 +121,7 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_refactor");
                 }}
-                className="w-full sm:w-36 h-11 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:translate-y-0.5 border-b-4 border-amber-600 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:translate-y-0.5 border-b-4 border-amber-600 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
               >
                 <span>Start Challenge</span>
               </button>
@@ -129,29 +129,29 @@ export function DebugView() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-3.5 sm:gap-4">
           <div className="px-1">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-400">
               TARGETED REVIEW
             </h2>
           </div>
 
-          <div className="flex flex-col space-y-3.5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#131f24] border-2 border-slate-800 hover:border-slate-700 transition-all shadow-lg">
-              <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
-                  <RotateCcw className="w-6 h-6" strokeWidth={2} />
+          <div className="flex flex-col space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+              <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+                  <RotateCcw className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                 </div>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight break-words">
                       Mistakes Bank
                     </h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[11px] font-black">
+                    <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-black shrink-0">
                       {mistakesCount} Left
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm lg:text-base font-bold text-slate-400 leading-relaxed break-words">
                     Practice the exact bugs you missed in previous lessons.
                   </p>
                 </div>
@@ -163,22 +163,22 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_mistakes");
                 }}
-                className="w-full sm:w-36 h-11 px-4 rounded-xl bg-rose-500 hover:bg-rose-400 active:translate-y-0.5 border-b-4 border-rose-700 text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-rose-500 hover:bg-rose-400 active:translate-y-0.5 border-b-4 border-rose-700 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
               >
                 <span>Fix Mistakes</span>
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#131f24] border-2 border-slate-800 hover:border-slate-700 transition-all shadow-lg">
-              <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
-                  <Layers className="w-6 h-6" strokeWidth={2} />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 transition-all shadow-xl">
+              <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                  <Layers className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                 </div>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight break-words">
                     Mini Scenarios
                   </h3>
-                  <p className="text-xs sm:text-sm font-bold text-slate-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm lg:text-base font-bold text-slate-400 leading-relaxed break-words">
                     Build real mini-features step by step.
                   </p>
                 </div>
@@ -190,7 +190,7 @@ export function DebugView() {
                   soundEffects.playSoftClick();
                   router.push("/lesson?mode=debug_stories");
                 }}
-                className="w-full sm:w-36 h-11 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 active:translate-y-0.5 border-b-4 border-purple-800 text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
+                className="w-full sm:w-44 h-12 px-5 rounded-2xl bg-purple-600 hover:bg-purple-500 active:translate-y-0.5 border-b-4 border-purple-800 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md"
               >
                 <span>Play Scenario</span>
               </button>
