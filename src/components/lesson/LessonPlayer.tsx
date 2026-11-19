@@ -678,7 +678,7 @@ export function LessonPlayer({
                     ? "Bug Resolved! +10 XP"
                     : "Nicely done!"}
                 </h4>
-                {currentStep?.explanation && mode === "debug_refactor" && (
+                {currentStep?.explanation && (
                   <p className="text-xs sm:text-sm font-semibold text-emerald-200/90 line-clamp-2 mt-0.5 max-w-md">
                     {currentStep.explanation}
                   </p>

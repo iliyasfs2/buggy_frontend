@@ -3,19 +3,17 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LessonPlayer } from "@/components/lesson/LessonPlayer";
-import {
-  DebugDrillPlayer,
-  type CuratedDebugMode,
-} from "@/components/debug/DebugDrillPlayer";
 import type { LessonContent } from "@/types/lesson";
 import {
   SEED_DEBUG_CHALLENGES,
+  createOutputLabLesson,
+  createCleanCodeLesson,
+  createMiniScenariosLesson,
   createMistakesLesson,
 } from "@/constants/debugLessons";
 import {
   fetchMistakesApi,
   fetchDebugChallengesApi,
-  type DebugChallengesData,
 } from "@/services/debugApi";
 import { LESSON_JS_1_1 } from "@/data/mock/lessons/js-1-1";
 import { LESSON_JS_1_2 } from "@/data/mock/lessons/js-1-2";
@@ -32,26 +30,18 @@ const getRoadmapLessonContent = (id: string): LessonContent => {
   return LESSON_JS_1_1;
 };
 
-function isCuratedDebugMode(mode: string): mode is CuratedDebugMode {
-  return (
-    mode === "debug_tracing" ||
-    mode === "debug_refactor" ||
-    mode === "debug_stories"
-  );
-}
-
 function LessonContentController() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "";
   const nodeId = searchParams.get("nodeId") || "js-1-1";
   const isDebugSession = Boolean(mode && mode.startsWith("debug"));
-  const isCuratedDrill = isCuratedDebugMode(mode);
+  const isCuratedDrill =
+    mode === "debug_tracing" ||
+    mode === "debug_refactor" ||
+    mode === "debug_stories";
 
   const [lesson, setLesson] = useState<LessonContent | null>(null);
-  const [challenges, setChallenges] = useState<DebugChallengesData>(
-    SEED_DEBUG_CHALLENGES
-  );
   const [loading, setLoading] = useState(true);
   const [emptyMistakes, setEmptyMistakes] = useState(false);
 
@@ -63,20 +53,33 @@ function LessonContentController() {
       fetchDebugChallengesApi()
         .then((data) => {
           if (!active) return;
-          if (
+          const source =
             data &&
             Array.isArray(data.output_lab) &&
             data.output_lab.length > 0
-          ) {
-            setChallenges(data);
-          } else {
-            setChallenges(SEED_DEBUG_CHALLENGES);
+              ? data
+              : SEED_DEBUG_CHALLENGES;
+
+          if (mode === "debug_tracing") {
+            setLesson(createOutputLabLesson(source.output_lab));
+          } else if (mode === "debug_refactor") {
+            setLesson(createCleanCodeLesson(source.clean_code));
+          } else if (mode === "debug_stories") {
+            setLesson(createMiniScenariosLesson(source.mini_scenarios));
           }
           setLoading(false);
         })
         .catch(() => {
           if (!active) return;
-          setChallenges(SEED_DEBUG_CHALLENGES);
+          if (mode === "debug_tracing") {
+            setLesson(createOutputLabLesson(SEED_DEBUG_CHALLENGES.output_lab));
+          } else if (mode === "debug_refactor") {
+            setLesson(createCleanCodeLesson(SEED_DEBUG_CHALLENGES.clean_code));
+          } else if (mode === "debug_stories") {
+            setLesson(
+              createMiniScenariosLesson(SEED_DEBUG_CHALLENGES.mini_scenarios)
+            );
+          }
           setLoading(false);
         });
     } else if (mode === "debug_mistakes") {
@@ -124,7 +127,7 @@ function LessonContentController() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center p-4 text-center select-none">
+      <div className="min-h-screen bg-[#101826] flex flex-col items-center justify-center p-4 text-center select-none">
         <div className="w-12 h-12 rounded-full border-4 border-sky-500 border-t-transparent animate-spin mb-4" />
         <h2 className="text-lg font-black text-white tracking-wide">
           Loading Practice Session...
@@ -136,21 +139,10 @@ function LessonContentController() {
     );
   }
 
-  if (isCuratedDrill) {
-    return (
-      <DebugDrillPlayer
-        mode={mode}
-        challenges={challenges}
-        onComplete={handleComplete}
-        onExit={handleExit}
-      />
-    );
-  }
-
   if (emptyMistakes) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 select-none">
-        <div className="max-w-md w-full rounded-3xl bg-[#131f24] border-2 border-slate-800 p-8 text-center shadow-2xl flex flex-col items-center gap-6">
+      <div className="min-h-screen bg-[#101826] flex items-center justify-center p-6 select-none">
+        <div className="max-w-md w-full rounded-3xl bg-slate-900 border-2 border-slate-800 p-8 text-center shadow-2xl flex flex-col items-center gap-6">
           <div className="w-20 h-20 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
             <CheckCircle2 className="w-10 h-10" strokeWidth={2} />
           </div>
@@ -189,7 +181,7 @@ function LessonContentController() {
 
   if (!lesson) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center p-6 text-center select-none gap-4">
+      <div className="min-h-screen bg-[#101826] flex flex-col items-center justify-center p-6 text-center select-none gap-4">
         <p className="text-slate-300 font-bold">Lesson not found.</p>
         <button
           type="button"
@@ -216,7 +208,7 @@ export default function LessonPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-slate-400 font-bold">
+        <div className="min-h-screen bg-[#101826] flex items-center justify-center text-slate-400 font-bold">
           Loading lesson session...
         </div>
       }

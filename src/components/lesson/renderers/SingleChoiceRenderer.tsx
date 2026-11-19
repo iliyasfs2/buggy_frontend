@@ -46,8 +46,8 @@ export function SingleChoiceRenderer({
       <div className={CODE_SLOT_CLASSES}>
         {step.codeSnippet ? (
           <div dir="ltr" className={CODE_PANEL_CLASSES}>
-            <pre className="w-full text-center overflow-x-auto flex items-center justify-center">
-              <code>{step.codeSnippet}</code>
+            <pre className="w-full overflow-x-auto flex items-center justify-center">
+              <code className="text-left whitespace-pre">{step.codeSnippet}</code>
             </pre>
           </div>
         ) : null}

@@ -287,6 +287,91 @@ export const SEED_DEBUG_CHALLENGES: DebugChallengesData = {
   mini_scenarios: SEED_MINI_SCENARIOS,
 };
 
+export function createOutputLabLesson(
+  drills: OutputLabDrill[] = SEED_OUTPUT_LAB
+): LessonContent {
+  const list = drills.length > 0 ? drills : SEED_OUTPUT_LAB;
+  const steps: LessonStep[] = list.map((drill, idx) => ({
+    id: drill.id,
+    type: "single_choice" as const,
+    title: `OUTPUT LAB • DRILL ${idx + 1} OF ${list.length}`,
+    mascotMood: "thinking" as const,
+    mascotDialogue: "Trace what gets printed to the console!",
+    question: "What appears in the console?",
+    codeSnippet: drill.code,
+    options: drill.options,
+    correctAnswer: drill.answer,
+    explanation: drill.explanation,
+  }));
+
+  return {
+    nodeId: "debug-tracing",
+    title: "Output Lab",
+    totalXp: 20,
+    steps,
+  };
+}
+
+export function createCleanCodeLesson(
+  drills: CleanCodeDrill[] = SEED_CLEAN_CODE
+): LessonContent {
+  const list = drills.length > 0 ? drills : SEED_CLEAN_CODE;
+  const steps: LessonStep[] = list.map((drill, idx) => ({
+    id: drill.id,
+    type: "single_choice" as const,
+    title: `CLEAN CODE • DRILL ${idx + 1} OF ${list.length}`,
+    mascotMood: "thinking" as const,
+    mascotDialogue: "Refactor messy code into clean modern JS!",
+    question: drill.prompt,
+    codeSnippet: drill.messy_code,
+    options: drill.options,
+    correctAnswer: drill.answer,
+    explanation: drill.explanation,
+  }));
+
+  return {
+    nodeId: "debug-refactor",
+    title: "Clean Code",
+    totalXp: 25,
+    steps,
+  };
+}
+
+export function createMiniScenariosLesson(
+  scenarios: MiniScenarioDrill[] = SEED_MINI_SCENARIOS
+): LessonContent {
+  const list = scenarios.length > 0 ? scenarios : SEED_MINI_SCENARIOS;
+  const steps: LessonStep[] = [];
+
+  list.forEach((scenario) => {
+    scenario.steps.forEach((stepItem) => {
+      steps.push({
+        id: `${scenario.id}_step_${stepItem.step}`,
+        type: "fill_blank" as const,
+        title: `${scenario.title.toUpperCase()} • STEP ${stepItem.step} OF ${scenario.steps.length}`,
+        mascotMood: "alert" as const,
+        mascotDialogue: scenario.subtitle,
+        instruction: stepItem.instruction,
+        codeTemplate: stepItem.code_template,
+        options: stepItem.options,
+        correctAnswer: stepItem.answer,
+        explanation: `${scenario.title} — Step ${stepItem.step} of ${scenario.steps.length} complete.`,
+      });
+    });
+  });
+
+  return {
+    nodeId: "debug-stories",
+    title: "Mini Scenarios",
+    totalXp: 30,
+    steps,
+  };
+}
+
+export const DEBUG_TRACING_LESSON: LessonContent = createOutputLabLesson(SEED_OUTPUT_LAB);
+export const DEBUG_REFACTOR_LESSON: LessonContent = createCleanCodeLesson(SEED_CLEAN_CODE);
+export const DEBUG_STORIES_LESSON: LessonContent = createMiniScenariosLesson(SEED_MINI_SCENARIOS);
+
 export function createMistakesLesson(mistakes: MistakeItem[]): LessonContent {
   const steps: LessonStep[] = mistakes.map((m, idx) => {
     const defaultDistractors = ["10 20", "undefined", "false", "ReferenceError", "null", "NaN", "0"];

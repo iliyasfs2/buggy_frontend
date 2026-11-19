@@ -47,20 +47,22 @@ export function FillBlankRenderer({
       <div className={CODE_SLOT_CLASSES}>
         <div
           dir="ltr"
-          className="w-full p-5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center gap-2 font-mono text-lg text-sky-300 shadow-inner"
+          className="w-full p-5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center font-mono text-base sm:text-lg text-sky-300 shadow-inner overflow-x-auto"
         >
-          <span>{parts[0]}</span>
-          <input
-            type="text"
-            value={answer}
-            onChange={(event) => onChange(event.target.value)}
-            placeholder="?"
-            aria-label="Fill in the blank answer"
-            autoFocus
-            disabled={isSubmitted && isCorrect}
-            className="w-24 px-3 py-1.5 text-center bg-slate-950 border-b-2 border-sky-500 rounded-lg text-sky-400 font-bold outline-none select-text placeholder:text-slate-600 disabled:opacity-70 focus:ring-2 focus:ring-sky-500/50 transition-all duration-300"
-          />
-          {parts[1] && <span>{parts[1]}</span>}
+          <div className="text-left whitespace-pre-wrap leading-relaxed">
+            <span>{parts[0]}</span>
+            <input
+              type="text"
+              value={answer}
+              onChange={(event) => onChange(event.target.value)}
+              placeholder="?"
+              aria-label="Fill in the blank answer"
+              autoFocus
+              disabled={isSubmitted && isCorrect}
+              className="inline-block w-28 sm:w-32 mx-1.5 px-3 py-1 text-center bg-slate-950 border-b-2 border-sky-500 rounded-lg text-sky-400 font-bold outline-none select-text placeholder:text-slate-600 disabled:opacity-70 focus:ring-2 focus:ring-sky-500/50 transition-all duration-300 align-baseline"
+            />
+            {parts[1] && <span>{parts[1]}</span>}
+          </div>
         </div>
       </div>
 
