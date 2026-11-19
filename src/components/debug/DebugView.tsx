@@ -39,7 +39,7 @@ export function DebugView() {
   }, [setMistakesCount, syncNav]);
 
   return (
-    <div className="w-full px-3.5 sm:pl-8 md:pl-12 lg:pl-16 xl:pl-24 sm:pr-6 lg:pr-10 pt-3 pb-24 md:py-3.5 flex flex-col lg:flex-row items-start gap-6 xl:gap-10 select-none relative">
+    <div className="w-full px-3.5 sm:pl-8 md:pl-12 lg:pl-16 xl:pl-24 sm:pr-6 lg:pr-10 pt-3 pb-4 md:py-3.5 flex flex-col lg:flex-row items-start gap-6 xl:gap-10 select-none relative">
       <div className="w-full max-w-3xl xl:max-w-[820px] flex flex-col gap-3.5 shrink-0">
         <div className="hidden md:flex lg:hidden justify-end w-full">
           <DesktopMetricBar inline />

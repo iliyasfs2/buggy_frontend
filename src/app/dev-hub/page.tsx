@@ -935,7 +935,7 @@ export default function DevHubPage() {
 
   return (
     <AppShell hideMobileHeader>
-      <div className="max-w-[1140px] w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 pb-8 sm:py-5 flex flex-col gap-3.5 sm:gap-4">
+      <div className="max-w-[1140px] w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 pb-4 sm:py-5 flex flex-col gap-3.5 sm:gap-4">
         <div className="flex flex-col gap-1 max-w-[1080px] w-full mx-auto">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
             Dev Hub
